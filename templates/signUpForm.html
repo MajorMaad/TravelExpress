@@ -1,0 +1,94 @@
+<!-- inclusion of relatives functions -->
+<script type="text/javascript" src="/scripts/js/signUpForm.js" ></script>
+
+<!-- Sign Up section : include jinja template to retrieve information for server if necessary-->
+<form id="signUpForm" onsubmit="return ensureNonEmpty();" method="post" action="/signUp">	
+
+	<button id="deploySignUpForm" type="button" class="btn btn-primary">Sign Up</button>
+
+
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="name">Name</label>
+		<input id="name" name="name" class="form-control" value="{{name}}">		
+	</div>
+
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="firstName">Firstname</label>
+		<input id="firstName" name="firstName" class="form-control" value="{{firstName}}">		
+	</div>
+
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="nickName">Nickname</label>	{% if error_nick %} {{error_nick}} {% endif %}
+		<input id="nickName" name="nickName" class="form-control" value="{{nickName}}">		
+	</div>
+	
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="emailInput">Email address</label>	{% if error_email %} {{error_email}} {% endif %}
+		<input id="email" name="email" class="form-control" type="email" placeholder="Email" value="{{email}}">		
+	</div>
+	
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="passInput">Password</label>
+		<input id="passInput" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">		
+	</div>
+
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<label for="passValidate">Enter the chosen password again</label>
+		<input id="passValidate" name="passValidate" class="form-control" type="password" placeholder="Password" value="{{passValidate}}">		
+	</div>
+
+	
+	{% if error %}	<div class='form-group' style='display:block'>
+	{% else %}	<div class='form-group' style='display:none'>
+	{% endif %}		
+		<button id="submitSignUpBtn" type="submit" class="btn btn-primary">Sign Up !!</button>
+	</div>
+
+</form>
+
+<script>
+$(document).ready(function(e){
+
+	console.log("executed");
+
+	//sign Up Form management
+	var deploySignUpForm = document.getElementById('deploySignUpForm');
+	deploySignUpForm.onclick = function(){
+
+		//Show/hide all forms 
+		var signUpClass = document.getElementsByClassName('form-group');
+		for(i=0; i<signUpClass.length; i++){
+			if(signUpClass[i].style.display !== 'none'){
+				signUpClass[i].style.display = 'none';
+				console.log("hide");
+			}
+			else{
+				signUpClass[i].style.display = 'block';
+				console.log("block !");
+			}
+		}
+
+		//Invert text of button
+		var textBtn = deploySignUpForm.firstChild;
+		textBtn.data = textBtn.data == "Sign Up" ? "Close" : "Sign Up";
+	};
+});
+</script>

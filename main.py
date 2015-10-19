@@ -18,7 +18,7 @@
 import os
 import logging
 import webapp2
-
+import hmac
 
 
 # Template Jinja2 stuff :
@@ -33,54 +33,103 @@ def render_str(template, **params):
 	return t.render(params)
 
 
-#Import des sources :
-# from src import user
+#Import des sources 
+from src.user import *
+
+
+secret = 'terribly secret'
 
 class MainHandler(webapp2.RequestHandler):
 
 	# Simply write the template as a response
-	def get(self):
-		self.response.out.write(render_str("base.html"))
+	def get(self, **params):
+		self.render('base.html', **params)
 
 	def post(self):
 		self.response.out.write("main post ")
-	# 	# Get attribute given via the post request
-	# 	self.name = self.request.get('name')
-	# 	self.firstName = self.request.get('firstName')
-	# 	self.nickName = self.request.get('nickName')
-	#     self.email = self.request.get('email')
-	#     self.password = self.request.get('passBasic')
-	#     self.passwordValidation = self.request.get('passValidate')
 
-	#     logging.info(self.name)
-	#     logging.info(self.firstName)
-	#     logging.info(self.nickName)
-	#     logging.info(self.email)
-	#     logging.info(self.password)
-	#     logging.info(self.passwordValidation)
+	def render(self, template, **params):
+		self.response.out.write(render_str(template, **params))
 
-	#     self.response.out.write("lolilol "+self.name)
+	def login(self, user):
+		self.set_secure_cookie('user_id', str(user.key().id()))
+
+	def set_secure_cookie(self, name, val):
+		cookie_val = self.make_secure_val(val)
+		self.response.headers.add_header(
+			'Set-Cookie',
+			'%s=%s; Path=/' % (name, cookie_val))
+	
+	def make_secure_val(self, val):
+		return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
 
-#this class handle the registration of a new user
-class SignUp(webapp2.RequestHandler):
+
+#This class handle the registration of a new user
+#Inheritance of MainHandler to get the webapp2 module and the render function and overwrites post method
+class SignUp(MainHandler):
+
+	def get(self):
+		self.render('signUpForm.html')
 
 	def post(self):
 		self.response.out.write("sign up  post ")
 
 
-		# Get attribute given via the post request
+		# Get attributes given via the post request
 		self.name = self.request.get('name')
 		self.firstName = self.request.get('firstName')
 		self.nickName = self.request.get('nickName')
 		self.email = self.request.get('email')
-		self.password = self.request.get('passBasic')
-		self.passwordValidation = self.request.get('passValidate')
+		self.passBasic = self.request.get('passBasic')
+		self.passValidate = self.request.get('passValidate')
 
-		if self.user and self.firstName and self.nickName and self.email and self.password and self.passwordValidation:
-			if self.password == self.passwordValidation:
-				#Check for database if correct
-				self.response.out.write(render_str("base.html"))
+		params = dict(name = self.name,
+					  firstName = self.firstName,
+					  nickName = self.nickName,
+					  email = self.email,
+					  password = self.passBasic)
+
+		#Look into database if nickName or email is already in use
+		error = False
+		same_nickname = User.by_name(self.nickName)
+		same_email = User.by_email(self.email)
+
+		if same_nickname:
+			logging.debug("Sorry, this nickname is already used." )
+			params['error_nickname'] = "Sorry, this nickname is already used."
+			error = True
+
+		if same_email:
+			logging.debug("Sorry, this email address is already used." )
+			params['error_email'] = "Sorry, this email address is already used."
+			error = True
+
+		if error:			
+			error_nick = None
+			error_email = None
+
+			if 'error_nickname' in params:
+				error_nick = params['error_nickname']
+			if 'error_email' in params:
+				error_email = params['error_email']
+
+			self.render('base.html', error = error, 
+									name=params['name'],
+									firstName = params['firstName'],
+									nickName = params['nickName'],
+									email = params['email'],
+									passBasic = params['password'],
+									passValidate = self.passValidate,
+									error_nick=error_nick, 
+									error_email=error_email)
+
+		else:
+			user = User.register(user_data=params)
+			user.put()
+			self.login(user)
+			self.response.out.write('no error : User created')
+
 
 
 
