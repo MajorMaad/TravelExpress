@@ -1,17 +1,229 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link type="text/css" rel="stylesheet" href="/static/main.css" />
 
-  <title>TravelExpress</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	
+
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+
+
+	<title>TravelExpress</title>
+
+
 </head>
 
 <body>
-  <a href="/" class="main-title">
-  Just a fucking test !
-  </a>
+	
+	
 
-  
+	<!-- Temporary banner -->
+	<div id="banner" class="container-fluid" >
+		<h1>Travel Express</h1>
+	</div>
+
+
+	<!-- Sign Up / Log In section -->
+	<div class="jumbotron">
+		<div id="jumpInSection" class="container-fluid">
+			<p>If you want to benefit of our website, you have to log in =/ </p>
+			<p>If you don't have any account, you can always create one =D </p>
+
+			<!-- Sign Up section-->
+			<form id="signUpForm" onsubmit="ensureNonEmpty()" method="post" action="/signUp">
+
+				<div class="form-group">
+					<label for="name">Name</label>
+					<input id="name" name="name" class="form-control" value="{{name}}">
+				</div>
+
+				<div class="form-group">
+					<label for="firstName">Firstname</label>
+					<input id="firstName" name="firstName" class="form-control" value="{{firstName}}">
+				</div>
+
+				<div class="form-group">
+					<label for="nickName">Nickname</label>
+					<input id="nickName" name="nickName" class="form-control" value="{{nickName}}">
+				</div>
+				
+				<div class="form-group">
+					<label for="emailInput">Email address</label>
+					<input id="email" name="email" class="form-control" type="email" placeholder="Email" value="{{email}}">
+				</div>
+				
+				<div class="form-group">
+					<label for="passInput">Password</label>
+					<input id="passInput" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">
+				</div>
+
+				<div class="form-group">
+					<label for="passValidate">Enter the chosen password again</label>
+					<input id="passValidate" name="passValidate" class="form-control" type="password" placeholder="Password" value="{{passValidate}}">
+				</div>
+
+				<button id="signUpBtn" type="button" class="btn btn-primary">Sign Up</button>
+			</form>
+
+			
+
+			<script type="text/javascript">
+					$(document).ready(function(e){
+
+						//Hide all forms
+						var signUpClass = document.querySelectorAll('.form-group'), i = 0, l = signUpClass.length;
+						for (i=0; i < l; i++) {
+							$(signUpClass[i]).hide();                
+						} 
+
+						//If signUpBtn is clicked, display the relative form
+						$("#signUpBtn").mousedown(function() {
+							if($(this).attr('type') == "button"){
+								for (i=0; i < l; i++) {
+									$(signUpClass[i]).show();              
+								}
+								$(this).attr('onclick', 'submitSignUp();');
+							}
+						});
+					});
+
+
+					//called by the button of the sign up form : check if it's woth it to submit the request
+					function submitSignUp(){
+						if (ensureNonEmpty()){
+							document.forms['signUpForm'].submit();
+						}
+					}
+
+					//validate email address via regex
+					function validateEmail(email) {
+						var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+						return re.test(email);
+					}
+
+
+					//Check for empty or non correct user inputs
+					function ensureNonEmpty(){
+						var correct = true;
+						var inputs = $("#signUpForm").find("input");
+
+						//Iterate over inputs to check if inputs are correct
+						//
+						for (i=0; i<inputs.length; i++){
+
+							//Optimization : skip password cases
+							if($(inputs[i]).attr('id') != "passInput" || $(inputs[i]).attr('id') != "passValidate"){
+
+								var wellFormed = true;
+
+								//Basic cases : name / firstname / nickname
+								if($(inputs[i]).val() == ""){
+									if ($(inputs[i]).attr('id') == "name"){
+										$(inputs[i]).attr('value', "Enter your name");
+									}
+
+									if ($(inputs[i]).attr('id') == "firstName"){
+										$(inputs[i]).attr('value', "Enter your firstname");
+									}
+
+									if ($(inputs[i]).attr('id') == "nickName"){
+										$(inputs[i]).attr('value', "Enter your nickname");
+									}									
+									wellFormed = false;								
+								}
+
+								//email case : the placeholder attribute configures the defautl text
+								if ($(inputs[i]).attr('id') == "email" && !validateEmail($(inputs[i]).val()) ){
+									wellFormed = false;
+								}
+
+								//Color the wrong input and Activate the on click behaviour
+								if(!wellFormed){
+									console.log("entry is not wellformed");
+									$(inputs[i]).css("background-color", "red");
+									$(inputs[i]).click(function(e){
+										$(this).css("background-color", "transparent");
+										$(this).val('');
+										
+									});
+								}
+
+								//Ensure that the boolean is well instanciated
+								if(!wellFormed && correct){
+									correct = false;
+								}
+							}
+						}
+						//end of loop
+
+						//Compare both passwords 
+						if ($("#passInput").val() != $("#passValidate").val()){
+							//Hilight and reset of passwords
+							$("#passInput").css("background-color", "red"); 
+							$("#passValidate").css("background-color", "red");
+							
+							$("#passInput").click(function(e){
+								$(this).css("background-color", "transparent");
+								$(this).val('');									
+							});
+
+							$("#passValidate").click(function(e){
+								$(this).css("background-color", "transparent");
+								$(this).val('');									
+							});
+
+							correct = false;
+						}
+
+						return correct;
+					}
+			</script>
+
+
+			
+			
+
+			<!-- log in section -->
+
+			<button id="logInBtn" type="button" class="btn btn-success">Log In</button>
+
+
+			<p> Choice is yours </p>
+
+
+
+
+
+
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+	<!-- Welcome Message -->
+	<div id="welcomeSection">
+		<p> Welcome to Travel Express, the web service allowing you to travel without using your feet !! </p>
+	</div>
+
+
+
+
+
+
+
+	
 </body>
 
 </html>
