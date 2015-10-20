@@ -1,63 +1,71 @@
 <!-- inclusion of relatives functions -->
 <script type="text/javascript" src="/scripts/js/signUpForm.js" ></script>
 
-<!-- Sign Up section : include jinja template to retrieve information for server if necessary-->
-<form id="signUpForm" onsubmit="return ensureNonEmpty();" method="post" action="/signUp">	
+<!-- Sign Up section : include jinja template to retrieve information from server if necessary-->
+<form id="signUpForm" method="post" onsubmit="return ensureSignUpNonEmpty();" action="/signUp">	
 
 	<button id="deploySignUpForm" type="button" class="btn btn-primary">Sign Up</button>
 
 
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
 		<label for="name">Name</label>
+		<span id="nameEmpty" style="display:none; color:red; float:right" >Please, enter your name</span>
 		<input id="name" name="name" class="form-control" value="{{name}}">		
 	</div>
 
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
 		<label for="firstName">Firstname</label>
+		<span id="firstNameEmpty" style="display:none; color:red; float:right">Please, enter your firstname</span>
 		<input id="firstName" name="firstName" class="form-control" value="{{firstName}}">		
 	</div>
 
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
-		<label for="nickName">Nickname</label>	{% if error_nick %} {{error_nick}} {% endif %}
+		<label for="nickName">Nickname</label>	
+		{% if error_nick %} <span style="color:red; float:right"> {{error_nick}} </span> {% endif %}
+		<span id="nickNameEmpty" style="display:none; color:red; float:right">Please, enter a nickName</span>
 		<input id="nickName" name="nickName" class="form-control" value="{{nickName}}">		
 	</div>
 	
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
-		<label for="emailInput">Email address</label>	{% if error_email %} {{error_email}} {% endif %}
+		<label for="emailInput">Email address</label>	
+		{% if error_email %} <span style="color:red; float:right"> {{error_email}}</span> {% endif %}
+		<span id="mailEmpty" style="display:none; color:red; float:right">Please, enter your email address</span>
 		<input id="email" name="email" class="form-control" type="email" placeholder="Email" value="{{email}}">		
 	</div>
 	
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
-	{% endif %}		
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>	
+	{% endif %}	
 		<label for="passInput">Password</label>
+		<span id="emptyPass1" style="display:none; color:red; float:right">Please, enter a password</span>
 		<input id="passInput" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">		
 	</div>
 
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
 		<label for="passValidate">Enter the chosen password again</label>
+		<span id="emptyPass2" style="display:none; color:red; float:right">Please, confirm the password</span>
 		<input id="passValidate" name="passValidate" class="form-control" type="password" placeholder="Password" value="{{passValidate}}">		
 	</div>
 
 	
-	{% if error %}	<div class='form-group' style='display:block'>
-	{% else %}	<div class='form-group' style='display:none'>
+	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
+	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}		
 		<button id="submitSignUpBtn" type="submit" class="btn btn-primary">Sign Up !!</button>
 	</div>
@@ -67,14 +75,14 @@
 <script>
 $(document).ready(function(e){
 
-	console.log("executed");
+	console.log("executed sign up");
 
 	//sign Up Form management
 	var deploySignUpForm = document.getElementById('deploySignUpForm');
 	deploySignUpForm.onclick = function(){
 
 		//Show/hide all forms 
-		var signUpClass = document.getElementsByClassName('form-group');
+		var signUpClass = document.getElementsByClassName('form-group sign-up');
 		for(i=0; i<signUpClass.length; i++){
 			if(signUpClass[i].style.display !== 'none'){
 				signUpClass[i].style.display = 'none';

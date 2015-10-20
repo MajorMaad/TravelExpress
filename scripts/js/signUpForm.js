@@ -9,7 +9,7 @@ function validateEmail(email) {
 
 //Check for empty or non correct user inputs
 //return false if not correct
-function ensureNonEmpty(){
+function ensureSignUpNonEmpty(){
 	var correct = true;
 	var inputs = $("#signUpForm").find("input");
 
@@ -17,68 +17,95 @@ function ensureNonEmpty(){
 	//
 	for (i=0; i<inputs.length; i++){
 
-		//Optimization : skip password cases
-		//Skip submit button
-		if($(inputs[i]).attr('id') != "passInput" || $(inputs[i]).attr('id') != "passValidate"){
+		var wellFormed = true;
 
-			var wellFormed = true;
+		//check if inputs empty
+		if($(inputs[i]).val() == ""){
 
-			//Basic cases : name / firstname / nickname
-			if($(inputs[i]).val() == ""){
-				if ($(inputs[i]).attr('id') == "name"){
-					$(inputs[i]).attr('value', "Enter your name");
-				}
-
-				if ($(inputs[i]).attr('id') == "firstName"){
-					$(inputs[i]).attr('value', "Enter your firstname");
-				}
-
-				if ($(inputs[i]).attr('id') == "nickName"){
-					$(inputs[i]).attr('value', "Enter your nickname");
-				}									
-				wellFormed = false;								
-			}
-
-			//email case : the placeholder attribute configures the defautl text
-			if ($(inputs[i]).attr('id') == "email" && !validateEmail($(inputs[i]).val()) ){
-				wellFormed = false;
-			}
-
-			//Color the wrong input and Activate the on click behaviour
-			if(!wellFormed){
-				console.log("entry is not wellformed");
-				$(inputs[i]).css("background-color", "red");
+			//Name case
+			if ($(inputs[i]).attr('id') == "name"){
+				$(document.getElementById('nameEmpty')).show();
 				$(inputs[i]).click(function(e){
-					$(this).css("background-color", "transparent");
-					$(this).val('');
-					
+					$(document.getElementById('nameEmpty')).hide();				
 				});
 			}
 
-			//Ensure that the boolean is well instanciated
-			if(!wellFormed && correct){
-				correct = false;
+			//First name case
+			if ($(inputs[i]).attr('id') == "firstName"){
+				$(document.getElementById('firstNameEmpty')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('firstNameEmpty')).hide();				
+				});
 			}
+
+			//Nick name case
+			if ($(inputs[i]).attr('id') == "nickName"){
+				$(document.getElementById('nickNameEmpty')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('nickNameEmpty')).hide();				
+				});
+			}
+
+			//email case
+			if ($(inputs[i]).attr('id') == "email"){
+				$(document.getElementById('mailEmpty')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('mailEmpty')).hide();				
+				});
+			}
+
+			//Pass 1 case
+			if ($(inputs[i]).attr('id') == "passInput"){
+				$(document.getElementById('emptyPass1')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('emptyPass1')).hide();				
+				});
+			}
+
+			//Pass 2 case
+			if ($(inputs[i]).attr('id') == "passValidate"){
+				$(document.getElementById('emptyPass2')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('emptyPass2')).hide();				
+				});
+			}
+
+			wellFormed = false;								
 		}
+
+		//email case : check validity
+		if ($(inputs[i]).attr('id') == "email" && !validateEmail($(inputs[i]).val()) ){
+			$(document.getElementById('mailEmpty')).val('Email not correct')
+			$(document.getElementById('mailEmpty')).show();
+				$(inputs[i]).click(function(e){
+					$(document.getElementById('mailEmpty')).hide();				
+				});
+			wellFormed = false;
+		}
+
+		//Reset content when click if input was not correct
+		if(!wellFormed){
+			console.log("entry is not wellformed");
+			$(inputs[i]).click(function(e){
+				$(this).val('');					
+			});
+		}
+
+		//Ensure that the boolean is well instanciated
+		if(!wellFormed && correct){
+			correct = false;
+		}		
 	}
 	//end of loop
 
 	//Compare both passwords 
-	if ($("#passInput").val() != $("#passValidate").val()){
-		//Hilight and reset of passwords
-		$("#passInput").css("background-color", "red"); 
-		$("#passValidate").css("background-color", "red");
-		
-		$("#passInput").click(function(e){
-			$(this).css("background-color", "transparent");
-			$(this).val('');									
-		});
-
+	if ($("#passInput").val() != $("#passValidate").val()){		
+		//Highlight password validation
+		$(document.getElementById('emptyPass2')).val('password is not the same')
+		$(document.getElementById('emptyPass2')).show();
 		$("#passValidate").click(function(e){
-			$(this).css("background-color", "transparent");
-			$(this).val('');									
+			$(document.getElementById('emptyPass2')).hide();				
 		});
-
 		correct = false;
 	}
 

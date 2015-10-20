@@ -4,15 +4,22 @@ from string import letters
 import random
 import hashlib
 
+import logging
+
 
 
 def user_key(name = 'default'):
 	return db.Key.from_path('user', name)
 
-def make_pw_hash(name, pw):
-    salt = ''.join(random.choice(letters) for x in xrange(7))
-    h = hashlib.sha256(name + pw + salt).hexdigest()
-    return '%s,%s' % (salt, h)
+def make_pw_hash(nickName, pw, salt=None):
+	if not salt:
+		salt = ''.join(random.choice(letters) for x in xrange(7))
+	h = hashlib.sha256(nickName + pw + salt).hexdigest()
+	return '%s,%s' % (salt, h)
+
+def reverse_pw(nickName, password, hashed_pw):
+	salt = hashed_pw.split(',')[0]
+	return hashed_pw == make_pw_hash(nickName, password, salt)
 
 class User(db.Model):
 
@@ -55,6 +62,18 @@ class User(db.Model):
 					nickName = user_data['nickName'],
 					email = user_data['email'],
 					password = hash_pwd);
+
+	@classmethod
+	def logIn(cls, user_data, password, is_email=None):
+		user = None
+		if is_email:
+			user = cls.by_email(user_data)
+		else:
+			user = cls.by_nickName(user_data)
+
+		if user and reverse_pw(user.nickName, password, user.password):
+			return user
+
 
 
 

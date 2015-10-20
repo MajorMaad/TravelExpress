@@ -1,0 +1,71 @@
+<!-- inclusion of relatives functions -->
+<script type="text/javascript" src="/scripts/js/logInForm.js" ></script>
+
+<!-- Log In section : include jinja template to retrieve information from server if necessary-->
+<form id="logInForm" method="post" onsubmit="return submitLogInForm();" action="/logIn">
+
+
+
+	<button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
+
+	{% if error_login %} <br><span style="color:red; float:center">{{error_login}}</span><br> {% endif %}
+
+	<!-- Accept both nickname and email to log in -->
+	{% if error_login %}	<div class='form-group log-in' style='display:block'>
+	{% else %}	<div class='form-group log-in' style='display:none'>
+	{% endif %}	
+		<label for="userLogData">NickName of Email address</label> 
+		<span id="userLogDataEmpty" class="error-form" style="display:none; color:red; float:right">	Please, fill in this field</span>			
+		<input id="userLogData" name="userLogData" class="form-control" value="{{userLogData}}">
+	</div>
+
+	{% if error_login %}	<div class='form-group log-in' style='display:block'>
+	{% else %}	<div class='form-group log-in' style='display:none'>
+	{% endif %}	
+		<label for="password">Password</label>
+		<span id="passwordEmpty" class="error-form" style="display:none; color:red; float:right">Please, enter a password</span>	
+		<input id="password" name="password" class="form-control" type="password" placeholder="Password" value="{{password}}">		
+	</div>
+
+	{% if error_login %}	<div class='form-group log-in' style='display:block'>
+	{% else %}	<div class='form-group log-in' style='display:none'>
+	{% endif %}	
+		<button id="submitLogInBtn" type="submit" class="btn btn-primary">Log In !!</button>
+	</div>
+
+</form>
+
+<script>
+$(document).ready(function(e){
+
+	console.log("executed log in");
+
+	//sign Up Form management
+	var deployLogInForm = document.getElementById('deployLogInForm');
+	deployLogInForm.onclick = function(){
+
+		//Show/hide all content 
+		var LogInClass = document.getElementsByClassName('form-group log-in');
+		for(i=0; i<LogInClass.length; i++){
+			if(LogInClass[i].style.display !== 'none'){
+				LogInClass[i].style.display = 'none';
+				console.log("hide");
+			}
+			else{
+				LogInClass[i].style.display = 'block';
+				console.log("block !");
+			}
+		}
+
+		//Reset span visibility
+		var LogInSpan = document.getElementsByClassName('error-form');
+		for(i=0; i<LogInSpan.length; i++){
+			LogInSpan[i].style.display = 'none';
+		}
+
+		//Invert text of button
+		var textBtn = deployLogInForm.firstChild;
+		textBtn.data = textBtn.data == "Log In" ? "Close" : "Log In";
+	};
+});
+</script>

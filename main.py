@@ -114,7 +114,7 @@ class SignUp(MainHandler):
 			if 'error_email' in params:
 				error_email = params['error_email']
 
-			self.render('base.html', error = error, 
+			self.render('base.html',error_signup = error, 
 									name=params['name'],
 									firstName = params['firstName'],
 									nickName = params['nickName'],
@@ -130,11 +130,30 @@ class SignUp(MainHandler):
 			self.login(user)
 			self.response.out.write('no error : User created')
 
+class LogIn(MainHandler):
+
+	def post(self):
+		self.response.out.write('log in post\n')
+
+		self.user_data = self.request.get('userLogData')
+		self.is_email = self.request.get('is_email')
+		self.password = self.request.get('password')
+
+		#Request a user according to these informations
+		user = User.logIn(self.user_data, self.password, is_email=self.is_email)
+		if user:
+			self.response.out.write("User correctly retrived from database")
+		else:
+			self.render('base.html', error_login = "The given informations are not correct")
+
+
+
 
 
 
 	
 
 app = webapp2.WSGIApplication([('/', MainHandler),
-								('/signUp', SignUp)],
+								('/signUp', SignUp),
+								('/logIn', LogIn)],
 								debug=True)
