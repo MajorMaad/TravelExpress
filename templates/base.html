@@ -25,47 +25,43 @@
 	
 
 	<!-- Temporary banner -->
-	<div id="banner" class="container-fluid" >
-		<h1>Travel Express</h1>
+	<div id="banner" class="page-header" >
+		<h1>Travel Express <small> Travel where ever you want </small></h1>
 	</div>
 
-
-	<!-- Sign Up / Log In section -->
-	<div class="jumbotron">
-		<div id="jumpInSection" class="container">
-			<p>If you want to benefit of our website, you have to log in =/ </p>
-			<p>If you don't have any account, you can always create one =D </p>
-
-
-
-			<div class="row">
-				<div class="col-md-6">
-					<!-- Sign Up template -->
-					{% include "signUpForm.html" with context %}
+	{% if user %}
+		<!-- Nav bar -->
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="/">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
 				</div>
-
-
-				<div class="col-md-6">
-					<!-- log in template -->
-					{% include "logInForm.html" with context %}
-				</div>
-
 			</div>
-			
-			
+		</nav>
 
-			
+	{% else %}
+		<!-- Sign Up / Log In section -->	
+		<div class="jumbotron">
+			<div id="jumpInSection" class="container">
+				<p>If you want to benefit of our website, you have to log in =/ </p>
+				<p>If you don't have any account, you can always create one =D </p>
+				<div class="row">
+					<div class="col-md-6">
+						<!-- Sign Up template -->
+						{% include "signUpForm.html" with context %}
+					</div>
+					<div class="col-md-6">
+						<!-- log in template -->
+						{% include "logInForm.html" with context %}
+					</div>
 
-
-			<p> Choice is yours </p>
-
-
-
-
-
-
+				</div>
+				<p> Choice is yours </p>
+			</div>
 		</div>
-	</div>
+	{% endif %}
 
 
 
