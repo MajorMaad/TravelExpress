@@ -3,10 +3,29 @@ body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
 
-    width: 800px;
+    width: 80%;
     margin: 0 auto;
     padding: 10px;
     color: #333;
+}
+
+.jumbotron {
+    border-radius: 6px;
+    text-align: center;
+}
+
+.btn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    font-size: 20px;
+    height: 50px;
+    width: 150px;
+}
+
+#banner {
+    margin-bottom: 20px;
 }
 
 .login-area {

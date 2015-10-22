@@ -33,7 +33,7 @@ def render_str(template, **params):
 	return t.render(params)
 
 
-#Import des sources 
+#Import des sources
 from src.user import *
 
 
@@ -59,7 +59,7 @@ class MainHandler(webapp2.RequestHandler):
 		self.response.headers.add_header(
 			'Set-Cookie',
 			'%s=%s; Path=/' % (name, cookie_val))
-	
+
 	def make_secure_val(self, val):
 		return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
@@ -105,7 +105,7 @@ class SignUp(MainHandler):
 			params['error_email'] = "Sorry, this email address is already used."
 			error = True
 
-		if error:			
+		if error:
 			error_nick = None
 			error_email = None
 
@@ -114,14 +114,14 @@ class SignUp(MainHandler):
 			if 'error_email' in params:
 				error_email = params['error_email']
 
-			self.render('base.html',error_signup = error, 
+			self.render('base.html',error_signup = error,
 									name=params['name'],
 									firstName = params['firstName'],
 									nickName = params['nickName'],
 									email = params['email'],
 									passBasic = params['password'],
 									passValidate = self.passValidate,
-									error_nick=error_nick, 
+									error_nick=error_nick,
 									error_email=error_email)
 
 		else:
@@ -151,7 +151,7 @@ class LogIn(MainHandler):
 
 
 
-	
+
 
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),

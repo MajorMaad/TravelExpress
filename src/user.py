@@ -29,7 +29,7 @@ class User(db.Model):
 	nickName = db.StringProperty(required = True)
 	email = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
-	
+
 
 	@classmethod
 	def by_id(cls, uid):
@@ -56,7 +56,7 @@ class User(db.Model):
 		#Hash the user password :
 		hash_pwd = make_pw_hash(user_data['nickName'], user_data['password'])
 		#Return an instance of user
-		return User(parent = user_key(), 
+		return User(parent = user_key(),
 					name = user_data['name'],
 					firstName = user_data['firstName'],
 					nickName = user_data['nickName'],

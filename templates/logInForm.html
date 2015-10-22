@@ -13,23 +13,23 @@
 	<!-- Accept both nickname and email to log in -->
 	{% if error_login %}	<div class='form-group log-in' style='display:block'>
 	{% else %}	<div class='form-group log-in' style='display:none'>
-	{% endif %}	
-		<label for="userLogData">NickName of Email address</label> 
-		<span id="userLogDataEmpty" class="error-form" style="display:none; color:red; float:right">	Please, fill in this field</span>			
+	{% endif %}
+		<label for="userLogData">NickName of Email address</label>
+		<span id="userLogDataEmpty" class="error-form" style="display:none; color:red; float:right">	Please, fill in this field</span>
 		<input id="userLogData" name="userLogData" class="form-control" value="{{userLogData}}">
 	</div>
 
 	{% if error_login %}	<div class='form-group log-in' style='display:block'>
 	{% else %}	<div class='form-group log-in' style='display:none'>
-	{% endif %}	
+	{% endif %}
 		<label for="password">Password</label>
-		<span id="passwordEmpty" class="error-form" style="display:none; color:red; float:right">Please, enter a password</span>	
-		<input id="password" name="password" class="form-control" type="password" placeholder="Password" value="{{password}}">		
+		<span id="passwordEmpty" class="error-form" style="display:none; color:red; float:right">Please, enter a password</span>
+		<input id="password" name="password" class="form-control" type="password" placeholder="Password" value="{{password}}">
 	</div>
 
 	{% if error_login %}	<div class='form-group log-in' style='display:block'>
 	{% else %}	<div class='form-group log-in' style='display:none'>
-	{% endif %}	
+	{% endif %}
 		<button id="submitLogInBtn" type="submit" class="btn btn-primary">Log In !!</button>
 	</div>
 
@@ -44,7 +44,7 @@ $(document).ready(function(e){
 	var deployLogInForm = document.getElementById('deployLogInForm');
 	deployLogInForm.onclick = function(){
 
-		//Show/hide all content 
+		//Show/hide all content
 		var LogInClass = document.getElementsByClassName('form-group log-in');
 		for(i=0; i<LogInClass.length; i++){
 			if(LogInClass[i].style.display !== 'none'){
