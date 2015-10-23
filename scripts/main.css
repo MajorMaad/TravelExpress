@@ -24,6 +24,18 @@ body {
     width: 150px;
 }
 
+#quickLinks {
+    margin-top: 30px;
+}
+
+#quickLinks .thumbnail {
+    display: block;
+    text-align: center;
+    margin: auto;
+    width: 200px;
+    margin-bottom: 30px;
+}
+
 #banner {
     margin-bottom: 20px;
 }
