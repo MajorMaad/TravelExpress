@@ -94,6 +94,12 @@ class MainHandler(webapp2.RequestHandler):
 		self.redirect('/')
 
 
+	#Log out th euser via a reset of the cookie
+	def doExit(self):
+		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+		self.redirect('/')
+
+
 
 
 #This class handle the registration of a new user
@@ -101,7 +107,7 @@ class MainHandler(webapp2.RequestHandler):
 class SignUp(MainHandler):
 
 	def get(self):
-		self.render('signUpForm.html')
+		self.redirect('/')
 
 	def post(self):
 		self.name = self.request.get('name')
@@ -133,7 +139,7 @@ class SignUp(MainHandler):
 									email = self.email,
 									passBasic = self.passBasic,
 									passValidate = self.passValidate,
-									error_nick = error_nick,
+									error_nick = error_nickname,
 									error_email = error_email)
 
 		#Save the new user, log it and rerender the base.html
@@ -145,13 +151,16 @@ class SignUp(MainHandler):
 
 class LogIn(MainHandler):
 
+	def get(self):
+		self.redirect('/')
+
 	def post(self):
 		self.user_data = self.request.get('userLogData')
-		self.is_email = self.request.get('is_email')
 		self.password = self.request.get('password')
+		self.is_email = self.request.get('is_email')
 
 		#Request a user according to these informations
-		user = User.logIn(self.user_data, self.password, is_email=self.is_email)
+		user = User.logIn(self.user_data, self.password, self.is_email)
 
 		if user:
 			#Log user and rerender the base.html
@@ -159,14 +168,13 @@ class LogIn(MainHandler):
 
 		else:
 			#Render same page for user correction
-			self.render('base.html', error_login = "The given informations are not correct")
+			self.render('base.html', error_login = "The given informations are not correct ...")
 
 
 class LogOut(MainHandler):
 
 	def get(self):
-		self.response.delete_cookie('user_id')
-		self.redirect('/')
+		self.doExit()
 
 
 
