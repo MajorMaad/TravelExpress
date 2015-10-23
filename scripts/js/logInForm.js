@@ -57,10 +57,10 @@ function submitLogInForm(){
 		var userLogData = $(document.getElementById('userLogData')).val();
 		is_email = validateEmail(userLogData)
 		if (is_email){
-			document.getElementById('logInForm').innerHTML = '<input type="hidden" name="is_email">';
+			$('<input type="hidden" id="is_email" name="is_email" value="True">').insertAfter($("#deployLogInForm"));			
 		}
 
-		console.log("data given : "+userLogData);
+		console.log("data given : "+$(document.getElementById('userLogData')).val());
 		return true;
 	}
 	return false;

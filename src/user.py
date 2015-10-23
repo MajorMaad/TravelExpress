@@ -64,7 +64,7 @@ class User(db.Model):
 					password = hash_pwd);
 
 	@classmethod
-	def logIn(cls, user_data, password, is_email=None):
+	def logIn(cls, user_data, password, is_email):
 		user = None
 		if is_email:
 			user = cls.by_email(user_data)
