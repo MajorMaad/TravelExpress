@@ -162,6 +162,11 @@ class LogIn(MainHandler):
 			self.render('base.html', error_login = "The given informations are not correct")
 
 
+class LogOut(MainHandler):
+
+	def get(self):
+		self.response.delete_cookie('user_id')
+		self.redirect('/')
 
 
 
@@ -170,5 +175,6 @@ class LogIn(MainHandler):
 
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
-								('/logIn', LogIn)],
+								('/logIn', LogIn),
+								('/logOut', LogOut)],
 								debug=True)
