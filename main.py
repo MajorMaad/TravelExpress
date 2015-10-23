@@ -94,6 +94,12 @@ class MainHandler(webapp2.RequestHandler):
 		self.redirect('/')
 
 
+	#Log out th euser via a reset of the cookie
+	def doExit(self):
+		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+		self.redirect('/')
+
+
 
 
 #This class handle the registration of a new user
@@ -165,6 +171,11 @@ class LogIn(MainHandler):
 			self.render('base.html', error_login = "The given informations are not correct ...")
 
 
+class LogOut(MainHandler):
+
+	def get(self):
+		self.doExit()
+
 
 
 
@@ -173,5 +184,6 @@ class LogIn(MainHandler):
 
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
-								('/logIn', LogIn)],
+								('/logIn', LogIn),
+								('/logOut', LogOut)],
 								debug=True)
