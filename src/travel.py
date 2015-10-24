@@ -27,7 +27,7 @@ class Travel(db.Model):
 	# Show my travels (traveler)
 	@classmethod
 	def by_passenger(cls, user_id):
-		return Travel.all().filter('passengers_id =', user_id).get()
+		return Travel.all().filter('passengers_id =', user_id).order('-datetime_departure').get()
 
 	# Look for a travels
 	@classmethod
@@ -49,12 +49,12 @@ class Travel(db.Model):
 
 		# TODO : gérer préférences
 
-		return query.get()
+		return query.order('-datetime_departure').get()
 
 	# Show my travel (driver)
 	@classmethod
 	def by_author(cls, user_id):
-		return Travel.all().filter('user_id =', user_id).get()
+		return Travel.all().filter('user_id =', user_id).order('-datetime_departure').get()
 
 	# Add a travel
 	@classmethod
@@ -75,7 +75,7 @@ class Travel(db.Model):
 
 	# Modify a travel
 	@classmethod
-	def modify_travel(cls, travel_id, departure = None, arrival = None, places_remaining = None, date_min = None, price_max = None, preferences = None):
+	def modify_travel(cls, travel_id, departure = None, arrival = None, places_remaining = None, date_min = None, price_max = None):
 		travel = cls.by_id(travel_id)
 
 		if departure is not None:
