@@ -16,6 +16,7 @@
 
 	<!-- Our CSS -->
 	<link rel="stylesheet" type="text/css" href="../scripts/main.css">
+	<link rel="stylesheet" type="text/css" href="../scripts/driverTravels.css">
 
 
 	<title>TravelExpress</title>
@@ -73,19 +74,68 @@
 
 		</ul>
 
-		<!-- Success or error banner -->
-		{% if travel_ok == True %}
-			<div class="alert alert-success" role="alert">
-		    	<strong>Done !</strong> Travel successfully added.
-		    </div>
-		{% elif travel_ok == False %}
-			<div class="alert alert-danger" role="alert">
-		    	<strong>Oups !</strong> There has been an error.
-		    </div>
-		{% endif %}
-
 
 		<!-- Body -->
+
+		{% if travels.get() == None %}
+
+			<div class="alert alert-warning" role="alert">
+				<strong>Warning !</strong> You do not have any travels set yet. <a href="/addTravel">Add one</a>
+			</div>
+
+		{% endif %}
+
+		<div id="driverTravels" class="container">
+		{% for travel in travels %}
+
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-md-8">
+							<h3 class="panel-title"><strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong> {{ travel.departure|capitalize }} - {{ travel.arrival|capitalize }}</h3>
+						</div>
+
+						<div class="btn-group">
+								<button type="button" class="btn btn-warning">
+						        	<span class="glyphicon glyphicon-edit"></span>
+						        </button>
+
+								<button type="button" class="btn btn-danger">
+						        	<span class="glyphicon glyphicon-trash"></span>
+						        </button>
+				        </div>
+
+			        </div>
+			    </div>
+
+				<div class="panel-body">
+					<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
+					<div class="inline_panel">
+						<p><strong>{{ travel.price }}$</strong></p>
+
+						{% if travel.animal_ok %}
+							<img src="../scripts/img/animal.jpg" alt="Animal OK">
+						{% else %}
+							<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
+						{% endif %}
+
+						{% if travel.smoking_ok %}
+							<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
+						{% else %}
+							<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
+						{% endif %}
+
+						{% if travel.big_luggage_ok %}
+							<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
+						{% else %}
+							<img src="../scripts/img/small_bag.jpg" alt="Small bag">
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+		{% endfor %}
+		</div>
 
 
 	{% endif %}

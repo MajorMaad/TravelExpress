@@ -28,7 +28,7 @@ class Travel(db.Model):
 	# Show my travels (traveler)
 	@classmethod
 	def by_passenger(cls, user_id):
-		return Travel.all().filter('passengers_id =', user_id).order('-datetime_departure').get()
+		return Travel.all().filter('passengers_id =', user_id).order('datetime_departure')
 
 	# Look for a travels
 	@classmethod
@@ -48,12 +48,12 @@ class Travel(db.Model):
 		if price_max is not None:
 			query.filter('price <=', price_max)
 
-		return query.order('-datetime_departure').get()
+		return query.order('datetime_departure')
 
 	# Show my travel (driver)
 	@classmethod
 	def by_author(cls, user_id):
-		return Travel.all().filter('user_id =', user_id).order('-datetime_departure').get()
+		return Travel.all().filter('user_id =', user_id).order('datetime_departure')
 
 	# Add a travel
 	@classmethod

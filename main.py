@@ -281,7 +281,8 @@ class AddTravel(MainHandler):
 class ShowDriverTravels(MainHandler):
 
 	def get(self):
-		self.render('driverTravels.html', user = self.user)
+		travels = Travel.by_author(self.user.key().id())
+		self.render('driverTravels.html', user = self.user, travels = travels)
 
 
 
