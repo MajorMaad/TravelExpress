@@ -16,16 +16,16 @@ label span {
 	font-weight: 500;
 }
 
-#price {
+#price, #price_modify {
 	width: 100px;
 	display: inline;
 }
 
-#seats {
+#seats, #seats_modify {
 	width: 100px;
 }
 
-#preferences label {
+#preferences label, #preferences_modify label {
 	text-align: center;
 }
 

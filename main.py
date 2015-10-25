@@ -293,6 +293,109 @@ class DeleteTravel(MainHandler):
 		self.redirect('/')
 
 
+class ModifyTravel(MainHandler):
+
+	def get(self):
+		self.travel_id = int(self.request.get('id'))
+		travel = Travel.by_id(self.travel_id)
+		self.render('modifyTravel.html', user = self.user, travel = travel)
+
+	def post(self):
+		error = False
+		error_samedeparture = ""
+		error_datetime = ""
+		error_price = ""
+
+		self.travel_id = int(self.request.get('travel_id'))
+		self.departure = self.request.get('departure')
+		self.arrival = self.request.get('arrival')
+		self.departure_date = self.request.get('departure-date')
+		self.departure_hour = self.request.get('departure-hour')
+		self.departure_minutes = self.request.get('departure-minutes')
+		self.seats = self.request.get('seats')
+		self.price = self.request.get('price')
+		self.animals = self.request.get('animals')
+		self.smoking = self.request.get('smoking')
+		self.luggage = self.request.get('luggage')
+
+		if self.departure == self.arrival:
+			error_samedeparture = "cannot be the same as departure"
+			error = True
+
+		date_tab = self.departure_date.split('-')
+		try:
+			year = int(date_tab[0])
+			month = int(date_tab[1])
+			day = int(date_tab[2])
+		except ValueError:
+			year = 2000
+			month = 1
+			day = 1
+
+		hour = int(self.departure_hour)
+		minutes = int(self.departure_minutes)
+
+		departure_datetime = datetime.datetime(year, month, day, hour, minutes)
+		now = datetime.datetime.now()
+
+		if departure_datetime <= now:
+			error_datetime = "Wrong Date / Time"
+			error = True
+
+		try:
+			self.price = int(self.price)
+		except ValueError:
+			error_price = "Wrong price value"
+			error = True
+
+		if self.price <= 0 or self.price > 10000:
+			error_price = "Wrong price value"
+			error = True
+
+		if self.animals == 'ok':
+			animal_ok = True
+		else:
+			animal_ok = False
+
+		if self.smoking == 'ok':
+			smoking_ok = True
+		else:
+			smoking_ok = False
+
+		if self.luggage == 'suitcase':
+			big_luggage_ok = True
+		else:
+			big_luggage_ok = False
+
+		if error:
+			self.render('modifyTravel.html',
+				user = self.user,
+				travel_ok = False,
+				error = error,
+				error_samedeparture = error_samedeparture,
+				error_datetime = error_datetime,
+				error_price = error_price)
+
+		else:
+			travel_data = {
+				'user_id': self.user.key().id(),
+				'departure': self.departure,
+				'arrival': self.arrival,
+				'places_number': int(self.seats),
+				'places_remaining': int(self.seats),
+				'datetime_departure': departure_datetime,
+				'price': self.price,
+				'animal': animal_ok,
+				'smoking': smoking_ok,
+				'luggage': big_luggage_ok
+			}
+
+			travel = Travel.modify_travel(self.travel_id, travel_data)
+			self.render('modifyTravel.html', user = self.user, travel = Travel.by_id(self.travel_id), travel_ok = True)
+
+
+
+
 
 
 
@@ -302,5 +405,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/logOut', LogOut),
 								('/addTravel', AddTravel),
 								('/driverTravels', ShowDriverTravels),
-								('/deleteTravel', DeleteTravel)],
+								('/deleteTravel', DeleteTravel),
+								('/modifyTravel', ModifyTravel)],
 								debug=True)
