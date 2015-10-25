@@ -28,7 +28,7 @@ class Travel(db.Model):
 	# Show my travels (traveler)
 	@classmethod
 	def by_passenger(cls, user_id):
-		return Travel.all().filter('passengers_id =', user_id).order('-datetime_departure').get()
+		return Travel.all().filter('passengers_id =', user_id).order('datetime_departure')
 
 	# Look for a travels
 	@classmethod
@@ -48,12 +48,12 @@ class Travel(db.Model):
 		if price_max is not None:
 			query.filter('price <=', price_max)
 
-		return query.order('-datetime_departure').get()
+		return query.order('datetime_departure')
 
 	# Show my travel (driver)
 	@classmethod
 	def by_author(cls, user_id):
-		return Travel.all().filter('user_id =', user_id).order('-datetime_departure').get()
+		return Travel.all().filter('user_id =', user_id).order('datetime_departure')
 
 	# Add a travel
 	@classmethod
@@ -76,23 +76,18 @@ class Travel(db.Model):
 
 	# Modify a travel
 	@classmethod
-	def modify_travel(cls, travel_id, departure = None, arrival = None, places_remaining = None, date_min = None, price_max = None):
+	def modify_travel(cls, travel_id, travel_data):
 		travel = cls.by_id(travel_id)
 
-		if departure is not None:
-			travel.departure = departure
-
-		if arrival is not None:
-			travel.arrival = arrival
-
-		if places_number is not None:
-			travel.places_number = places_number
-
-		if datetime_departure is not None:
-			travel.datetime_departure = datetime_departure
-
-		if price is not None:
-			travel.price = price
+		travel.departure = travel_data['departure']
+		travel.arrival = travel_data['arrival']
+		travel.places_number = travel_data['places_number']
+		travel.places_remaining = travel_data['places_number']
+		travel.datetime_departure = travel_data['datetime_departure']
+		travel.price = travel_data['price']
+		travel.animal_ok = travel_data['animal']
+		travel.smoking_ok = travel_data['smoking']
+		travel.big_luggage_ok = travel_data['luggage']
 
 		travel.put()
 		return travel
