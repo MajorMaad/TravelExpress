@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+	<!-- bootstrap JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- Our CSS -->
+	<link rel="stylesheet" type="text/css" href="../scripts/main.css">
+	<link rel="stylesheet" type="text/css" href="../scripts/addTravel.css">
+
+
+	<title>TravelExpress</title>
+
+
+</head>
+
+<body>
+
+	<!-- Temporary banner -->
+	<div id="banner" class="page-header" >
+		<h1>Travel Express <small> Travel where ever you want </small></h1>
+	</div>
+
+	{% if user %}
+
+		<!-- Nav bar -->
+		<ul class="nav nav-tabs nav-justified">
+			<li>
+				<a href="/">
+					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					Home
+				</a>
+			</li>
+
+			<li class="dropdown active">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					<span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>
+					Traveler <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="#">Show my travels</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#">Look for a travel</a></li>
+					<li role="separator" class="divider"></li>
+				</ul>
+			</li>
+
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					<span class="glyphicon glyphicon-road" aria-hidden="true"></span>
+					Driver <span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a href="#">Show my travels</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="/addTravel">Add a travel</a></li>
+					<li><a href="#">Modify a travel</a></li>
+					<li><a href="#">Remove a travel</a></li>
+					<li role="separator" class="divider"></li>
+
+				</ul>
+			</li>
+
+			<li>
+				<a href="/logOut">
+					<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+					Log Out
+				</a>
+			</li>
+
+		</ul>
+
+		<!-- Success or error banner -->
+		{% if travel_ok == True %}
+			<div class="alert alert-success" role="alert">
+		    	<strong>Done !</strong> Travel successfully added.
+		    </div>
+		{% elif travel_ok == False %}
+			<div class="alert alert-danger" role="alert">
+		    	<strong>Oups !</strong> There has been an error.
+		    </div>
+		{% endif %}
+
+
+		<!-- Body -->
+		<div class="jumbotron">
+
+			<h1 class="text-primary">Add a travel</h1>
+
+			<form role="form" method="post" action="/addTravel">
+
+				<div class="form-group col-md-6">
+					<label for="departure">Departure :</label>
+					<select class="form-control" id="departure" name="departure">
+					    <option value="saguenay">Saguenay, QC</option>
+					    <option value="quebec">Québec, QC</option>
+						<option value="montreal">Montréal, QC</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-6">
+					<label for="arrival">Arrival :</label>
+					{% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}
+					<select class="form-control" id="arrival" name="arrival">
+					    <option value="saguenay">Saguenay, QC</option>
+					    <option value="quebec">Québec, QC</option>
+						<option value="montreal">Montréal, QC</option>
+					</select>
+				</div>
+
+				<div class="form-group col-md-4">
+		        	<label for="departure-date">Departure date</label>
+		        	{% if error_datetime %}<span style="color:red;"> {{ error_datetime }}</span>{% endif %}
+		        	<input id="departure-date" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date"/>
+		        </div>
+
+		        <div class="form-group col-md-4">
+		        	<label for="departure-hour">Hour</label>
+		        	<select class="form-control" id="departure-hour" name="departure-hour">
+		        		{% for i in range(24) %}
+
+		        			{% if i < 10 %}
+		        				<option value="{{ i }}">{{ '0' + i|string + ' h' }}</option>
+		        			{% else %}
+		        				<option value="{{ i }}">{{ i|string + ' h' }}</option>
+		        			{% endif %}
+
+		        		{% endfor %}
+		        	</select>
+		        </div>
+
+		        <div class="form-group col-md-4">
+		        	<label for="departure-minutes">Minutes</label>
+		        	<select class="form-control" id="departure-minutes" name="departure-minutes">
+		        		{% for i in range(60) %}
+
+		        			{% if i < 10 %}
+		        				<option value="{{ i }}">{{ '0' + i|string }}</option>
+		        			{% else %}
+		        				<option value="{{ i }}">{{ i|string }}</option>
+		        			{% endif %}
+
+		        		{% endfor %}
+		        	</select>
+		        </div>
+
+		        <div class="form-group col-md-6">
+		        	<label for="seats">Seats available :</label>
+					<select class="form-control" id="seats" name="seats">
+					    <option value="1">1</option>
+					    <option value="2">2</option>
+					    <option value="3">3</option>
+					    <option value="4">4</option>
+					    <option value="5">5</option>
+					</select>
+		        </div>
+
+		        <div class="form-group col-md-6">
+		        	<label for="price">Price :</label>
+		        	{% if error_price %}<span style="color:red;"> {{ error_price }}</span>{% endif %}
+		        	<input class="form-control" id="price" type="number" maxlength="3" name="price">
+		        	$
+		        </div>
+
+		        <!-- Preferences -->
+		        <div id="preferences">
+
+			        <div class="form-group col-md-12">
+			        	<h3>Animals</h3>
+			        	<label class="radio-inline col-md-5"><input type="radio" name="animals" value="ok">Authorized  <img src="../scripts/img/animal.jpg"></label>
+						<label class="radio-inline col-md-5"><input type="radio" name="animals" value="nok" checked>Prohibited  <img src="../scripts/img/no_animal.jpg"></label>
+			        </div>
+
+			        <div class="form-group col-md-12">
+			        	<h3>Smoking</h3>
+			        	<label class="radio-inline col-md-5"><input type="radio" name="smoking" value="ok">Authorized  <img src="../scripts/img/smoking.jpg"></label>
+						<label class="radio-inline col-md-5"><input type="radio" name="smoking" value="nok" checked>Prohibited  <img src="../scripts/img/no_smoking.jpg"></label>
+			        </div>
+
+			        <div class="form-group col-md-12">
+			        	<h3>Luggage space</h3>
+			        	<label class="radio-inline col-md-5"><input type="radio" name="luggage" value="sm_bag" checked>Small bag  <img src="../scripts/img/small_bag.jpg"></label>
+						<label class="radio-inline col-md-5"><input type="radio" name="luggage" value="suitcase">Suitcase  <img src="../scripts/img/suitcase.jpg"></label>
+			        </div>
+
+			     </div>
+
+
+				<button type="submit" class="btn btn-success">Submit</button>
+
+			</form>
+
+		</div>
+
+	{% endif %}
+
+</body>
+
+</html>

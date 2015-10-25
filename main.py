@@ -19,6 +19,7 @@ import os
 import logging
 import webapp2
 import hmac
+import datetime
 
 
 # Template Jinja2 stuff :
@@ -35,6 +36,7 @@ def render_str(template, **params):
 
 #Import des sources
 from src.user import *
+from src.travel import *
 
 
 secret = 'thisIsReallyABigSecret'
@@ -177,6 +179,104 @@ class LogOut(MainHandler):
 		self.doExit()
 
 
+class AddTravel(MainHandler):
+
+	def get(self):
+		self.render('addTravel.html', user = self.user)
+
+	def post(self):
+		error = False
+		error_samedeparture = ""
+		error_datetime = ""
+		error_price = ""
+
+		self.departure = self.request.get('departure')
+		self.arrival = self.request.get('arrival')
+		self.departure_date = self.request.get('departure-date')
+		self.departure_hour = self.request.get('departure-hour')
+		self.departure_minutes = self.request.get('departure-minutes')
+		self.seats = self.request.get('seats')
+		self.price = self.request.get('price')
+		self.animals = self.request.get('animals')
+		self.smoking = self.request.get('smoking')
+		self.luggage = self.request.get('luggage')
+
+		if self.departure == self.arrival:
+			error_samedeparture = "Arrival cannot be the same as departure"
+			error = True
+
+		date_tab = self.departure_date.split('-')
+		try:
+			year = int(date_tab[0])
+			month = int(date_tab[1])
+			day = int(date_tab[2])
+		except ValueError:
+			year = 2000
+			month = 1
+			day = 1
+
+		hour = int(self.departure_hour)
+		minutes = int(self.departure_minutes)
+
+		departure_datetime = datetime.datetime(year, month, day, hour, minutes)
+		now = datetime.datetime.now()
+
+		if departure_datetime <= now:
+			error_datetime = "Time travel is not possible yet"
+			error = True
+
+		try:
+			self.price = int(self.price)
+		except ValueError:
+			error_price = "Wrong price value"
+			error = True
+
+		if self.price <= 0 or self.price > 10000:
+			error_price = "Wrong price value"
+			error = True
+
+		if self.animals == 'ok':
+			animal_ok = True
+		else:
+			animal_ok = False
+
+		if self.animals == 'ok':
+			smoking_ok = True
+		else:
+			smoking_ok = False
+
+		if self.animals == 'suitcase':
+			big_luggage_ok = True
+		else:
+			big_luggage_ok = False
+
+		if error:
+			self.render('addTravel.html',
+				user = self.user,
+				travel_ok = False,
+				error = error,
+				error_samedeparture = error_samedeparture,
+				error_datetime = error_datetime,
+				error_price = error_price)
+
+		else:
+			travel_data = {
+				'user_id': self.user.key().id(),
+				'departure': self.departure,
+				'arrival': self.arrival,
+				'places_number': int(self.seats),
+				'places_remaining': int(self.seats),
+				'datetime_departure': departure_datetime,
+				'price': self.price,
+				'animal': animal_ok,
+				'smoking': smoking_ok,
+				'luggage': big_luggage_ok
+			}
+
+			travel = Travel.add_travel(travel_data)
+			self.render('addTravel.html', user = self.user, travel_ok = True)
+
+
 
 
 
@@ -184,5 +284,6 @@ class LogOut(MainHandler):
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
 								('/logIn', LogIn),
-								('/logOut', LogOut)],
+								('/logOut', LogOut),
+								('/addTravel', AddTravel)],
 								debug=True)

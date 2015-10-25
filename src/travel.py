@@ -1,6 +1,5 @@
 # Class describing a travel publication
 from google.appengine.ext import db
-from user import *
 import datetime
 
 
@@ -17,12 +16,14 @@ class Travel(db.Model):
 	places_remaining = db.IntegerProperty(required = True)
 	datetime_departure = db.DateTimeProperty(required = True)
 	price = db.IntegerProperty(required = True)
+	animal_ok = db.BooleanProperty(required = True)
+	smoking_ok = db.BooleanProperty(required = True)
+	big_luggage_ok = db.BooleanProperty(required = True)
 	passengers_id = db.ListProperty(int)
-	# preferences_id = db.ListProperty(int)
 
 	@classmethod
-	def by_id(cls, uid):
-		return Travel.get_by_id(uid, parent = travel_key())
+	def by_id(cls, tid):
+		return Travel.get_by_id(tid, parent = travel_key())
 
 	# Show my travels (traveler)
 	@classmethod
@@ -31,7 +32,7 @@ class Travel(db.Model):
 
 	# Look for a travels
 	@classmethod
-	def by_filter(cls, departure = None, arrival = None, places_remaining = None, date_min = datetime.datetime.now(), price_max = None, preferences = None):
+	def by_filter(cls, departure = None, arrival = None, places_remaining = None, date_min = datetime.datetime.now(), price_max = None):
 		query = Travel.all()
 		query.filter('datetime_departure >=', date_min)
 
@@ -47,8 +48,6 @@ class Travel(db.Model):
 		if price_max is not None:
 			query.filter('price <=', price_max)
 
-		# TODO : gérer préférences
-
 		return query.order('-datetime_departure').get()
 
 	# Show my travel (driver)
@@ -61,14 +60,16 @@ class Travel(db.Model):
 	def add_travel(cls, travel_data):
 		travel = None
 		travel = Travel(parent = travel_key(),
-						user_id = travel_data['user_id']
+						user_id = travel_data['user_id'],
 						departure = travel_data['departure'],
 						arrival = travel_data['arrival'],
 						places_number = travel_data['places_number'],
 						places_remaining = travel_data['places_number'],
 						datetime_departure = travel_data['datetime_departure'],
 						price = travel_data['price'],
-						passengers_id = None)
+						animal_ok = travel_data['animal'],
+						smoking_ok = travel_data['smoking'],
+						big_luggage_ok = travel_data['luggage'])
 
 		travel.put()
 		return travel

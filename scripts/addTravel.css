@@ -1,0 +1,39 @@
+.jumbotron {
+	margin-top: 20px;
+	padding: 20px;
+}
+
+.jumbotron form {
+	text-align: left;
+}
+
+.jumbotron .form-control {
+	width: 80%;
+}
+
+#price {
+	width: 100px;
+	display: inline;
+}
+
+#seats {
+	width: 100px;
+}
+
+#preferences label {
+	text-align: center;
+}
+
+h3 {
+	font-size: 20px;
+	font-weight: 700;
+}
+
+img {
+	height: 50px;
+	width: 50px;
+}
+
+.alert {
+	margin-top: 20px;
+}
