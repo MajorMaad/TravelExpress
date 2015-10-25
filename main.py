@@ -278,6 +278,10 @@ class AddTravel(MainHandler):
 
 
 
+class ShowDriverTravels(MainHandler):
+
+	def get(self):
+		self.render('driverTravels.html', user = self.user)
 
 
 
@@ -285,5 +289,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
 								('/logIn', LogIn),
 								('/logOut', LogOut),
-								('/addTravel', AddTravel)],
+								('/addTravel', AddTravel),
+								('/driverTravels', ShowDriverTravels)],
 								debug=True)
