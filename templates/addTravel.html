@@ -97,7 +97,7 @@
 
 			<h1 class="text-primary">Add a travel</h1>
 
-			<form role="form" method="post" action="/addTravel">
+			<form role="form" method="post" action="/addTravel" onsubmit="return confirm('Do you really want to submit this travel ?');">
 
 				<div class="form-group col-md-6">
 					<label for="departure">Departure :</label>
@@ -109,8 +109,7 @@
 				</div>
 
 				<div class="form-group col-md-6">
-					<label for="arrival">Arrival :</label>
-					{% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}
+					<label for="arrival">Arrival : {% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}</label>
 					<select class="form-control" id="arrival" name="arrival">
 					    <option value="saguenay">Saguenay, QC</option>
 					    <option value="quebec">Québec, QC</option>
@@ -119,8 +118,7 @@
 				</div>
 
 				<div class="form-group col-md-4">
-		        	<label for="departure-date">Departure date</label>
-		        	{% if error_datetime %}<span style="color:red;"> {{ error_datetime }}</span>{% endif %}
+		        	<label for="departure-date">Departure date {% if error_datetime %}<span style="color:red;"> {{ error_datetime }}</span>{% endif %}</label>
 		        	<input id="departure-date" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date"/>
 		        </div>
 
@@ -166,14 +164,13 @@
 		        </div>
 
 		        <div class="form-group col-md-6">
-		        	<label for="price">Price :</label>
-		        	{% if error_price %}<span style="color:red;"> {{ error_price }}</span>{% endif %}
+		        	<label for="price">Price : {% if error_price %}<span style="color:red;"> {{ error_price }}</span>{% endif %}</label>
 		        	<input class="form-control" id="price" type="number" maxlength="3" name="price">
 		        	$
 		        </div>
 
 		        <!-- Preferences -->
-		        <div id="preferences">
+		        <div id="preferences" class="container">
 
 			        <div class="form-group col-md-12">
 			        	<h3>Animals</h3>

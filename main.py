@@ -202,7 +202,7 @@ class AddTravel(MainHandler):
 		self.luggage = self.request.get('luggage')
 
 		if self.departure == self.arrival:
-			error_samedeparture = "Arrival cannot be the same as departure"
+			error_samedeparture = "cannot be the same as departure"
 			error = True
 
 		date_tab = self.departure_date.split('-')
@@ -222,7 +222,7 @@ class AddTravel(MainHandler):
 		now = datetime.datetime.now()
 
 		if departure_datetime <= now:
-			error_datetime = "Time travel is not possible yet"
+			error_datetime = "Wrong Date / Time"
 			error = True
 
 		try:
@@ -240,12 +240,12 @@ class AddTravel(MainHandler):
 		else:
 			animal_ok = False
 
-		if self.animals == 'ok':
+		if self.smoking == 'ok':
 			smoking_ok = True
 		else:
 			smoking_ok = False
 
-		if self.animals == 'suitcase':
+		if self.luggage == 'suitcase':
 			big_luggage_ok = True
 		else:
 			big_luggage_ok = False

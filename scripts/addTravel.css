@@ -11,6 +11,11 @@
 	width: 80%;
 }
 
+label span {
+	font-size: 15px;
+	font-weight: 500;
+}
+
 #price {
 	width: 100px;
 	display: inline;
