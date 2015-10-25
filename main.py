@@ -285,11 +285,22 @@ class ShowDriverTravels(MainHandler):
 		self.render('driverTravels.html', user = self.user, travels = travels)
 
 
+class DeleteTravel(MainHandler):
+
+	def get(self):
+		self.travel_id = int(self.request.get('id'))
+		Travel.remove_travel(self.travel_id)
+		self.redirect('/')
+
+
+
+
 
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
 								('/logIn', LogIn),
 								('/logOut', LogOut),
 								('/addTravel', AddTravel),
-								('/driverTravels', ShowDriverTravels)],
+								('/driverTravels', ShowDriverTravels),
+								('/deleteTravel', DeleteTravel)],
 								debug=True)
