@@ -182,7 +182,7 @@ class LogOut(MainHandler):
 class AddTravel(MainHandler):
 
 	def get(self):
-		self.render('addTravel.html', user = self.user)
+		self.render('addTravel.html', user = self.user, datetime_departure = datetime.datetime(2015, 01, 01, 12, 12))
 
 	def post(self):
 		error = False
@@ -257,7 +257,15 @@ class AddTravel(MainHandler):
 				error = error,
 				error_samedeparture = error_samedeparture,
 				error_datetime = error_datetime,
-				error_price = error_price)
+				error_price = error_price,
+				departure = self.departure,
+				arrival = self.arrival,
+				datetime_departure = departure_datetime,
+				seats = self.seats,
+				price = self.price,
+				animal_ok = animal_ok,
+				smoking_ok = smoking_ok,
+				big_luggage_ok = big_luggage_ok)
 
 		else:
 			travel_data = {
