@@ -1,4 +1,6 @@
-#driverTravels {
+/* CSS for driverTravels and resultSearch html pages */
+
+#driverTravels, #resultSearch {
 	margin-top: 20px;
 }
 
