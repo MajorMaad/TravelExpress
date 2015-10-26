@@ -32,7 +32,7 @@ class Travel(db.Model):
 
 	# Look for a travels
 	@classmethod
-	def by_filter(cls, departure = None, arrival = None, places_remaining = None, date_min = datetime.datetime.now(), price_max = None):
+	def by_filter(cls, departure = None, arrival = None, date_min = datetime.datetime.now(), animal_ok = None, smoking_ok = None, big_luggage_ok = None):
 		query = Travel.all()
 		query.filter('datetime_departure >=', date_min)
 
@@ -42,11 +42,14 @@ class Travel(db.Model):
 		if arrival is not None:
 			query.filter('arrival =', arrival)
 
-		if places_remaining is not None:
-			query.filter('places_remaining >=', places_remaining)
+		if animal_ok is not None:
+			query.filter('animal_ok =', animal_ok)
 
-		if price_max is not None:
-			query.filter('price <=', price_max)
+		if smoking_ok is not None:
+			query.filter('smoking_ok =', smoking_ok)
+
+		if big_luggage_ok is not None:
+			query.filter('big_luggage_ok =', big_luggage_ok)
 
 		return query.order('datetime_departure')
 

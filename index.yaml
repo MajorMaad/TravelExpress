@@ -12,6 +12,12 @@ indexes:
 
 - kind: Travel
   properties:
+  - name: arrival
+  - name: departure
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
   - name: user_id
   - name: datetime_departure
 
