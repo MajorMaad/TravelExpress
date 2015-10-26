@@ -77,8 +77,9 @@ class MainHandler(webapp2.RequestHandler):
 
 
 	def get(self, **params):
+		success_booking = self.request.get('success_booking')
 		if self.user:
-			self.render('base.html', user=self.user, **params)
+			self.render('base.html', user=self.user, success_booking = success_booking, **params)
 		else:
 			self.render('base.html', **params)
 
@@ -407,7 +408,9 @@ class SearchTravel(MainHandler):
 
 	def get(self):
 		today = datetime.datetime.now().strftime("%Y-%m-%d")
-		self.render('searchTravel.html', user = self.user, today = today)
+		success_booking = self.request.get('success_booking')
+
+		self.render('searchTravel.html', user = self.user, today = today, success_booking = success_booking)
 
 	def post(self):
 		error = False
@@ -487,11 +490,9 @@ class AddUserToTravel(MainHandler):
 		added = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
 
 		if added:
-			# TODO : Redirect with a success banner
-			self.redirect('/')
+			self.redirect('/?success_booking=True')
 		else:
-			# TODO : render with an error banner
-			self.redirect('/searchTravel')
+			self.redirect('/searchTravel?success_booking=False')
 
 
 

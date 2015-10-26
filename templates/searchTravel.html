@@ -82,6 +82,12 @@
 		    </div>
 		{% endif %}
 
+		{% if success_booking == 'False' %}
+			<div class="alert alert-danger" role="alert">
+		    	<strong>Oups !</strong> You cannot book your own travels.
+		    </div>
+		{% endif %}
+
 
 		<!-- Body -->
 		<div class="jumbotron">
