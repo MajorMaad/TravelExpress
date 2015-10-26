@@ -182,7 +182,7 @@ class LogOut(MainHandler):
 class AddTravel(MainHandler):
 
 	def get(self):
-		self.render('addTravel.html', user = self.user, datetime_departure = datetime.datetime(2015, 01, 01, 12, 12))
+		self.render('addTravel.html', user = self.user, datetime_departure = datetime.datetime.now())
 
 	def post(self):
 		error = False
@@ -282,7 +282,7 @@ class AddTravel(MainHandler):
 			}
 
 			travel = Travel.add_travel(travel_data)
-			self.render('addTravel.html', user = self.user, travel_ok = True)
+			self.render('addTravel.html', user = self.user, travel_ok = True, datetime_departure = datetime.datetime.now())
 
 
 
@@ -478,6 +478,21 @@ class SearchTravel(MainHandler):
 			self.render('resultSearch.html', user = self.user, travels = travels)
 
 
+class AddUserToTravel(MainHandler):
+
+	def post(self):
+		self.user_id = self.user.key().id()
+		self.travel_id = int(self.request.get('travel_id'))
+		self.places_reservation = int(self.request.get('places_reservation'))
+		added = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
+
+		if added:
+			# TODO : Redirect with a success banner
+			self.redirect('/')
+		else:
+			# TODO : render with an error banner
+			self.redirect('/searchTravel')
+
 
 
 
@@ -491,5 +506,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/driverTravels', ShowDriverTravels),
 								('/deleteTravel', DeleteTravel),
 								('/modifyTravel', ModifyTravel),
-								('/searchTravel', SearchTravel)],
+								('/searchTravel', SearchTravel),
+								('/addUserToTravel', AddUserToTravel)],
 								debug=True)

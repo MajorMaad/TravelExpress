@@ -32,3 +32,22 @@ h3 {
 .alert {
 	margin-top: 20px;
 }
+
+.plus-minus {
+	display: inline;
+}
+
+.plus-minus .btn {
+	margin: 0 0 0 0;
+	display: inline;
+}
+
+.plus-minus input {
+	height: 40px;
+	width: 80px;
+	border-radius: 6px;
+	margin: 0 0 0 0;
+	font-size: 16px;
+	text-align: center;
+	color: #000;
+}

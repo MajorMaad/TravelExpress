@@ -88,18 +88,39 @@
 		<div id="resultSearch" class="container">
 		{% for travel in travels %}
 
+			{% if travel.places_remaining >= 0 %}
+
 			<div class="panel panel-primary">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-md-8">
+						<div class="col-md-6">
 							<h3 class="panel-title"><strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong> {{ travel.departure|capitalize }} - {{ travel.arrival|capitalize }}</h3>
 						</div>
 
-						<div class="btn-group">
-								<a type="button" href="#" class="btn btn-success">
-						        	<span class="glyphicon glyphicon-plus"></span>
-						        </a>
-				        </div>
+						<form method="post" action="/addUserToTravel">
+
+							<input type="hidden" name="travel_id" value="{{ travel.key().id() }}">
+
+							<div class="plus-minus col-md-3">
+								<button type="button" class="btn btn-default">
+									<span class="glyphicon glyphicon-minus"></span>
+								</button>
+
+								<input type="number" name="places_reservation" min="1" max="{{ travel.places_remaining }}" value="1">
+
+								<button type="button" class="btn btn-default">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
+							</div>
+
+
+							<div class="btn-group col-md-2">
+									<button type="submit" class="btn btn-success">
+									<span class="glyphicon glyphicon-ok"></span>
+									</button>
+					        </div>
+
+					     </form>
 
 			        </div>
 			    </div>
@@ -130,11 +151,27 @@
 				</div>
 			</div>
 
+			{% endif %}
+
 		{% endfor %}
 		</div>
 
 
 	{% endif %}
+
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+
+		$('.btn-success').click(function() {
+
+			return confirm('Are you sure you want to book this travel ?');
+
+		});
+
+	});
+
+	</script>
 
 </body>
 

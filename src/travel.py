@@ -19,7 +19,7 @@ class Travel(db.Model):
 	animal_ok = db.BooleanProperty(required = True)
 	smoking_ok = db.BooleanProperty(required = True)
 	big_luggage_ok = db.BooleanProperty(required = True)
-	passengers_id = db.ListProperty(int)
+	bookers_id = db.ListProperty(int)
 
 	@classmethod
 	def by_id(cls, tid):
@@ -28,7 +28,7 @@ class Travel(db.Model):
 	# Show my travels (traveler)
 	@classmethod
 	def by_passenger(cls, user_id):
-		return Travel.all().filter('passengers_id =', user_id).order('datetime_departure')
+		return Travel.all().filter('bookers_id =', user_id).order('datetime_departure')
 
 	# Look for a travels
 	@classmethod
@@ -52,6 +52,20 @@ class Travel(db.Model):
 			query.filter('big_luggage_ok =', big_luggage_ok)
 
 		return query.order('datetime_departure')
+
+	# Add a user to a travel
+	@classmethod
+	def add_user(cls, user_id, travel_id, places):
+		travel = Travel.by_id(travel_id)
+
+		if user_id == travel.user_id:
+			return False
+		else:
+			travel.bookers_id.append(user_id)
+			travel.places_remaining -= places
+			travel.put()
+			return True
+
 
 	# Show my travel (driver)
 	@classmethod
