@@ -102,13 +102,13 @@
 							<input type="hidden" name="travel_id" value="{{ travel.key().id() }}">
 
 							<div class="plus-minus col-md-3">
-								<button type="button" class="btn btn-default">
+								<button type="button" class="btn btn-default minus-btn">
 									<span class="glyphicon glyphicon-minus"></span>
 								</button>
 
 								<input type="number" name="places_reservation" min="1" max="{{ travel.places_remaining }}" value="1">
 
-								<button type="button" class="btn btn-default">
+								<button type="button" class="btn btn-default plus-btn">
 									<span class="glyphicon glyphicon-plus"></span>
 								</button>
 							</div>
@@ -166,6 +166,33 @@
 		$('.btn-success').click(function() {
 
 			return confirm('Are you sure you want to book this travel ?');
+
+		});
+
+		$('.plus-btn').click(function() {
+
+			var $input = $(this).prev();
+			var val = parseInt($input.val());
+			var max_val = parseInt($input.attr('max'));
+
+			val += 1;
+
+			if (val <= max_val)
+				$input.val(val);
+
+		});
+
+
+		$('.minus-btn').click(function() {
+
+			var $input = $(this).next();
+			var val = parseInt($input.val());
+			var min_val = parseInt($input.attr('min'));
+
+			val -= 1;
+
+			if (val >= min_val)
+				$input.val(val);
 
 		});
 
