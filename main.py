@@ -298,7 +298,7 @@ class DeleteTravel(MainHandler):
 
 	def get(self):
 		self.travel_id = int(self.request.get('id'))
-		Travel.remove_travel(self.travel_id)
+		Travel.remove_travel(self.travel_id, self.user.key().id())
 		self.redirect('/')
 
 

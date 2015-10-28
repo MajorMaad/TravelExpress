@@ -111,6 +111,9 @@ class Travel(db.Model):
 
 	# Delete a travel
 	@classmethod
-	def remove_travel(cls, travel_id):
+	def remove_travel(cls, travel_id, user_id):
 		travel = cls.by_id(travel_id)
-		travel.delete()
+
+		# Make sure it is the driver who deletes it
+		if (travel.user_id == user_id):
+			travel.delete()
