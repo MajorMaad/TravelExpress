@@ -18,6 +18,11 @@ indexes:
 
 - kind: Travel
   properties:
+  - name: bookers_id
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
   - name: user_id
   - name: datetime_departure
 

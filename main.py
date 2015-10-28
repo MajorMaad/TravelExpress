@@ -496,6 +496,23 @@ class AddUserToTravel(MainHandler):
 
 
 
+class ShowTravelerTravels(MainHandler):
+
+	def get(self):
+		travels = Travel.by_passenger(self.user.key().id())
+		travel_id_email = []
+
+		# Getting email adress of drivers to be able to send a message
+		for travel in travels:
+			driver_mail = User.by_id(travel.user_id).email
+			couple_travel_mail = (travel.key().id(), driver_mail)
+			travel_id_email.append(couple_travel_mail)
+
+		self.render('travelerTravels.html', user = self.user, travels = travels, couples_id_mail = travel_id_email)
+
+
+
+
 
 
 
@@ -508,5 +525,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/deleteTravel', DeleteTravel),
 								('/modifyTravel', ModifyTravel),
 								('/searchTravel', SearchTravel),
-								('/addUserToTravel', AddUserToTravel)],
+								('/addUserToTravel', AddUserToTravel),
+								('/travelerTravels', ShowTravelerTravels)],
 								debug=True)
