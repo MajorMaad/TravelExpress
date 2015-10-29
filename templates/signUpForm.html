@@ -1,8 +1,6 @@
 <!-- inclusion of relatives functions -->
-<script type="text/javascript" src="/scripts/js/signUpForm.js" ></script>
+<script type="text/javascript" src="/scripts/js/tools.js" ></script>
 
-<!-- Sign Up section : include jinja template to retrieve information from server if necessary-->
-<form id="signUpForm" method="post" onsubmit="return ensureSignUpNonEmpty();" action="/signUp">
 
 	<button id="deploySignUpForm" type="button" class="btn btn-primary">Sign Up</button>
 
@@ -12,7 +10,6 @@
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
 		<label for="name">Name</label>
-		<span id="nameEmpty" style="display:none; color:red; float:right" >Please, enter your name</span>
 		<input id="name" name="name" class="form-control" value="{{name}}">
 	</div>
 
@@ -21,7 +18,6 @@
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
 		<label for="firstName">Firstname</label>
-		<span id="firstNameEmpty" style="display:none; color:red; float:right">Please, enter your firstname</span>
 		<input id="firstName" name="firstName" class="form-control" value="{{firstName}}">
 	</div>
 
@@ -29,9 +25,8 @@
 	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
-		<label for="nickName">Nickname</label>
-		{% if error_nick %} <span style="color:red; float:right"> {{error_nick}} </span> {% endif %}
-		<span id="nickNameEmpty" style="display:none; color:red; float:right">Please, enter a nickName</span>
+		<label for="nickName">Nickname *</label>
+		<span id="error_notif_nick" style="font-size:25px; color:red; float:center">{{error_nick_msg}}</span>
 		<input id="nickName" name="nickName" class="form-control" value="{{nickName}}">
 	</div>
 
@@ -39,9 +34,8 @@
 	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
-		<label for="emailInput">Email address</label>
-		{% if error_email %} <span style="color:red; float:right"> {{error_email}}</span> {% endif %}
-		<span id="mailEmpty" style="display:none; color:red; float:right">Please, enter your email address</span>
+		<label for="emailInput">Email address *</label>
+		<span id="error_notif_mail" style="font-size:25px; color:red; float:center">{{error_mail_msg}}</span>
 		<input id="email" name="email" class="form-control" type="email" placeholder="Email" value="{{email}}">
 	</div>
 
@@ -49,9 +43,9 @@
 	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
-		<label for="passInput">Password</label>
-		<span id="emptyPass1" style="display:none; color:red; float:right">Please, enter a password</span>
-		<input id="passInput" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">
+		<label for="password">Password</label>
+		<span id="error_notif_pass" style="font-size:25px; color:red; float:center">{{error_pass_msg}}</span>
+		<input id="passwordSignUp" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">
 	</div>
 
 
@@ -59,7 +53,7 @@
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
 		<label for="passValidate">Enter the chosen password again</label>
-		<span id="emptyPass2" style="display:none; color:red; float:right">Please, confirm the password</span>
+		<span id="error_notif_pass_confirm" style="font-size:25px; color:red; float:center">{{error_pass_confirm_msg}}</span>
 		<input id="passValidate" name="passValidate" class="form-control" type="password" placeholder="Password" value="{{passValidate}}">
 	</div>
 
@@ -67,10 +61,9 @@
 	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
 	{% else %}	<div class='form-group sign-up' style='display:none'>
 	{% endif %}
-		<button id="submitSignUpBtn" type="submit" class="btn btn-primary">Sign Up !!</button>
+		<button id="submitSignUpBtn" type="submit" class="btn btn-primary" onclick="submitSignUp();">Sign Up !!</button>
 	</div>
 
-</form>
 
 <script>
 $(document).ready(function(e){
@@ -99,4 +92,56 @@ $(document).ready(function(e){
 		textBtn.data = textBtn.data == "Sign Up" ? "Close" : "Sign Up";
 	};
 });
+
+
+function submitSignUp(){
+	$.ajax({
+	  type: "POST",
+	  url: "/signUp",
+	  dataType: 'json',
+	  data: JSON.stringify({"name" : $("#name").val(),
+							"firstName" : $("#firstName").val(),
+							"nickName" : $("#nickName").val(),
+							"email" : $("#email").val(),
+							"is_email" : $(validateEmail($("#email").val())),
+							"password" : $("#passwordSignUp").val(),
+							"passValidate" : $("#passValidate").val()
+							})
+	})
+	.done(function( data ) { 		
+		console.log("data received back");
+
+		if (data['error']){
+
+			if (data['error_notif_nick']){
+				document.getElementById("error_notif_nick").innerHTML = data['error_nick_msg'];
+			}else{
+				document.getElementById("error_notif_nick").innerHTML = "";
+			}
+
+			if (data['error_notif_mail']){
+				document.getElementById("error_notif_mail").innerHTML = data['error_mail_msg'];				
+			}else{
+				document.getElementById("error_notif_mail").innerHTML = "";
+			}
+
+			if (data['error_notif_pass']){
+				document.getElementById("error_notif_pass").innerHTML = data['error_pass_msg'];				
+			}else{
+				document.getElementById("error_notif_pass").innerHTML = "";
+			}
+
+			if (data['error_notif_pass_confirm']){
+				document.getElementById("error_notif_pass_confirm").innerHTML = data['error_pass_confirm_msg'];	
+			}else{
+				document.getElementById("error_notif_pass_confirm").innerHTML = "";
+			}
+
+		}else{
+			console.log("no error");
+			window.location.replace("/");
+		}
+	});
+};
+
 </script>

@@ -3,7 +3,7 @@
 
 <button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
 
-<br><span id="error_notif" style="font-size:25px; color:red; float:center">{{error_login_msg}}</span><br> 
+<br><span id="error_notif_logIn" style="font-size:25px; color:red; float:center">{{error_login_msg}}</span><br> 
 
 <!-- User ID (nick or email) -->
 {% if error_login %}	
@@ -22,8 +22,8 @@
 {% else %}	
 	<div class='form-group log-in' style='display:none'>
 {% endif %}
-	<label for="password">Password</label>
-	<input id="password" name="password" class="form-control" type="password" placeholder="Password">
+	<label for="passwordLogIn">Password</label>
+	<input id="passwordLogIn" name="password" class="form-control" type="password" placeholder="Password">
 </div>
 
 <!-- Submit button -->
@@ -32,7 +32,7 @@
 {% else %}	
 	<div class='form-group log-in' style='display:none'>
 {% endif %}
-	<button id="submitLogInBtn" type="submit" class="btn btn-primary" onclick="submit();">Log In !!</button>
+	<button id="submitLogInBtn" type="submit" class="btn btn-primary" onclick="submitLogIn();">Log In !!</button>
 </div>
 
 <script>
@@ -73,7 +73,7 @@ $(document).ready(function(e){
 });
 
 
-function submit(){
+function submitLogIn(){
 	var is_email = validateEmail($("#userLogData").val());
 
 	$.ajax({
@@ -82,11 +82,11 @@ function submit(){
 	  dataType: 'json',
 	  data: JSON.stringify({ "nickname": $("#userLogData").val(), 
 							 "is_email": is_email,
-							  "password": $("#password").val()})
+							  "password": $("#passwordLogIn").val()})
 	})
 	.done(function( data ) { 		
 		if (data['error_login']){
-			document.getElementById("error_notif").innerHTML = data['error_login_msg'];
+			document.getElementById("error_notif_logIn").innerHTML = data['error_login_msg'];
 		}
 		else{
 			window.location.replace("/");

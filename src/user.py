@@ -22,10 +22,8 @@ def reverse_pw(nickName, password, hashed_pw):
 	return hashed_pw == make_pw_hash(nickName, password, salt)
 
 class User(db.Model):
-
-
-	name = db.StringProperty(required = True)
-	firstName = db.StringProperty(required = True)
+	name = db.StringProperty(required = False)
+	firstName = db.StringProperty(required = False)
 	nickName = db.StringProperty(required = True)
 	email = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)

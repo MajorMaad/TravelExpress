@@ -92,7 +92,7 @@ class MainHandler(webapp2.RequestHandler):
 
 
 	#Set a cookie for the user who just jumped in (via SignUp or LogIn)
-	#Then redirect to '/' to handle the new rendering, according to the cookie session
+	#Redirection is done via ajax method
 	def jumpIn(self, user):
 		self.set_secure_cookie('user_id', db_id=str(user.key().id()))
 
@@ -113,44 +113,83 @@ class SignUp(MainHandler):
 		self.redirect('/')
 
 	def post(self):
-		self.name = self.request.get('name')
-		self.firstName = self.request.get('firstName')
-		self.nickName = self.request.get('nickName')
-		self.email = self.request.get('email')
-		self.passBasic = self.request.get('passBasic')
-		self.passValidate = self.request.get('passValidate')
 
-		#Look into database if nickName or email is already in use
+		data = json.loads(self.request.body)
+		logging.info("""Data received from JSON : \n 
+						name : %s 	\n
+						firstname : %s \n
+						nickName : %s \n
+						email : %s \n
+						is_email : %r \n
+						password : %s \n
+						passvalidate : %s \n
+						"""
+						%(	data['name'],
+							data['firstName'],
+							data['nickName'],
+							data['email'],
+							data['is_email'],
+							data['password'],
+							data['passValidate'])
+					)
+
+
+		ajaxResponse = {}
 		error = False
-		error_nickname = ''
-		error_email = ''
 
-		if User.by_name(self.nickName):
-			error_nickname = "Sorry, this nickname is already used."
+		#Check for empty fields and respond with the correct message
+		if not data['nickName']:
+			ajaxResponse['error_notif_nick'] = True
+			ajaxResponse['error_nick_msg'] = "You must enter a nickname"
 			error = True
 
-		if User.by_email(self.email):
-			error_email = "Sorry, this email address is already used."
+		if not data['email'] or not data['is_email']:
+			ajaxResponse['error_notif_mail'] = True
+			ajaxResponse['error_mail_msg'] = "You must enter a valid e-mail address"
 			error = True
 
-		#Render same page for user correction
-		if error:
-			self.render('base.html',error_signup = error,
-									name = self.name,
-									firstName = self.firstName,
-									nickName = self.nickName,
-									email = self.email,
-									passBasic = self.passBasic,
-									passValidate = self.passValidate,
-									error_nick = error_nickname,
-									error_email = error_email)
+		if not data['password']:
+			ajaxResponse['error_notif_pass'] = True
+			ajaxResponse['error_pass_msg'] = "You must enter a password"
+			error = True
 
-		#Save the new user, log it and rerender the base.html
+		if not data['passValidate']:
+			ajaxResponse['error_notif_pass_confirm'] = True
+			ajaxResponse['error_pass_confirm_msg'] = "You must validate your password"
+			error = True
+
+		elif data['passValidate'] != data['password']:
+			ajaxResponse['error_notif_pass_confirm'] = True
+			ajaxResponse['error_pass_confirm_msg'] = "Passwords are not the same"
+			error = True
+
+		# All fields required are non empty
 		else:
-			user_data = {'name': self.name, 'firstName': self.firstName, 'nickName': self.nickName, 'email': self.email, 'password': self.passBasic}
-			user = User.register(user_data)
-			user.put()
-			self.jumpIn(user)
+
+			#Check for an already existant user by nickname
+			if User.by_name(data['nickName']):
+				ajaxResponse['error_notif_nick'] = True
+				ajaxResponse['error_nick_msg'] = "This nickname is already used."
+				error = True
+
+			#Check for an already existant user by mail
+			if User.by_email(data['email']):
+				ajaxResponse['error_notif_mail'] = True
+				ajaxResponse['error_mail_msg'] = "This email address is already used."
+				error = True
+
+
+			#Create a user if there is no error
+			if not error :
+				user = User.register(data)
+				user.put()
+				self.jumpIn(user)
+
+		#Prepare the response to the ajax request
+		ajaxResponse['error'] = error
+
+		#Send back the computed data
+		self.response.out.write(json.dumps(ajaxResponse))
 
 class LogIn(MainHandler):
 
@@ -158,7 +197,6 @@ class LogIn(MainHandler):
 		self.redirect('/')
 
 	def post(self):
-		logging.info(self.request.body)
 		data = json.loads(self.request.body)
 		logging.info("Data received from JSON : \n %s 	-	%r 	-	%s" %(data['nickname'], data['is_email'], data['password']))
 
