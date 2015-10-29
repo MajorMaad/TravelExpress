@@ -1,47 +1,39 @@
 <!-- inclusion of relatives functions -->
-<script type="text/javascript" src="/scripts/js/logInForm.js" ></script>
+<script type="text/javascript" src="/scripts/js/tools.js" ></script>
 
-<!-- Log In section : include jinja template to retrieve information from server if necessary-->
-<form id="logInForm" method="post" action="/logIn">
+<button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
 
-	<button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
+<br><span id="error_notif" style="font-size:25px; color:red; float:center">{{error_login_msg}}</span><br> 
 
-	<!-- Display error msg if necessary -->
-	{% if error_login %} 
-		<br><span style="color:red; float:center">{{error_login_msg}}</span><br> 
-	{% endif %}
-
-	<!-- User ID (nick or email) -->
-	{% if error_login %}	
-		<div class='form-group log-in' style='display:block'>
-	{% else %}	
-		<div class='form-group log-in' style='display:none'>
-	{% endif %}
-		<label for="userLogData">NickName of Email address</label>
-		<input id="userLogData" name="userLogData" class="form-control">
-	</div>
+<!-- User ID (nick or email) -->
+{% if error_login %}	
+	<div class='form-group log-in' style='display:block'>
+{% else %}	
+	<div class='form-group log-in' style='display:none'>
+{% endif %}
+	<label for="userLogData">NickName of Email address</label>
+	<input id="userLogData" name="userLogData" class="form-control">
+</div>
 
 
-	<!-- Password input -->
-	{% if error_login %}	
-		<div class='form-group log-in' style='display:block'>
-	{% else %}	
-		<div class='form-group log-in' style='display:none'>
-	{% endif %}
-		<label for="password">Password</label>
-		<input id="password" name="password" class="form-control" type="password" placeholder="Password">
-	</div>
+<!-- Password input -->
+{% if error_login %}	
+	<div class='form-group log-in' style='display:block'>
+{% else %}	
+	<div class='form-group log-in' style='display:none'>
+{% endif %}
+	<label for="password">Password</label>
+	<input id="password" name="password" class="form-control" type="password" placeholder="Password">
+</div>
 
-	<!-- Submit button -->
-	{% if error_login %}	
-		<div class='form-group log-in' style='display:block'>
-	{% else %}	
-		<div class='form-group log-in' style='display:none'>
-	{% endif %}
-		<button id="submitLogInBtn" type="submit" class="btn btn-primary">Log In !!</button>
-	</div>
-
-</form>
+<!-- Submit button -->
+{% if error_login %}	
+	<div class='form-group log-in' style='display:block'>
+{% else %}	
+	<div class='form-group log-in' style='display:none'>
+{% endif %}
+	<button id="submitLogInBtn" type="submit" class="btn btn-primary" onclick="submit();">Log In !!</button>
+</div>
 
 <script>
 $(document).ready(function(e){
@@ -79,4 +71,29 @@ $(document).ready(function(e){
 		}
 	};
 });
+
+
+function submit(){
+	var is_email = validateEmail($("#userLogData").val());
+
+	$.ajax({
+	  type: "POST",
+	  url: "/logIn",
+	  dataType: 'json',
+	  data: JSON.stringify({ "nickname": $("#userLogData").val(), 
+							 "is_email": is_email,
+							  "password": $("#password").val()})
+	})
+	.done(function( data ) { 		
+		if (data['error_login']){
+			document.getElementById("error_notif").innerHTML = data['error_login_msg'];
+		}
+		else{
+			window.location.replace("/");
+		}
+
+	});
+};
+
+
 </script>

@@ -20,6 +20,7 @@ import logging
 import webapp2
 import hmac
 import datetime
+import json
 
 
 # Template Jinja2 stuff :
@@ -94,7 +95,6 @@ class MainHandler(webapp2.RequestHandler):
 	#Then redirect to '/' to handle the new rendering, according to the cookie session
 	def jumpIn(self, user):
 		self.set_secure_cookie('user_id', db_id=str(user.key().id()))
-		self.redirect('/')
 
 
 	#Log out th euser via a reset of the cookie
@@ -158,36 +158,42 @@ class LogIn(MainHandler):
 		self.redirect('/')
 
 	def post(self):
-		self.user_data = self.request.get('userLogData')
-		self.password = self.request.get('password')
-		self.is_email = self.request.get('is_email')
+		logging.info(self.request.body)
+		data = json.loads(self.request.body)
+		logging.info("Data received from JSON : \n %s 	-	%r 	-	%s" %(data['nickname'], data['is_email'], data['password']))
+
+		self.user_data = data['nickname']
+		self.password = data['password']
+		self.is_email = data['is_email']
 
 		
 		#Ensure user has enter a nickname or email address
 		if not self.user_data:
 			error_msg =  "You must enter a nickname or an e-mail address"
-			self.render('base.html', error_login = True,
-									error_login_msg = error_msg)
+			self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
 
 		#Ensure user has enter a password
 		elif not self.password:
 			error_msg =  "You must enter your password"
-			self.render('base.html', error_login = True,
-									error_login_msg = error_msg)
+			self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
 		
 
 		else:
+			logging.info("Data correctly typed in")
+
 			#Request a user according to these informations
 			user = User.logIn(self.user_data, self.password, self.is_email)
 
 			if user:
-				#Log user and rerender the base.html
+				logging.info("User found in DB")
+				#Log user and send back data to Ajax to redirect properly
 				self.jumpIn(user)
+				self.response.out.write(json.dumps(({'error_login': False})))
+
 			else:
 				#Render same page for user correction
 				error_msg =  "The given informations don't match any user"
-				self.render('base.html', error_login = True,
-										error_login_msg = error_msg)
+				self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
 
 
 class LogOut(MainHandler):
