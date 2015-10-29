@@ -1,68 +1,58 @@
 <!-- inclusion of relatives functions -->
 <script type="text/javascript" src="/scripts/js/tools.js" ></script>
 
+<!-- button to display the form -->
+<button id="deploySignUpForm" type="button" class="btn btn-primary">Sign Up</button>
 
-	<button id="deploySignUpForm" type="button" class="btn btn-primary">Sign Up</button>
-
-
-
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="name">Name</label>
-		<input id="name" name="name" class="form-control" value="{{name}}">
-	</div>
+<!-- Name input (not mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="name">Name</label>
+	<input id="name" class="form-control">
+</div>
 
 
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="firstName">Firstname</label>
-		<input id="firstName" name="firstName" class="form-control" value="{{firstName}}">
-	</div>
+<!-- Firstname input (not mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="firstName">Firstname</label>
+	<input id="firstName" class="form-control">
+</div>
 
 
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="nickName">Nickname *</label>
-		<span id="error_notif_nick" style="font-size:25px; color:red; float:center">{{error_nick_msg}}</span>
-		<input id="nickName" name="nickName" class="form-control" value="{{nickName}}">
-	</div>
+<!-- nickName input (mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="nickName">Nickname *</label>
+	<span id="error_notif_nick" style="font-size:25px; color:red; float:center"></span>
+	<input id="nickName" class="form-control">
+</div>
 
 
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="emailInput">Email address *</label>
-		<span id="error_notif_mail" style="font-size:25px; color:red; float:center">{{error_mail_msg}}</span>
-		<input id="email" name="email" class="form-control" type="email" placeholder="Email" value="{{email}}">
-	</div>
+<!-- email input (mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="emailInput">Email address *</label>
+	<span id="error_notif_mail" style="font-size:25px; color:red; float:center"></span>
+	<input id="email" class="form-control" type="email" placeholder="Email" >
+</div>
 
 
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="password">Password</label>
-		<span id="error_notif_pass" style="font-size:25px; color:red; float:center">{{error_pass_msg}}</span>
-		<input id="passwordSignUp" name="passBasic" class="form-control" type="password" placeholder="Password" value="{{passBasic}}">
-	</div>
+<!-- password input (mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="password">Password</label>
+	<span id="error_notif_pass" style="font-size:25px; color:red; float:center"></span>
+	<input id="passwordSignUp" class="form-control" type="password" placeholder="Password">
+</div>
 
 
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<label for="passValidate">Enter the chosen password again</label>
-		<span id="error_notif_pass_confirm" style="font-size:25px; color:red; float:center">{{error_pass_confirm_msg}}</span>
-		<input id="passValidate" name="passValidate" class="form-control" type="password" placeholder="Password" value="{{passValidate}}">
-	</div>
+<!-- password validation input (mandatory) -->
+<div class='form-group sign-up' style='display:none'>
+	<label for="passValidate">Enter the chosen password again</label>
+	<span id="error_notif_pass_confirm" style="font-size:25px; color:red; float:center"></span>
+	<input id="passValidate" class="form-control" type="password" placeholder="Password">
+</div>
 
-
-	{% if error_signup %}	<div class='form-group sign-up' style='display:block'>
-	{% else %}	<div class='form-group sign-up' style='display:none'>
-	{% endif %}
-		<button id="submitSignUpBtn" type="submit" class="btn btn-primary" onclick="submitSignUp();">Sign Up !!</button>
-	</div>
+<!-- submit button -->
+<div class='form-group sign-up' style='display:none'>
+	<button id="submitSignUpBtn" type="submit" class="btn btn-primary" onclick="submitSignUp();">Sign Up !!</button>
+</div>
 
 
 <script>
@@ -90,6 +80,15 @@ $(document).ready(function(e){
 		//Invert text of button
 		var textBtn = deploySignUpForm.firstChild;
 		textBtn.data = textBtn.data == "Sign Up" ? "Close" : "Sign Up";
+
+		//Reset span if necessary
+		if (textBtn.data == "Sign Up"){
+			document.getElementById("error_notif_nick").innerHTML = "";
+			document.getElementById("error_notif_mail").innerHTML = "";
+			document.getElementById("error_notif_pass").innerHTML = "";
+			document.getElementById("error_notif_pass_confirm").innerHTML = "";
+		}
+
 	};
 });
 

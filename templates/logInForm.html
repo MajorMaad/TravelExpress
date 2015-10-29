@@ -3,35 +3,25 @@
 
 <button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
 
-<br><span id="error_notif_logIn" style="font-size:25px; color:red; float:center">{{error_login_msg}}</span><br> 
+<div class='form-group log-in' style='display:none'>
+	<span id="error_notif_logIn" style="font-size:25px; color:red; float:center"></span>
+</div> 
 
 <!-- User ID (nick or email) -->
-{% if error_login %}	
-	<div class='form-group log-in' style='display:block'>
-{% else %}	
-	<div class='form-group log-in' style='display:none'>
-{% endif %}
+<div class='form-group log-in' style='display:none'>
 	<label for="userLogData">NickName of Email address</label>
-	<input id="userLogData" name="userLogData" class="form-control">
+	<input id="userLogData" class="form-control">
 </div>
 
 
 <!-- Password input -->
-{% if error_login %}	
-	<div class='form-group log-in' style='display:block'>
-{% else %}	
-	<div class='form-group log-in' style='display:none'>
-{% endif %}
+<div class='form-group log-in' style='display:none'>
 	<label for="passwordLogIn">Password</label>
-	<input id="passwordLogIn" name="password" class="form-control" type="password" placeholder="Password">
+	<input id="passwordLogIn" class="form-control" type="password" placeholder="Password">
 </div>
 
 <!-- Submit button -->
-{% if error_login %}	
-	<div class='form-group log-in' style='display:block'>
-{% else %}	
-	<div class='form-group log-in' style='display:none'>
-{% endif %}
+<div class='form-group log-in' style='display:none'>
 	<button id="submitLogInBtn" type="submit" class="btn btn-primary" onclick="submitLogIn();">Log In !!</button>
 </div>
 
@@ -61,12 +51,13 @@ $(document).ready(function(e){
 			}
 		}
 
-		//Invert text of button
+		//Invert text of button & reset span content
 		var textBtn = deployLogInForm.firstChild;
 		if (is_deployed){
 			textBtn.data = "Close";	
 		}
 		else{
+			document.getElementById("error_notif_logIn").innerHTML = "";
 			textBtn.data = "Log In";
 		}
 	};
