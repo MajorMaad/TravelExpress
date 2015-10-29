@@ -38,6 +38,7 @@ def render_str(template, **params):
 #Import des sources
 from src.user import *
 from src.travel import *
+from src.registration import *
 
 
 secret = 'thisIsReallyABigSecret'
@@ -113,80 +114,17 @@ class SignUp(MainHandler):
 		self.redirect('/')
 
 	def post(self):
-
 		data = json.loads(self.request.body)
-		logging.info("""Data received from JSON : \n 
-						name : %s 	\n
-						firstname : %s \n
-						nickName : %s \n
-						email : %s \n
-						is_email : %r \n
-						password : %s \n
-						passvalidate : %s \n
-						"""
-						%(	data['name'],
-							data['firstName'],
-							data['nickName'],
-							data['email'],
-							data['is_email'],
-							data['password'],
-							data['passValidate'])
-					)
+		
+		checkAgent = CheckSignUp()
+		ajaxResponse = checkAgent.check(data)
+		logging.info("Data received : "+checkAgent.toString(data))
 
-
-		ajaxResponse = {}
-		error = False
-
-		#Check for empty fields and respond with the correct message
-		if not data['nickName']:
-			ajaxResponse['error_notif_nick'] = True
-			ajaxResponse['error_nick_msg'] = "You must enter a nickname"
-			error = True
-
-		if not data['email'] or not data['is_email']:
-			ajaxResponse['error_notif_mail'] = True
-			ajaxResponse['error_mail_msg'] = "You must enter a valid e-mail address"
-			error = True
-
-		if not data['password']:
-			ajaxResponse['error_notif_pass'] = True
-			ajaxResponse['error_pass_msg'] = "You must enter a password"
-			error = True
-
-		if not data['passValidate']:
-			ajaxResponse['error_notif_pass_confirm'] = True
-			ajaxResponse['error_pass_confirm_msg'] = "You must validate your password"
-			error = True
-
-		elif data['passValidate'] != data['password']:
-			ajaxResponse['error_notif_pass_confirm'] = True
-			ajaxResponse['error_pass_confirm_msg'] = "Passwords are not the same"
-			error = True
-
-		# All fields required are non empty
-		else:
-
-			#Check for an already existant user by nickname
-			if User.by_name(data['nickName']):
-				ajaxResponse['error_notif_nick'] = True
-				ajaxResponse['error_nick_msg'] = "This nickname is already used."
-				error = True
-
-			#Check for an already existant user by mail
-			if User.by_email(data['email']):
-				ajaxResponse['error_notif_mail'] = True
-				ajaxResponse['error_mail_msg'] = "This email address is already used."
-				error = True
-
-
+		if not ajaxResponse['error']:
 			#Create a user if there is no error
-			if not error :
-				user = User.register(data)
-				user.put()
-				self.jumpIn(user)
-
-		#Prepare the response to the ajax request
-		ajaxResponse['error'] = error
+			user = User.register(data)
+			user.put()
+			self.jumpIn(user)
 
 		#Send back the computed data
 		self.response.out.write(json.dumps(ajaxResponse))
