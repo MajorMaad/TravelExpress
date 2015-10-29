@@ -162,16 +162,32 @@ class LogIn(MainHandler):
 		self.password = self.request.get('password')
 		self.is_email = self.request.get('is_email')
 
-		#Request a user according to these informations
-		user = User.logIn(self.user_data, self.password, self.is_email)
+		
+		#Ensure user has enter a nickname or email address
+		if not self.user_data:
+			error_msg =  "You must enter a nickname or an e-mail address"
+			self.render('base.html', error_login = True,
+									error_login_msg = error_msg)
 
-		if user:
-			#Log user and rerender the base.html
-			self.jumpIn(user)
+		#Ensure user has enter a password
+		elif not self.password:
+			error_msg =  "You must enter your password"
+			self.render('base.html', error_login = True,
+									error_login_msg = error_msg)
+		
 
 		else:
-			#Render same page for user correction
-			self.render('base.html', error_login = "The given informations are not correct ...")
+			#Request a user according to these informations
+			user = User.logIn(self.user_data, self.password, self.is_email)
+
+			if user:
+				#Log user and rerender the base.html
+				self.jumpIn(user)
+			else:
+				#Render same page for user correction
+				error_msg =  "The given informations don't match any user"
+				self.render('base.html', error_login = True,
+										error_login_msg = error_msg)
 
 
 class LogOut(MainHandler):
