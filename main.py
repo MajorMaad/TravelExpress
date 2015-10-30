@@ -165,8 +165,10 @@ class LogOut(MainHandler):
 
 class AddTravel(MainHandler):
 
-	def get(self):
-		self.render('addTravel.html', user = self.user, datetime_departure = datetime.datetime.now())
+	def get(self):		
+		self.render('base.html', user = self.user, 
+								choice="add",
+								datetime_departure = datetime.datetime.now())
 
 	def post(self):
 		error = False
@@ -235,8 +237,9 @@ class AddTravel(MainHandler):
 			big_luggage_ok = False
 
 		if error:
-			self.render('addTravel.html',
+			self.render('base.html',
 				user = self.user,
+				choice = "add",
 				travel_ok = False,
 				error = error,
 				error_samedeparture = error_samedeparture,
@@ -266,7 +269,11 @@ class AddTravel(MainHandler):
 			}
 
 			travel = Travel.add_travel(travel_data)
-			self.render('addTravel.html', user = self.user, travel_ok = True, datetime_departure = datetime.datetime.now())
+			self.render('base.html', 
+							user = self.user, 
+							choice = "add",
+							travel_ok = True, 
+							datetime_departure = datetime.datetime.now())
 
 
 
@@ -394,6 +401,7 @@ class SearchTravel(MainHandler):
 		success_booking = self.request.get('success_booking')
 
 		self.render('searchTravel.html', user = self.user, today = today, success_booking = success_booking)
+		# self.render('base.html', user = self.user, choice="search")
 
 	def post(self):
 		error = False
