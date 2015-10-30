@@ -400,8 +400,12 @@ class SearchTravel(MainHandler):
 		today = datetime.datetime.now().strftime("%Y-%m-%d")
 		success_booking = self.request.get('success_booking')
 
-		self.render('searchTravel.html', user = self.user, today = today, success_booking = success_booking)
-		# self.render('base.html', user = self.user, choice="search")
+		# self.render('searchTravel.html', user = self.user, today = today, success_booking = success_booking)
+		self.render('base.html', 
+					user = self.user,
+					choice = "search",
+					today = today,
+					success_booking = success_booking)
 
 	def post(self):
 		error = False
@@ -461,15 +465,16 @@ class SearchTravel(MainHandler):
 
 		if error:
 			today = datetime.datetime.now().strftime("%Y-%m-%d")
-			self.render('searchTravel.html',
+			self.render('base.html',
 				user = self.user,
+				choice = "search",
 				error = error,
 				error_samedeparture = error_samedeparture,
 				today = today)
 
 		else:
 			travels = Travel.by_filter(departure, arrival, date_min, animal_ok, smoking_ok, big_luggage_ok)
-			self.render('resultSearch.html', user = self.user, travels = travels)
+			self.render('resultSearch.html', user = self.user, choice = "search", travels = travels)
 
 
 class AddUserToTravel(MainHandler):

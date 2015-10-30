@@ -16,7 +16,7 @@
 
 	<!-- Our CSS -->
 	<link rel="stylesheet" type="text/css" href="../scripts/main.css">
-	
+
 
 
 	<title>TravelExpress</title>
@@ -117,7 +117,7 @@
 			{% include "addTravel.html" with context %}
 
 		{% elif choice == "search" %}
-			<h1> search travel section </h1>
+			{% include "searchTravel.html" with context %}
 
 		{% elif choice == "settings" %}
 			<h1> settings travel section </h1>
