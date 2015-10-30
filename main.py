@@ -348,72 +348,38 @@ class SearchTravel(MainHandler):
 					success_booking = success_booking)
 
 	def post(self):
-		error = False
-		error_samedeparture = ""
 
-		self.departure = self.request.get('departure')
-		self.arrival = self.request.get('arrival')
-		self.departure_date = self.request.get('departure-date')
-		self.departure_hour = self.request.get('departure-hour')
-		self.departure_minutes = self.request.get('departure-minutes')
-		self.animals = self.request.get('animals')
-		self.smoking = self.request.get('smoking')
-		self.luggage = self.request.get('luggage')
+		data = {}
+		data['departure'] = self.request.get('departure')
+		data['arrival'] = self.request.get('arrival')
+		data['departure_date'] = self.request.get('departure-date')
+		data['departure_hour'] = self.request.get('departure-hour')
+		data['departure_minutes'] = self.request.get('departure-minutes')
+		data['animals'] = self.request.get('animals')
+		data['smoking'] = self.request.get('smoking')
+		data['luggage'] = self.request.get('luggage')
 
-		if self.departure == self.arrival:
-			error_samedeparture = "cannot be the same as departure"
-			error = True
 
-		departure = self.departure
-		arrival = self.arrival
+		searchAgent = CheckSearchTravel(data)
+		checkedResult = searchAgent.check()
 
-		date_tab = self.departure_date.split('-')
-		try:
-			year = int(date_tab[0])
-			month = int(date_tab[1])
-			day = int(date_tab[2])
-		except ValueError:
-			year = 2000
-			month = 1
-			day = 1
 
-		hour = int(self.departure_hour)
-		minutes = int(self.departure_minutes)
-
-		date_min = datetime.datetime(year, month, day, hour, minutes)
-
-		if self.animals == 'ok':
-			animal_ok = True
-		elif self.animals == 'ni':
-			animal_ok = None
-		else:
-			animal_ok = False
-
-		if self.smoking == 'ok':
-			smoking_ok = True
-		elif self.smoking == 'ni':
-			smoking_ok = None
-		else:
-			smoking_ok = False
-
-		if self.luggage == 'suitcase':
-			big_luggage_ok = True
-		elif self.luggage == 'ni':
-			big_luggage_ok = None
-		else:
-			big_luggage_ok = False
-
-		if error:
+		if checkedResult['error']:
 			today = datetime.datetime.now().strftime("%Y-%m-%d")
 			self.render('base.html',
 				user = self.user,
 				choice = "search",
-				error = error,
-				error_samedeparture = error_samedeparture,
+				error = checkedResult['error'],
+				error_samedeparture = checkedResult['error_samedeparture'],
 				today = today)
 
 		else:
-			travels = Travel.by_filter(departure, arrival, date_min, animal_ok, smoking_ok, big_luggage_ok)
+			travels = Travel.by_filter(data['departure'], 
+										data['arrival'], 
+										checkedResult['date_min'], 
+										checkedResult['animal_ok'], 
+										checkedResult['smoking_ok'],
+										checkedResult['big_luggage_ok'])
 			self.render('resultSearch.html', user = self.user, choice = "search", travels = travels)
 
 
