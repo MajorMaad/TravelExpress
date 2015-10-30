@@ -131,6 +131,9 @@ class SignUp(MainHandler):
 		#Send back the computed data
 		self.response.out.write(json.dumps(ajaxResponse))
 
+
+
+#This class handle the login of a registered user
 class LogIn(MainHandler):
 
 	def get(self):
@@ -158,10 +161,16 @@ class LogIn(MainHandler):
 		self.response.out.write(json.dumps(ajaxResponse))
 
 
+# this lass provide a way to user to disconnect from the session
 class LogOut(MainHandler):
 
 	def get(self):
 		self.doExit()
+
+
+
+
+
 
 
 class AddTravel(MainHandler):
@@ -380,7 +389,11 @@ class SearchTravel(MainHandler):
 										checkedResult['animal_ok'], 
 										checkedResult['smoking_ok'],
 										checkedResult['big_luggage_ok'])
-			self.render('resultSearch.html', user = self.user, choice = "search", travels = travels)
+			# self.render('resultSearch.html', user = self.user, choice = "search", travels = travels)
+			self.render('base.html', 
+						user = self.user,
+						choice = "resultSearch", 
+						travels = travels)
 
 
 class AddUserToTravel(MainHandler):
