@@ -116,12 +116,13 @@ class SignUp(MainHandler):
 	def post(self):
 		data = json.loads(self.request.body)
 		
+		#Check sign up informations via a dedicated agent
 		checkAgent = CheckSignUp()
 		ajaxResponse = checkAgent.check(data)
 		logging.info("Data received : "+checkAgent.toString(data))
 
-		if not ajaxResponse['error']:
-			#Create a user if there is no error
+		#Create a user if there is no error
+		if not ajaxResponse['error']:			
 			user = User.register(data)
 			user.put()
 			self.jumpIn(user)
@@ -136,40 +137,24 @@ class LogIn(MainHandler):
 
 	def post(self):
 		data = json.loads(self.request.body)
-		logging.info("Data received from JSON : \n %s 	-	%r 	-	%s" %(data['nickname'], data['is_email'], data['password']))
 
-		self.user_data = data['nickname']
-		self.password = data['password']
-		self.is_email = data['is_email']
+		#Check log in informations via a dedicated agent
+		checkAgent = CheckLogIn()
+		ajaxResponse = checkAgent.check(data)
+		logging.info("Data received : "+checkAgent.toString(data))
 
-		
-		#Ensure user has enter a nickname or email address
-		if not self.user_data:
-			error_msg =  "You must enter a nickname or an e-mail address"
-			self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
 
-		#Ensure user has enter a password
-		elif not self.password:
-			error_msg =  "You must enter your password"
-			self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
-		
+		if not ajaxResponse['error_login']:
+			user = User.logIn( data['nickname'], data['password'], data['is_email'])
 
-		else:
-			logging.info("Data correctly typed in")
-
-			#Request a user according to these informations
-			user = User.logIn(self.user_data, self.password, self.is_email)
-
-			if user:
-				logging.info("User found in DB")
-				#Log user and send back data to Ajax to redirect properly
-				self.jumpIn(user)
-				self.response.out.write(json.dumps(({'error_login': False})))
+			if not user:
+				ajaxResponse['error_login_msg'] = "The given informations don't match any user"
+				ajaxResponse['error_login'] = True
 
 			else:
-				#Render same page for user correction
-				error_msg =  "The given informations don't match any user"
-				self.response.out.write(json.dumps(({'error_login': True, 'error_login_msg': error_msg})))
+				self.jumpIn(user)
+
+		self.response.out.write(json.dumps(ajaxResponse))
 
 
 class LogOut(MainHandler):

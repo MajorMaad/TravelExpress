@@ -1,3 +1,9 @@
+# This module ensure data received from the client are correct for 
+# a new user to sign up
+# a user to log in 
+# representation of data to string is also provided
+
+
 from src.user import User
 
 class CheckSignUp():
@@ -59,4 +65,37 @@ class CheckSignUp():
 		for key in data:
 			s = s+"%s : %r \n" %(key, data[key])
 
-		return s 
+		return s
+
+
+class CheckLogIn():
+
+
+	def check(self, data):
+		ajaxResponse = {}
+		error = False
+
+		
+		#Ensure user has enter a nickname or email address
+		if not data['nickname']:
+			ajaxResponse['error_login_msg'] =  "You must enter a nickname or an e-mail address"
+			error = True			
+
+		#Ensure user has enter a password
+		elif not data['password']:
+			ajaxResponse['error_login_msg'] = "You must enter your password"
+			error = True			
+
+		ajaxResponse['error_login'] = error
+
+		return ajaxResponse
+		
+
+	def toString(self, data):
+		s = ''
+		for key in data:
+			s = s+"%s : %r \n" %(key, data[key])
+
+		return s
+
+
