@@ -4,8 +4,17 @@
 <!-- Success or error banner -->
 {% if travel_ok == True %}
 	<div class="alert alert-success" role="alert">
-    	<strong>Done !</strong> Travel successfully added. <a href="/">Home</a>
+    	<strong>Done !</strong> 
+    	Travel successfully added. Redirection to the home page in 3 seconds
     </div>
+
+    <script>
+	    window.setTimeout(function(){
+		    window.location.href = "/";
+	    }, 3000);
+    </script>
+
+
 {% elif travel_ok == False %}
 	<div class="alert alert-danger" role="alert">
     	<strong>Oups !</strong> There has been an error.
