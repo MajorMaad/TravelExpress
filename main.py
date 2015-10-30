@@ -402,6 +402,8 @@ class AddUserToTravel(MainHandler):
 		self.user_id = self.user.key().id()
 		self.travel_id = int(self.request.get('travel_id'))
 		self.places_reservation = int(self.request.get('places_reservation'))
+		
+
 		added = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
 
 		if added:
