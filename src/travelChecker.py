@@ -2,9 +2,8 @@ from src.travel import *
 
 
 # This class checks if all required information is well given
-class CheckAddTravel():
-
-
+# Available for a new travel and a change upon an existing travel
+class CheckTravel():
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']
 		self.arrival 			= data['arrival']
@@ -41,8 +40,8 @@ class CheckAddTravel():
 
 		hour = int(self.departure_hour)
 		minutes = int(self.departure_minutes)
-
 		departure_datetime = datetime.datetime(year, month, day, hour, minutes)
+
 		checkingResult['datetime_departure'] = departure_datetime
 
 		now = datetime.datetime.now()
@@ -51,9 +50,7 @@ class CheckAddTravel():
 		if departure_datetime <= now:
 			checkingResult['error_datetime'] = "Wrong Date / Time"
 			error = True
-		
-		
-
+	
 		#price checking
 		try:
 			self.price = int(self.price)
@@ -80,9 +77,9 @@ class CheckAddTravel():
 
 		return checkingResult
 
-class CheckSearchTravel():
 
-	
+
+class CheckSearchTravel():	
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']
 		self.arrival 			= data['arrival']
@@ -144,9 +141,4 @@ class CheckSearchTravel():
 		else:
 			checkingResult['big_luggage_ok'] = False
 
-
-
 		return checkingResult
-
-
-

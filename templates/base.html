@@ -83,9 +83,8 @@
 		{% endif %}
 
 
-		
-		{% if not choice %}
-			<!-- Display Quick links -->
+		<!-- Display Quick links -->
+		{% if not choice %}			
 			<div id="quickLinks" class="row">
 
 				<div class="col-xs-12 col-sm-6 col-md-4">
@@ -113,14 +112,24 @@
 				</div>
 
 			</div>
+
+		<!-- Or display specific functionnalities -->
+
+		<!-- Add a travel -->
 		{% elif choice == "add" %}
 			{% include "addTravel.html" with context %}
 
+		<!-- Look for a travel -->
 		{% elif choice == "search" %}
 			{% include "searchTravel.html" with context %}
 
+		<!-- Display result of a research -->
 		{% elif choice == "resultSearch" %}
 			{% include "resultSearch.html" with context %}
+
+		<!-- Modify a registered travel, owned by user -->
+		{% elif choice == "modify" %}
+			{% include "modifyTravel.html" with context %}
 
 		{% elif choice == "settings" %}
 			<h1> settings travel section </h1>
