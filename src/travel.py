@@ -1,4 +1,14 @@
-# Class describing a travel publication
+#########################################################################
+# This module describe the model used in database to represent a travel
+# Ensure : 
+# 	* Creation
+# 	* Research in DB
+# 	* Modification
+# 	* Destruction
+#########################################################################
+
+
+
 from google.appengine.ext import db
 import datetime
 
@@ -9,6 +19,7 @@ def travel_key(name = 'default'):
 
 class Travel(db.Model):
 
+	# Attributes of a travel for the database
 	user_id = db.IntegerProperty(required = True)
 	departure = db.StringProperty(required = True)
 	arrival = db.StringProperty(required = True)
@@ -21,6 +32,12 @@ class Travel(db.Model):
 	big_luggage_ok = db.BooleanProperty(required = True)
 	bookers_id = db.ListProperty(int)
 
+
+
+	############################
+	### RESEARCH 	METHODS  ###
+	############################
+
 	@classmethod
 	def by_id(cls, tid):
 		return Travel.get_by_id(tid, parent = travel_key())
@@ -29,6 +46,11 @@ class Travel(db.Model):
 	@classmethod
 	def by_passenger(cls, user_id):
 		return Travel.all().filter('bookers_id =', user_id).order('datetime_departure')
+
+	# Show my travel (driver)
+	@classmethod
+	def by_author(cls, user_id):
+		return Travel.all().filter('user_id =', user_id).order('datetime_departure')
 
 	# Look for a travels
 	@classmethod
@@ -53,6 +75,12 @@ class Travel(db.Model):
 
 		return query.order('datetime_departure')
 
+
+
+	############################
+	### 	ADDING METHODS 	 ###
+	############################
+
 	# Add a user to a travel
 	@classmethod
 	def add_user(cls, user_id, travel_id, places):
@@ -64,13 +92,7 @@ class Travel(db.Model):
 			travel.bookers_id.append(user_id)
 			travel.places_remaining -= places
 			travel.put()
-			return True
-
-
-	# Show my travel (driver)
-	@classmethod
-	def by_author(cls, user_id):
-		return Travel.all().filter('user_id =', user_id).order('datetime_departure')
+			return True	
 
 	# Add a travel
 	@classmethod
@@ -91,6 +113,10 @@ class Travel(db.Model):
 		travel.put()
 		return travel
 
+	############################
+	### MODIFICATION METHODS ###
+	############################
+
 	# Modify a travel
 	@classmethod
 	def modify_travel(cls, travel_id, travel_data):
@@ -108,6 +134,10 @@ class Travel(db.Model):
 
 		travel.put()
 		return travel
+
+	############################
+	### 	DELETE METHODS 	 ###
+	############################
 
 	# Delete a travel
 	@classmethod

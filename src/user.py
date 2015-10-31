@@ -1,4 +1,14 @@
-# Class describing a user
+#########################################################################
+# This module describe the model used in database to represent a user
+# Ensure : 
+# 	* Creation	
+# 	* Password hashing
+# 	* Research in DB
+# 	* Modification
+# 	* Destruction
+#########################################################################
+
+
 from google.appengine.ext import db
 from string import letters
 import random
@@ -7,9 +17,9 @@ import hashlib
 import logging
 
 
-
-def user_key(name = 'default'):
-	return db.Key.from_path('user', name)
+############################
+### HASHING 	METHODS  ###
+############################
 
 def make_pw_hash(nickName, pw, salt=None):
 	if not salt:
@@ -21,13 +31,29 @@ def reverse_pw(nickName, password, hashed_pw):
 	salt = hashed_pw.split(',')[0]
 	return hashed_pw == make_pw_hash(nickName, password, salt)
 
+
+
+
+
+
+def user_key(name = 'default'):
+	return db.Key.from_path('user', name)
+
+
 class User(db.Model):
+
+	# Attributes of a user in database
 	name = db.StringProperty(required = False)
 	firstName = db.StringProperty(required = False)
 	nickName = db.StringProperty(required = True)
 	email = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
 
+
+
+	############################
+	### RESEARCH 	METHODS  ###
+	############################
 
 	@classmethod
 	def by_id(cls, uid):
@@ -49,7 +75,13 @@ class User(db.Model):
 	def by_email(cls, email):
 		return User.all().filter('email =', email).get()
 
-	@classmethod
+
+
+	########################
+	### 	ADD METHODS  ###
+	########################
+
+	@classmethod	
 	def register(cls, user_data):
 		#Hash the user password :
 		hash_pwd = make_pw_hash(user_data['nickName'], user_data['password'])
@@ -60,6 +92,11 @@ class User(db.Model):
 					nickName = user_data['nickName'],
 					email = user_data['email'],
 					password = hash_pwd);
+
+
+	###########################
+	### CONNECT 	METHOD  ###
+	###########################
 
 	@classmethod
 	def logIn(cls, user_data, password, is_email):

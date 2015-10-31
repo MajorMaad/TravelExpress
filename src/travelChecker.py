@@ -1,8 +1,18 @@
+#####################################################################
+# This module ensure data received from the client are correct for :
+# 	* add a new travel
+# 	* modify a travel
+# 	* look for a travel
+#####################################################################
+
+
+
 from src.travel import *
 
 
-# This class checks if all required information is well given
-# Available for a new travel and a change upon an existing travel
+############################################
+### NEW AND MODIFICATION PROCESS CHECKER ###
+############################################
 class CheckTravel():
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']
@@ -78,7 +88,9 @@ class CheckTravel():
 		return checkingResult
 
 
-
+################################
+### RESEARCH PROCESS CHECKER ###
+################################
 class CheckSearchTravel():	
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']

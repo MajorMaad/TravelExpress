@@ -1,19 +1,23 @@
-# This module ensure data received from the client are correct for 
-# a new user to sign up
-# a user to log in 
-# representation of data to string is also provided
+#####################################################################
+# This module ensure data received from the client are correct for :
+# 	* a new user to sign up
+# 	* a user to log in 
+# 	* representation of data to string is also provided
+#####################################################################
 
 
 from src.user import User
 
+
+# Check if the SignUpForm.html is correctly completed
 class CheckSignUp():
 
-
+	# Check data fill in the form andsend back a dictionnary
 	def check(self, data):
 		ajaxResponse = {}
 		error = False
 
-		#Check for empty fields and respond with the correct message
+		#Check for empty fields and bind specific error message
 		if not data['nickName']:
 			ajaxResponse['error_notif_nick'] = True
 			ajaxResponse['error_nick_msg'] = "You must enter a nickname"
@@ -64,18 +68,17 @@ class CheckSignUp():
 		s = ''
 		for key in data:
 			s = s+"%s : %r \n" %(key, data[key])
-
 		return s
 
 
+# Check if the logInForm.html is correctly completed
 class CheckLogIn():
 
-
+	# Check data fill in the form andsend back a dictionnary
 	def check(self, data):
 		ajaxResponse = {}
 		error = False
 
-		
 		#Ensure user has enter a nickname or email address
 		if not data['nickname']:
 			ajaxResponse['error_login_msg'] =  "You must enter a nickname or an e-mail address"
@@ -87,7 +90,6 @@ class CheckLogIn():
 			error = True			
 
 		ajaxResponse['error_login'] = error
-
 		return ajaxResponse
 		
 
@@ -95,7 +97,4 @@ class CheckLogIn():
 		s = ''
 		for key in data:
 			s = s+"%s : %r \n" %(key, data[key])
-
 		return s
-
-
