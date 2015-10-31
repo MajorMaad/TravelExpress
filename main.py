@@ -444,6 +444,39 @@ class MyProfile(MainHandler):
 		else:
 			self.render('base.html', user=self.user, choice="userPage")
 
+	# Handle user modification
+	def post(self):
+		data = json.loads(self.request.body)
+
+		
+		response = {}
+		response['error'] = False
+
+		if data['attr'] == 'name':
+			self.user.name = data['value']
+			self.user.put()
+
+		elif data['attr'] == 'firstName':
+			self.user.firstName = data['value']
+			self.user.put()		
+
+		elif data['attr'] == 'email':
+			alreadyUsed = User.by_email(data['value'])
+			if alreadyUsed:
+				response['error'] = True
+				response['error_msg'] = "Email address already used"
+
+			else:
+				self.user.email = data['value']
+				self.user.put()						
+
+		
+		self.response.out.write(json.dumps(response))	
+
+
+
+
+
 
 
 # URL handler dispatcher

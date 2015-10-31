@@ -11,3 +11,11 @@
 	justify-content: space-between;
 }
 
+.popup 
+{
+    display:none;
+    position:absolute;
+    width:500px;
+    height:250px;
+}  
+

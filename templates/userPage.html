@@ -2,6 +2,23 @@
 <link rel="stylesheet" type="text/css" href="../scripts/userPage.css">
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
+<!-- inclusion of relatives functions -->
+<script type="text/javascript" src="/scripts/js/tools.js" ></script>
+
+
+<!-- Success or error banner -->
+
+<div id="changeSuccess" class="alert alert-success" role="alert" style="display:none">
+	<strong>Done !</strong> 
+	Modification correctly saved. This page will now refresh
+</div>
+
+<div id="changeError" class="alert alert-danger" role="alert" style="display:none">
+	<strong>Oups !</strong> There has been an error.
+</div>
+
+
+
 
 <div class="jumbotron container-fluid">
 	<h1 class="text-primary">{{user.nickName}} Profile</h1>
@@ -10,7 +27,7 @@
 
 
 		<!-- Name section -->
-		<div class="panel panel-primary">
+		<div class="panel panel-info">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-8">
@@ -18,23 +35,28 @@
 					</div>
 
 					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" >
+						<button class="btn btn-warning" onclick="openDiv('enterName');">
 							<span class="glyphicon glyphicon-edit"></span>
-						</a>
-			        </div>
-		        </div>
-		    </div>
-
-		    <div class="panel-body">
-				<div class="inline_panel">
-					<p><strong>{{user.name}}</strong></p>
+						</button>
+					</div>
 				</div>
 			</div>
+
+			<div class="panel-body">				
+				<p style="float:left" ><strong>{{user.name}}</strong></p>				
+			</div>
+
+			<div id="enterName" class="panel-footer userData" style="display:none">	
+				<input id="newName" class="panel-title" style="float:left" ></input>
+				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('name', 'newName', 'enterName');">Change</button>
+				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterName');">Cancel</button>
+			</div>
+
 		</div>
 
 
 		<!-- FirstName section -->
-		<div class="panel panel-primary">
+		<div class="panel panel-info">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-8">
@@ -42,23 +64,28 @@
 					</div>
 
 					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" >
+						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterFirstname');" >
 							<span class="glyphicon glyphicon-edit"></span>
 						</a>
-			        </div>
-		        </div>
-		    </div>
-
-		    <div class="panel-body">
-				<div class="inline_panel">
-					<p><strong>{{user.firstName}}</strong></p>
+					</div>
 				</div>
 			</div>
+
+			<div class="panel-body">
+				<p style="float:left"><strong>{{user.firstName}}</strong></p>				
+			</div>
+
+			<div id="enterFirstname" class="panel-footer userData" style="display:none">	
+				<input id="newFirstname" class="panel-title" style="float:left" ></input>
+				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('firstName', 'newFirstname', 'enterFirstname');">Change</button>
+				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterFirstname');">Cancel</button>
+			</div>
+
 		</div>
 
 
 		<!-- Email section -->
-		<div class="panel panel-primary">
+		<div class="panel panel-info">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-8">
@@ -66,27 +93,27 @@
 					</div>
 
 					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" >
+						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterEmail');">
 							<span class="glyphicon glyphicon-edit"></span>
 						</a>
-						<span>		</span>
-						<a type="button" href="#" class="btn btn-danger" >
-							<span class="glyphicon glyphicon-ban-circle"></span>
-						</a>
-			        </div>
-		        </div>
-		    </div>
-
-		    <div class="panel-body">
-				<div class="inline_panel">
-					<p><strong>{{user.email}}</strong></p>
+					</div>
 				</div>
+			</div>
+
+			<div class="panel-body">
+				<p style="float:left"><strong>{{user.email}}</strong></p>				
+			</div>
+
+			<div id="enterEmail" class="panel-footer userData" style="display:none">	
+				<input id="newEmail" class="panel-title" style="float:left" ></input>
+				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('email', 'newEmail', 'enterEmail');">Change</button>
+				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterEmail');">Cancel</button>
 			</div>
 		</div>
 
 
 		<!-- Change password section -->
-		<div class="panel panel-primary">
+		<div class="panel panel-info">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-8">
@@ -97,17 +124,74 @@
 						<a type="button" href="#" class="btn btn-warning" >
 							<span class="glyphicon glyphicon-edit"></span>
 						</a>
-			        </div>
-		        </div>
-		    </div>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 	</div>
-
-
 	
 	<div class="col-md-6">
 		<h1>PROUT</h1>
 	</div>
 
 </div>
+
+
+
+
+<script>
+
+
+function openDiv(divName){
+	console.log('open call');
+	var targetDiv = document.getElementById(divName);
+	targetDiv.style.display = 'block';
+}
+
+function closeDiv(divName){
+	console.log('close call');
+	var targetDiv = document.getElementById(divName);
+	targetDiv.style.display = 'none';
+	targetDiv.firstChild.data = '';
+}
+
+function submitChange(attr, inputID, targetDiv){
+
+	var input = document.getElementById(inputID);
+	var inputData = input.value;
+
+	if (attr == 'email' && ! validateEmail(inputData) ){
+		$("#changeError").append("Email address is not valid");
+		openDiv('changeError');
+		$("#changeError").fadeOut(5000);
+		return false;
+	}
+
+
+	$.ajax({
+	  type: "POST",
+	  url: "/myProfile",
+	  dataType: 'json',
+	  data: JSON.stringify({ "attr": attr, "value": inputData})
+	})
+	.done(function( data ) { 		
+		console.log("function has returned");
+
+		if (data['error']){
+			$("#changeError").append(data['error_msg']);
+			openDiv('changeError');
+			$("#changeError").fadeOut(5000);
+		}else{
+			openDiv('changeSuccess');
+			closeDiv(targetDiv);
+
+			window.setTimeout(function(){
+				location.reload();
+			}, 1500);
+		}
+	});
+
+}
+
+</script>
