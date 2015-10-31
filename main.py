@@ -44,6 +44,15 @@ def render_str(template, **params):
 # Hmac secret key
 secret = 'thisIsReallyABigSecret'
 
+
+
+############################
+### 	MAIN HANDLER 	 ###
+############################
+
+# Mother handler class
+# Render template with the kinka main rendering function
+# Manage user connection and disconnection via securecookies
 class MainHandler(webapp2.RequestHandler):
 
 	#Overwrite the initialize method of webapp2
@@ -54,17 +63,21 @@ class MainHandler(webapp2.RequestHandler):
 		self.user = uid and User.by_id(int(uid))
 
 
-	#Function called when a user sign up or logged in
-	#Associate a cookie encrypted
+
+	############################
+	### 	SECURE COOKIE 	 ###
+	############################	
+
+	# Function called when a user sign up or logged in : Associate a cookie encrypted
 	def set_secure_cookie(self, name, db_id):
 		cookie_val = self.make_secure_val(db_id)
 		self.response.headers.add_header('Set-Cookie', '%s=%s; Path=/' % (name, cookie_val))
 
-	#Encryption of a cookie : The seed is the database ID of the user
+	# Encryption of a cookie : The seed is the database ID of the user
 	def make_secure_val(self, db_id):
 		return '%s|%s' % (db_id, hmac.new(secret, db_id).hexdigest())
 
-	#Uncryption of a secure cookie
+	# Decryption of a secure cookie
 	def read_secure_cookie(self, name):
 		cookie_val = self.request.cookies.get(name)
 		# If there is a cookie, ensure that it is valid and return the seed of the encryption (ie, the DataBase ID of the user logged in)
@@ -78,6 +91,9 @@ class MainHandler(webapp2.RequestHandler):
 		return False
 
 
+	############################
+	### HTTP METHOD HANDLER	 ###
+	############################	
 
 	def get(self, **params):
 		success_booking = self.request.get('success_booking')
@@ -86,23 +102,32 @@ class MainHandler(webapp2.RequestHandler):
 		else:
 			self.render('base.html', **params)
 
-	def post(self):
-		self.response.out.write("main post ")
+
+	############################
+	### JINJA 	RENDERING 	 ###
+	############################	
 
 	def render(self, template, **params):
 		self.response.out.write(render_str(template, **params))
 
 
+	############################
+	### 	USER SESSION 	 ###
+	############################	
+
 	#Set a cookie for the user who just jumped in (via SignUp or LogIn)
-	#Redirection is done via ajax method
 	def jumpIn(self, user):
 		self.set_secure_cookie('user_id', db_id=str(user.key().id()))
+		# Redirection is done via ajax method
 
 
 	#Log out th euser via a reset of the cookie
 	def doExit(self):
 		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 		self.redirect('/')
+
+
+
 
 
 
@@ -178,11 +203,15 @@ class LogOut(MainHandler):
 
 # Add a new travel as a driver
 class AddTravel(MainHandler):
+	####################################################
+	# Render the html template bind to choice == "add" #
+	####################################################
 
-	def get(self):		
+	def get(self):	
 		self.render('base.html', user = self.user, choice="add", datetime_departure = datetime.datetime.now())
 
 	def post(self):
+		# Save data into a dictionnary
 		data = {}
 		data['departure'] = self.request.get('departure')
 		data['arrival'] = self.request.get('arrival')
@@ -196,6 +225,7 @@ class AddTravel(MainHandler):
 
 		self.seats = self.request.get('seats')
 
+		# Check data via a dedicated agent
 		travelerAgent = CheckTravel(data)
 		checkedResult = travelerAgent.check()
 
@@ -207,6 +237,7 @@ class AddTravel(MainHandler):
 				**checkedResult)
 
 		else:
+			# Register the new travel into DB
 			travel_data = {
 				'user_id'			: self.user.key().id(),
 				'departure'			: data['departure'],
@@ -219,8 +250,8 @@ class AddTravel(MainHandler):
 				'smoking'			: checkedResult['smoking_ok'],
 				'luggage'			: checkedResult['big_luggage_ok']
 			}
+			travel = Travel.add_travel(travel_data)	
 
-			travel = Travel.add_travel(travel_data)			
 			self.render('base.html', 
 							user = self.user, 
 							choice = "add",
@@ -230,6 +261,9 @@ class AddTravel(MainHandler):
 
 # Modify an owned travel
 class ModifyTravel(MainHandler):
+	#######################################################
+	# Render the html template bind to choice == "modify" #
+	#######################################################
 
 	def get(self):
 		self.travel_id = int(self.request.get('id'))
@@ -239,6 +273,7 @@ class ModifyTravel(MainHandler):
 	def post(self):
 		self.travel_id = int(self.request.get('travel_id'))
 
+		# Save data into a dictionnary
 		data = {}
 		data['departure'] = self.request.get('departure')
 		data['arrival'] = self.request.get('arrival')
@@ -253,6 +288,7 @@ class ModifyTravel(MainHandler):
 		self.seats = self.request.get('seats')
 
 		# Tests to change a travel are same to a new Travel
+		# So the agent is the same as the one used in AddTravel
 		travelerAgent = CheckTravel(data)
 		checkedResult = travelerAgent.check()
 
@@ -265,6 +301,7 @@ class ModifyTravel(MainHandler):
 				**checkedResult)
 
 		else:
+			# Bring changes to the targeted travel
 			travel_data = {
 				'user_id'			: self.user.key().id(),
 				'departure'			: data['departure'],
@@ -283,20 +320,18 @@ class ModifyTravel(MainHandler):
 
 # Look for a travel
 class SearchTravel(MainHandler):
+	#######################################################
+	# Render the html template bind to choice == "search" #
+	#######################################################
+
 
 	def get(self):
 		today = datetime.datetime.now().strftime("%Y-%m-%d")
 		success_booking = self.request.get('success_booking')
-
-		# self.render('searchTravel.html', user = self.user, today = today, success_booking = success_booking)
-		self.render('base.html', 
-					user = self.user,
-					choice = "search",
-					today = today,
-					success_booking = success_booking)
+		self.render('base.html', user = self.user, choice = "search", today = today, success_booking = success_booking)
 
 	def post(self):
-
+		# Save data into dictionnary
 		data = {}
 		data['departure'] = self.request.get('departure')
 		data['arrival'] = self.request.get('arrival')
@@ -307,7 +342,7 @@ class SearchTravel(MainHandler):
 		data['smoking'] = self.request.get('smoking')
 		data['luggage'] = self.request.get('luggage')
 
-
+		# Check data via a dediacted agent
 		searchAgent = CheckSearchTravel(data)
 		checkedResult = searchAgent.check()
 
@@ -322,6 +357,7 @@ class SearchTravel(MainHandler):
 				today = today)
 
 		else:
+			# Get back travels that match the filter
 			travels = Travel.by_filter(data['departure'], 
 										data['arrival'], 
 										checkedResult['date_min'], 
@@ -345,6 +381,11 @@ class DeleteTravel(MainHandler):
 
 # Register for a travel as a traveller
 class AddUserToTravel(MainHandler):
+	#######################################################
+	# Render the html template bind to choice == "search" #
+	# Implicit rendering 
+	# --> cf redirect on SearchTravel class
+	#######################################################
 
 	def post(self):
 		self.user_id = self.user.key().id()
@@ -361,6 +402,9 @@ class AddUserToTravel(MainHandler):
 
 # Show my travels as a driver
 class ShowDriverTravels(MainHandler):
+	##############################################################
+	# Render the html template bind to choice == "driverTravels" #
+	##############################################################
 
 	def get(self):
 		travels = Travel.by_author(self.user.key().id())
@@ -369,6 +413,9 @@ class ShowDriverTravels(MainHandler):
 
 # Show my travels as a traveller
 class ShowTravelerTravels(MainHandler):
+	################################################################
+	# Render the html template bind to choice == "travelerTravels" #
+	################################################################
 
 	def get(self):
 		travels = Travel.by_passenger(self.user.key().id())
