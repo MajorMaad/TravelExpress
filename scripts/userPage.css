@@ -1,0 +1,13 @@
+/* CSS for userPage.html file */
+
+.userDataSection {
+	display:flex;
+	flex-direction:column;
+}
+
+.userData {
+	display: flex;
+	flex-direction:row;
+	justify-content: space-between;
+}
+

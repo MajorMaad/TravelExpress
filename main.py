@@ -198,7 +198,7 @@ class LogOut(MainHandler):
 
 
 ############################
-### TRAVELS HANDLER ###
+### 	TRAVELS HANDLER  ###
 ############################
 
 # Add a new travel as a driver
@@ -432,6 +432,18 @@ class ShowTravelerTravels(MainHandler):
 
 
 
+############################
+###  USER-PAGE HANDLER   ###
+############################
+
+class MyProfile(MainHandler):
+
+	def get(self):
+		if not self.user:
+			self.redirect('/')
+		else:
+			self.render('base.html', user=self.user, choice="userPage")
+
 
 
 # URL handler dispatcher
@@ -445,5 +457,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/modifyTravel', ModifyTravel),
 								('/searchTravel', SearchTravel),
 								('/addUserToTravel', AddUserToTravel),
-								('/travelerTravels', ShowTravelerTravels)],
+								('/travelerTravels', ShowTravelerTravels),
+								('/myProfile', MyProfile)],
 								debug=True)

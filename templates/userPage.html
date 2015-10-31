@@ -1,3 +1,113 @@
-<div class="jumbotron">
-	<h1 class="text-primary">User Profile</h1>
+<!-- Include of the dedicated stylesheet -->
+<link rel="stylesheet" type="text/css" href="../scripts/userPage.css">
+<link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
+
+
+<div class="jumbotron container-fluid">
+	<h1 class="text-primary">{{user.nickName}} Profile</h1>
+
+	<div class="col-md-6 container userDataSection">
+
+
+		<!-- Name section -->
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title" style="float:left" ><strong>Name </strong></h3>
+					</div>
+
+					<div class="btn-group">
+						<a type="button" href="#" class="btn btn-warning" >
+							<span class="glyphicon glyphicon-edit"></span>
+						</a>
+			        </div>
+		        </div>
+		    </div>
+
+		    <div class="panel-body">
+				<div class="inline_panel">
+					<p><strong>{{user.name}}</strong></p>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- FirstName section -->
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title" style="float:left" ><strong>Firstname </strong></h3>
+					</div>
+
+					<div class="btn-group">
+						<a type="button" href="#" class="btn btn-warning" >
+							<span class="glyphicon glyphicon-edit"></span>
+						</a>
+			        </div>
+		        </div>
+		    </div>
+
+		    <div class="panel-body">
+				<div class="inline_panel">
+					<p><strong>{{user.firstName}}</strong></p>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Email section -->
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title" style="float:left" ><strong>Email address </strong></h3>
+					</div>
+
+					<div class="btn-group">
+						<a type="button" href="#" class="btn btn-warning" >
+							<span class="glyphicon glyphicon-edit"></span>
+						</a>
+						<span>		</span>
+						<a type="button" href="#" class="btn btn-danger" >
+							<span class="glyphicon glyphicon-ban-circle"></span>
+						</a>
+			        </div>
+		        </div>
+		    </div>
+
+		    <div class="panel-body">
+				<div class="inline_panel">
+					<p><strong>{{user.email}}</strong></p>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Change password section -->
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title" style="float:left" ><strong>Change Password ?</strong></h3>
+					</div>
+
+					<div class="btn-group">
+						<a type="button" href="#" class="btn btn-warning" >
+							<span class="glyphicon glyphicon-edit"></span>
+						</a>
+			        </div>
+		        </div>
+		    </div>
+		</div>
+		
+	</div>
+
+
+	
+	<div class="col-md-6">
+		<h1>PROUT</h1>
+	</div>
+
 </div>

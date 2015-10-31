@@ -105,7 +105,7 @@
 
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<!-- Choice will be "settings" -->
-					<a href="#" class="thumbnail">
+					<a href="/myProfile" class="thumbnail">
 						<img src="scripts/img/parameters_thumbnail.jpg" alt="Settings">
 						<h3>Settings</h3>
 					</a>
@@ -139,8 +139,10 @@
 		{% elif choice == "modify" %}
 			{% include "modifyTravel.html" with context %}
 
-		{% elif choice == "settings" %}
-			<h1> settings travel section </h1>
+
+		<!-- Access User profile page -->
+		{% elif choice == "userPage" %}
+			{% include "userPage.html" with context %}
 
 		{% endif %}
 
