@@ -23,6 +23,13 @@ import datetime
 import json
 
 
+# Personnal imports :
+from src.user import *
+from src.travel import *
+from src.registration import *
+from src.travelChecker import *
+
+
 # Template Jinja2 stuff :
 import jinja2
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -34,14 +41,7 @@ def render_str(template, **params):
 	t = jinja_env.get_template(template)
 	return t.render(params)
 
-
-#Import des sources
-from src.user import *
-from src.travel import *
-from src.registration import *
-from src.travelChecker import *
-
-
+# Hmac secret key
 secret = 'thisIsReallyABigSecret'
 
 class MainHandler(webapp2.RequestHandler):
@@ -106,9 +106,11 @@ class MainHandler(webapp2.RequestHandler):
 
 
 
+############################
+### REGISTRATION HANDLER ###
+############################
 
-#This class handle the registration of a new user
-#Inheritance of MainHandler to get the webapp2 module and the render function and overwrites post method
+# Registration of a new user
 class SignUp(MainHandler):
 
 	def get(self):
@@ -133,7 +135,7 @@ class SignUp(MainHandler):
 
 
 
-#This class handle the login of a registered user
+# Login of a registered user
 class LogIn(MainHandler):
 
 	def get(self):
@@ -161,7 +163,7 @@ class LogIn(MainHandler):
 		self.response.out.write(json.dumps(ajaxResponse))
 
 
-# this lass provide a way to user to disconnect from the session
+# Disconnect logged in user
 class LogOut(MainHandler):
 
 	def get(self):
@@ -170,9 +172,11 @@ class LogOut(MainHandler):
 
 
 
+############################
+### TRAVELS HANDLER ###
+############################
 
-
-
+# Add a new travel as a driver
 class AddTravel(MainHandler):
 
 	def get(self):		
@@ -224,22 +228,7 @@ class AddTravel(MainHandler):
 							datetime_departure = datetime.datetime.now())
 
 
-
-class ShowDriverTravels(MainHandler):
-
-	def get(self):
-		travels = Travel.by_author(self.user.key().id())
-		self.render('driverTravels.html', user = self.user, travels = travels)
-
-
-class DeleteTravel(MainHandler):
-
-	def get(self):
-		self.travel_id = int(self.request.get('id'))
-		Travel.remove_travel(self.travel_id, self.user.key().id())
-		self.redirect('/')
-
-
+# Modify an owned travel
 class ModifyTravel(MainHandler):
 
 	def get(self):
@@ -249,7 +238,7 @@ class ModifyTravel(MainHandler):
 
 	def post(self):
 		self.travel_id = int(self.request.get('travel_id'))
-		
+
 		data = {}
 		data['departure'] = self.request.get('departure')
 		data['arrival'] = self.request.get('arrival')
@@ -292,7 +281,7 @@ class ModifyTravel(MainHandler):
 			self.render('base.html', user = self.user, choice = 'modify', travel = Travel.by_id(self.travel_id), travel_ok = True)
 
 
-
+# Look for a travel
 class SearchTravel(MainHandler):
 
 	def get(self):
@@ -339,20 +328,28 @@ class SearchTravel(MainHandler):
 										checkedResult['animal_ok'], 
 										checkedResult['smoking_ok'],
 										checkedResult['big_luggage_ok'])
-			# self.render('resultSearch.html', user = self.user, choice = "search", travels = travels)
 			self.render('base.html', 
 						user = self.user,
 						choice = "resultSearch", 
 						travels = travels)
 
 
+# Delete a previously created travel
+class DeleteTravel(MainHandler):
+
+	def get(self):
+		self.travel_id = int(self.request.get('id'))
+		Travel.remove_travel(self.travel_id, self.user.key().id())
+		self.redirect('/')
+
+
+# Register for a travel as a traveller
 class AddUserToTravel(MainHandler):
 
 	def post(self):
 		self.user_id = self.user.key().id()
 		self.travel_id = int(self.request.get('travel_id'))
-		self.places_reservation = int(self.request.get('places_reservation'))
-		
+		self.places_reservation = int(self.request.get('places_reservation'))		
 
 		added = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
 
@@ -362,7 +359,15 @@ class AddUserToTravel(MainHandler):
 			self.redirect('/searchTravel?success_booking=False')
 
 
+# Show my travels as a driver
+class ShowDriverTravels(MainHandler):
 
+	def get(self):
+		travels = Travel.by_author(self.user.key().id())
+		self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+
+
+# Show my travels as a traveller
 class ShowTravelerTravels(MainHandler):
 
 	def get(self):
@@ -375,14 +380,14 @@ class ShowTravelerTravels(MainHandler):
 			couple_travel_mail = (travel.key().id(), driver_mail)
 			travel_id_email.append(couple_travel_mail)
 
-		self.render('travelerTravels.html', user = self.user, travels = travels, couples_id_mail = travel_id_email)
+		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = travels, couples_id_mail = travel_id_email)
 
 
 
 
 
 
-
+# URL handler dispatcher
 app = webapp2.WSGIApplication([('/', MainHandler),
 								('/signUp', SignUp),
 								('/logIn', LogIn),

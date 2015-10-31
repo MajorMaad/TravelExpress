@@ -127,6 +127,14 @@
 		{% elif choice == "resultSearch" %}
 			{% include "resultSearch.html" with context %}
 
+		<!-- Display travels where driver === user -->
+		{% elif choice == "driverTravels" %}
+			{% include "driverTravels.html" with context %}
+
+		<!-- Display travels where user != driver -->
+		{% elif choice == "travelerTravels" %}
+			{% include "travelerTravels.html" with context %}
+
 		<!-- Modify a registered travel, owned by user -->
 		{% elif choice == "modify" %}
 			{% include "modifyTravel.html" with context %}
