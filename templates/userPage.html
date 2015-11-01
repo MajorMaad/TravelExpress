@@ -47,7 +47,7 @@
 			</div>
 
 			<div id="enterName" class="panel-footer userData" style="display:none">	
-				<input id="newName" class="panel-title" style="float:left" ></input>
+				<input id="newName" class="panel-title" style="float:left" placeholder='Enter your name'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('name', 'newName', 'enterName');">Change</button>
 				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterName');">Cancel</button>
 			</div>
@@ -76,7 +76,7 @@
 			</div>
 
 			<div id="enterFirstname" class="panel-footer userData" style="display:none">	
-				<input id="newFirstname" class="panel-title" style="float:left" ></input>
+				<input id="newFirstname" class="panel-title" style="float:left" placeholder='Enter your firstname'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('firstName', 'newFirstname', 'enterFirstname');">Change</button>
 				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterFirstname');">Cancel</button>
 			</div>
@@ -105,7 +105,7 @@
 			</div>
 
 			<div id="enterEmail" class="panel-footer userData" style="display:none">	
-				<input id="newEmail" class="panel-title" style="float:left" ></input>
+				<input id="newEmail" class="panel-title" style="float:left" placeholder='Enter the new email address'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('email', 'newEmail', 'enterEmail');">Change</button>
 				<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('enterEmail');">Cancel</button>
 			</div>
@@ -121,11 +121,25 @@
 					</div>
 
 					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" >
+						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('changePass');">
 							<span class="glyphicon glyphicon-edit"></span>
 						</a>
 					</div>
 				</div>
+			</div>
+
+			<div id="changePass" class="panel-footer" style="display:none">
+
+				<div class="userData">
+					<input id="oldPass" type="password" class="panel-title" style="float:left" placeholder='Enter the current password'></input>	
+					<button class="glyphicon glyphicon-ok-circle btn-success" onclick="changePassword('oldPass', 'newPass', 'changePass');">Change</button>				
+				</div>
+
+				<div class="userData">
+					<input id="newPass" type="password" class="panel-title" style="float:left" placeholder='Enter the new password'></input>
+					<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('changePass');">Cancel</button>							
+				</div>
+
 			</div>
 		</div>
 		
@@ -142,6 +156,13 @@
 
 <script>
 
+$(document).ready(function(e){
+
+	//Set an appropriate width to password input : match the placeholder
+	$("input[placeholder]").each(function () {
+        $(this).attr('size', $(this).attr('placeholder').length);
+    });
+});
 
 function openDiv(divName){
 	console.log('open call');
@@ -177,7 +198,6 @@ function submitChange(attr, inputID, targetDiv){
 		return false;
 	}
 
-
 	$.ajax({
 	  type: "POST",
 	  url: "/myProfile",
@@ -188,9 +208,14 @@ function submitChange(attr, inputID, targetDiv){
 		console.log("function has returned");
 
 		if (data['error']){
-			$("#changeError").append(data['error_msg']);
+			var error_div = document.getElementById('changeError');
+			error_div.lastChild.data = data['error_msg'];
+
 			openDiv('changeError');
-			$("#changeError").fadeOut(5000);
+			$("#changeError").fadeOut(5000, function(){
+				closeDiv('changeError');
+			});
+			
 		}else{
 			openDiv('changeSuccess');
 			closeDiv(targetDiv);
@@ -201,6 +226,40 @@ function submitChange(attr, inputID, targetDiv){
 		}
 	});
 
+}
+
+function changePassword(oldPassID, newPassID, targetDiv){
+
+	var oldPass = document.getElementById(oldPassID);
+	var newPass = document.getElementById(newPassID);
+
+	$.ajax({
+	  type: "POST",
+	  url: "/myProfile",
+	  dataType: 'json',
+	  data: JSON.stringify({ "attr": "changePWD", "oldPass": oldPass.value, "newPass": newPass.value})
+	})
+	.done(function( data ) { 		
+		console.log("function has returned");
+
+		if (data['error']){
+			var error_div = document.getElementById('changeError');
+			error_div.lastChild.data = data['error_msg'];
+
+			openDiv('changeError');
+			$("#changeError").fadeOut(5000, function(){
+				closeDiv('changeError');
+			});
+			
+		}else{
+			openDiv('changeSuccess');
+			closeDiv(targetDiv);
+
+			window.setTimeout(function(){
+				location.reload();
+			}, 1500);
+		}
+	});
 }
 
 </script>

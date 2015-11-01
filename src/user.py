@@ -110,6 +110,15 @@ class User(db.Model):
 			return user
 
 
+	@classmethod
+	def changePWD(cls, user, new_pass):
+		hash_pwd = make_pw_hash(user.nickName, new_pass)
+		return hash_pwd
+		
+
+
+
+
 
 
 

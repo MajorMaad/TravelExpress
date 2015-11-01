@@ -468,7 +468,26 @@ class MyProfile(MainHandler):
 
 			else:
 				self.user.email = data['value']
-				self.user.put()						
+				self.user.put()
+
+		elif data['attr'] == "changePWD":
+			# check if old password provide the log in functionnality
+			logTest = User.logIn(self.user.nickName, data['oldPass'], False)
+			
+			if logTest:
+
+				if data['newPass'] != '':						
+					# Change password
+					hashedPWD = self.user.changePWD(self.user, data['newPass'])
+					self.user.password = hashedPWD
+					self.user.put()
+				else:
+					response['error'] = True
+					response['error_msg'] = 'You must enter a new password'	
+
+			else:
+				response['error'] = True
+				response['error_msg'] = 'The old password is not good'
 
 		
 		self.response.out.write(json.dumps(response))	
