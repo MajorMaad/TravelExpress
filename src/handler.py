@@ -78,10 +78,6 @@ class MainHandler(webapp2.RequestHandler):
 
 	def get(self, **params):
 		success_booking = self.request.get('success_booking')
-		logging.info("##################################")
-		logging.info('Template file is'+template_dir)
-		logging.info("##################################")
-
 		if self.user:
 			self.render('base.html', user=self.user, success_booking = success_booking, **params)
 		else:
