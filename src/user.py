@@ -49,6 +49,13 @@ class User(db.Model):
 	email = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
 
+	# preferences of a user
+	animals = db.StringProperty(required = False)
+	smoking = db.StringProperty(required = False)
+	big_luggage = db.StringProperty(required = False)
+
+
+
 
 
 	############################
@@ -91,7 +98,10 @@ class User(db.Model):
 					firstName = user_data['firstName'],
 					nickName = user_data['nickName'],
 					email = user_data['email'],
-					password = hash_pwd);
+					password = hash_pwd,
+					animals = "ni",
+					smoking = "ni",
+					big_luggage = "ni");
 
 
 	###########################

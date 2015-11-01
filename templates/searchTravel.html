@@ -80,29 +80,57 @@
 
 			<div class="form-group col-md-12">
 				<h3>Animals</h3>
-				<label class="radio-inline col-md-3"><input type="radio" name="animals" value="ni" checked>Not important <img src="../scripts/img/not_important.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="animals" value="ok">Authorized  <img src="../scripts/img/animal.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="animals" value="nok">Prohibited  <img src="../scripts/img/no_animal.jpg"></label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="animals" value="ni" {% if user.animals == "ni" %}checked{% endif %}>Not important 
+					<img src="../scripts/img/not_important.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="animals" value="ok" {% if user.animals == "ok" %}checked{% endif %}>Authorized  
+					<img src="../scripts/img/animal.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="animals" value="nok" {% if user.animals == "nok" %}checked{% endif %}>Prohibited  
+					<img src="../scripts/img/no_animal.jpg">
+				</label>
 			</div>
 
 			<div class="form-group col-md-12">
 				<h3>Smoking</h3>
-				<label class="radio-inline col-md-3"><input type="radio" name="smoking" value="ni" checked>Not important <img src="../scripts/img/not_important.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="smoking" value="ok">Authorized  <img src="../scripts/img/smoking.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="smoking" value="nok">Prohibited  <img src="../scripts/img/no_smoking.jpg"></label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="smoking" value="ni" {% if user.smoking == "ni" %}checked{% endif %}>Not important 
+					<img src="../scripts/img/not_important.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="smoking" value="ok" {% if user.smoking == "ok" %}checked{% endif %}>Authorized  
+					<img src="../scripts/img/smoking.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="smoking" value="nok" {% if user.smoking == "nok" %}checked{% endif %}>Prohibited  
+					<img src="../scripts/img/no_smoking.jpg">
+				</label>
 			</div>
 
 			<div class="form-group col-md-12">
 				<h3>Luggage space</h3>
-				<label class="radio-inline col-md-3"><input type="radio" name="luggage" value="ni" checked>Not important <img src="../scripts/img/not_important.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="luggage" value="sm_bag">Small bag  <img src="../scripts/img/small_bag.jpg"></label>
-				<label class="radio-inline col-md-3"><input type="radio" name="luggage" value="suitcase">Suitcase  <img src="../scripts/img/suitcase.jpg"></label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="luggage" value="ni" {% if user.big_luggage == "ni" %}checked{% endif %}>Not important 
+					<img src="../scripts/img/not_important.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="luggage" value="sm_bag" {% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
+					<img src="../scripts/img/small_bag.jpg">
+				</label>
+				<label class="radio-inline col-md-3">
+					<input type="radio" name="luggage" value="suitcase" {% if user.big_luggage == "ok" %}checked{% endif %}>Suitcase  
+					<img src="../scripts/img/suitcase.jpg">
+				</label>
 			</div>
 
 		 </div>
 
 
 		<button type="submit" class="btn btn-success">
+
 			Search
 			<span class="glyphicon glyphicon-search"></span>
 		</button>

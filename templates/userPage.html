@@ -6,22 +6,23 @@
 <script type="text/javascript" src="/scripts/js/tools.js" ></script>
 
 
-<!-- Success or error banner -->
-
-<div id="changeSuccess" class="alert alert-success" role="alert" style="display:none">
-	<strong>Done !</strong> 
-	Modification correctly saved. This page will now refresh
-</div>
-
-<div id="changeError" class="alert alert-danger" role="alert" style="display:none">
-	<strong>Oups !</strong> There has been an error.
-</div>
 
 
 
 
 <div class="jumbotron container-fluid">
 	<h1 class="text-primary">{{user.nickName}} Profile</h1>
+
+	<!-- Success or error banner -->
+	<div id="changeSuccess" class="alert alert-success" role="alert" style="display:none">
+		<strong>Done !</strong> 
+		Modification correctly saved. This page will now refresh
+	</div>
+
+	<div id="changeError" class="alert alert-danger" role="alert" style="display:none">
+		<strong>Oups !</strong> There has been an error.
+	</div>
+
 
 	<div class="col-md-6 container userDataSection">
 
@@ -137,7 +138,7 @@
 
 				<div class="userData">
 					<input id="newPass" type="password" class="panel-title" style="float:left" placeholder='Enter the new password'></input>
-					<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('changePass');">Cancel</button>							
+					<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('changePass');">Cancel</button>					
 				</div>
 
 			</div>
@@ -149,6 +150,67 @@
 		<h1>PROUT</h1>
 	</div>
 
+</div>
+
+
+<div class="jumbotron container-fluid">
+	<h3> PREFERENCES :</h3>
+
+	<!-- Preference of the user -->
+	<div class="userDataSection" >
+		<label class="userPref"> 
+			Animals 
+			<select id="animals" name="prefAnimals">
+				<option value="ni" {% if user.animals == "ni" %} selected {% endif %}>
+					not important 
+				</option>
+				<option value="ok" {% if user.animals == "ok" %} selected {% endif %}>
+					authorized
+				</option>
+				<option value="nok" {% if user.animals == "nok" %} selected {% endif %}>
+					prohibited
+				</option>
+			</select>
+		</label>
+
+		<label class="userPref"> 
+			Smoking 
+			<select id="smoking" name="prefSmoking">
+				<option value="ni" {% if user.smoking == "ni" %} selected {% endif %}>
+					not important 
+				</option>
+				<option value="ok" {% if user.smoking == "ok" %} selected {% endif %}>
+					authorized
+				</option>
+				<option value="nok" {% if user.smoking == "nok" %} selected {% endif %}>
+					prohibited
+				</option>
+			</select>
+		</label>
+
+		<label class="userPref"> 
+			Luggage 
+			<select id="luggage" name="prefLuggage">
+				<option value="ni" {% if user.big_luggage == "ni" %} selected {% endif %}>
+					not important 
+				</option>
+				<option value="ok" {% if user.big_luggage == "ok" %} selected {% endif %}>
+					big
+				</option>
+				<option value="nok" {% if user.big_luggage == "nok" %} selected {% endif %}>
+					small
+				</option>
+			</select>
+		</label>
+
+
+		<div class="userPref">
+			<button class='userPref btn-success' onclick="savePreferences();">
+				Save Preferences 
+			</button>
+		</div>		
+
+	</div>
 </div>
 
 
@@ -260,6 +322,38 @@ function changePassword(oldPassID, newPassID, targetDiv){
 			}, 1500);
 		}
 	});
+}
+
+function savePreferences(){
+	var animals = 	document.getElementById("animals");
+	var animalChoice = animals.options[animals.selectedIndex].value;
+
+	var smoking = document.getElementById("smoking");
+	var smokeChoice = smoking.options[smoking.selectedIndex].value;
+
+	var luggage = document.getElementById("luggage");
+	var luggageChoice = luggage.options[luggage.selectedIndex].value;
+
+	$.ajax({
+	  type: "POST",
+	  url: "/myProfile",
+	  dataType: 'json',
+	  data: JSON.stringify({ "attr": "pref", 
+	  						"animals": animalChoice,
+	  						"smoking": smokeChoice,
+	  						"luggage": luggageChoice})
+	})
+	.done(function( data ) { 		
+		console.log("function has returned");
+		openDiv('changeSuccess');
+
+		window.setTimeout(function(){
+			location.reload();
+		}, 1500);
+		
+	});
+
+
 }
 
 </script>

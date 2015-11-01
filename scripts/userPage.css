@@ -11,11 +11,10 @@
 	justify-content: space-around;
 }
 
-.popup 
-{
-    display:none;
-    position:absolute;
-    width:500px;
-    height:250px;
-}  
+
+.userPref {
+	display: flex;
+	flex-direction:row;
+	justify-content: space-around;
+}
 

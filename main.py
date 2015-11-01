@@ -489,6 +489,12 @@ class MyProfile(MainHandler):
 				response['error'] = True
 				response['error_msg'] = 'The old password is not good'
 
+		elif data['attr'] == "pref":
+			self.user.animals = data['animals']
+			self.user.smoking = data['smoking']
+			self.user.big_luggage = data['luggage']
+			self.user.put()
+
 		
 		self.response.out.write(json.dumps(response))	
 
