@@ -147,6 +147,15 @@ function openDiv(divName){
 	console.log('open call');
 	var targetDiv = document.getElementById(divName);
 	targetDiv.style.display = 'block';
+
+	//Give focus to the first input field within the opened div
+	var children = targetDiv.children;
+	for (var i = 0; i<children.length; i++){
+		if (children[i].tagName == 'input' || children[i].tagName == 'INPUT'){
+			children[i].focus();
+			break;
+		}
+	}
 }
 
 function closeDiv(divName){
