@@ -12,6 +12,14 @@ indexes:
 
 - kind: Travel
   properties:
+  - name: animal_ok
+  - name: arrival
+  - name: big_luggage_ok
+  - name: departure
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
   - name: arrival
   - name: departure
   - name: datetime_departure
