@@ -1,0 +1,384 @@
+//Global variables
+var marker_dep;
+var marker_arr;
+
+function initializeGoogleMapsAdder() {
+
+	var mapOptions = {
+	    center:new google.maps.LatLng(46.887678, -72.260262),
+	    zoom:5,
+	    mapTypeId:google.maps.MapTypeId.ROADMAP,
+	    mapTypeControl: false,
+		streetViewControl: false
+	};
+	
+	//Create 2 map objects
+	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture"), mapOptions);
+	var map_arr = new google.maps.Map(document.getElementById("gmapArrival"), mapOptions);
+
+	//Create the geocoder guy
+	var geocoder = new google.maps.Geocoder;
+
+	//Bind listener for a specific marker and process the input	
+	map_dep.addListener('click', function(event) {
+		placeMarker(event.latLng, map_dep, "departure");
+	    geocodeLatLng(geocoder, map_dep, event.latLng, "departure");
+	});
+	
+	map_arr.addListener('click', function(event) {		
+		placeMarker(event.latLng, map_arr, "arrival");
+		geocodeLatLng(geocoder, map_arr, event.latLng, "arrival");
+	});
+}
+
+function initializeGoogleMapsModifyer() {
+
+	var mapOptions = {
+	    center:new google.maps.LatLng(46.887678, -72.260262),
+	    zoom:5,
+	    mapTypeId:google.maps.MapTypeId.ROADMAP,
+	    mapTypeControl: false,
+		streetViewControl: false
+	};
+	
+	//Create 2 map objects
+	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture_modify"), mapOptions);
+	var map_arr = new google.maps.Map(document.getElementById("gmapArrival_modify"), mapOptions);
+
+	//Create the geocoder guy
+	var geocoder = new google.maps.Geocoder;
+
+	//Bind listener for a specific marker and process the input	
+	map_dep.addListener('click', function(event) {
+		placeMarker(event.latLng, map_dep, "departure_modify");
+	    geocodeLatLng(geocoder, map_dep, event.latLng, "departure_modify");
+	});
+	
+	map_arr.addListener('click', function(event) {		
+		placeMarker(event.latLng, map_arr, "arrival_modify");
+		geocodeLatLng(geocoder, map_arr, event.latLng, "arrival_modify");
+	});
+
+	//Bind the input to the marker creation
+	codeAddress(geocoder, map_dep, "departure_modify");
+	codeAddress(geocoder, map_arr, "arrival_modify");
+}
+
+//function to put marker on specific map
+function placeMarker(location, targetMap, context) {
+
+	if (context == "departure" || context =="departure_modify"){
+		if (!marker_dep){
+			console.log("new marker !!");
+			marker_dep = new google.maps.Marker({
+		        position: location, 
+		        map: targetMap,
+		        visble: true
+		    });
+		}else{
+			console.log("already here");
+			marker_dep.setPosition(location);
+		}
+	}
+
+	if (context == "arrival" || context =="arrival_modify"){
+		if (!marker_arr){
+			console.log("new marker !!");
+			marker_arr = new google.maps.Marker({
+		        position: location, 
+		        map: targetMap,
+		        visble: true
+		    });
+		}else{
+			console.log("already here");
+			marker_arr.setPosition(location);
+		}		
+	}
+}
+
+//Decode latLng to a readable address
+//https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
+function geocodeLatLng(geocoder, map, location, context) {
+	geocoder.geocode({'location': location}, function(results, status) {
+		if (status === google.maps.GeocoderStatus.OK) {
+			if (results[1]) {
+				map.setZoom(8);
+				map.setCenter(location);
+				var readableField = document.getElementById(context);
+				readableField.value = results[1].formatted_address;
+			} else {
+				window.alert('No results found');
+			}
+		} else {
+		  window.alert('Geocoder failed due to: ' + status);
+		}
+	});
+}
+
+//Encode LatLng from an address
+function codeAddress(geocoder, target_map, context) {
+    var address = document.getElementById(context).value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        target_map.setCenter(results[0].geometry.location);
+        var position_marker = results[0].geometry.location
+        placeMarker(position_marker, target_map, context);
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  }
+
+
+function submitAddTravel(){
+
+	//Retrieve departure and arrival :
+	var departure = document.getElementById("departure").value;
+	var arrival = document.getElementById("arrival").value;
+
+
+	// Retrieve number of seats
+	var seats = document.getElementById('seats');
+	var seatNumber = seats.options[seats.selectedIndex].value;
+
+	//Retrieve departure moments
+	var dep_date = document.getElementById('departure-date').value;
+	var dep_hour = document.getElementById('departure-hour').value;
+	var dep_min = document.getElementById('departure-minutes').value;
+
+	//Retrieve the price
+	var price = document.getElementById("price").value;
+
+	//Retrieve preferences:
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+
+	//Loop over the Preference div Section
+	var preferences = document.getElementById('preferences');
+	var prefList = preferences.children;
+	for (var i = 0; i < prefList.length; i++){
+		
+		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
+			if (prefList[i].type == 'radio' && prefList[i].checked){
+				
+				if (prefList[i].name == 'animals'){
+					animals = prefList[i].value;
+				}
+
+				if (prefList[i].name == "smoking"){
+					smoking = prefList[i].value;
+				}
+
+				if (prefList[i].name == "luggage"){
+					big_luggage = prefList[i].value;
+				}
+			}
+		}
+	}
+	
+
+	//Prepare ajax request
+	$.ajax({
+	  type: "POST",
+	  url: "/addTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({ "departure" : departure,
+	  						"arrival" : arrival,
+	  						"departure_date" : dep_date,
+	  						"departure_hour" : dep_hour,
+	  						"departure_minutes" : dep_min,
+	  						"price" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage,
+	  						"seats" : seatNumber
+							})
+	})
+	.done(function( data ) { 		
+		console.log("data received back");
+
+		// Hide error field
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		//If there is error, handle appropriate error messages
+		if (data['error']){
+
+			//Display main error banner
+			var addError = document.getElementById("addError");
+			addError.style.display = 'block';
+
+			//error message as a palceholder
+			if (data['error_departure']){
+				$("#departure").attr('placeholder', data['error_departure']);
+			}
+			
+			//error message as a palceholder
+			if (data['error_arrival']){
+				$("#arrival").attr('placeholder', data['error_arrival']);
+			}
+
+			//Error message append to the error banner
+			if (data['error_samedeparture']){
+				var error_div = document.getElementById('addError');
+				error_div.lastChild.data = data['error_samedeparture'];
+			}
+
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_datetime');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
+			var success = document.getElementById("addSuccess");
+			success.style.display = 'block';
+
+			window.setTimeout(function(){
+				window.location.replace("driverTravels");
+			}, 1500);
+		}
+	});
+}
+
+
+function submitModificationTravel(){
+
+	console.log("getting data");
+
+	//Get trvel id
+	var id = document.getElementById("travel_id_modif").value;
+	console.log("id given is :"+id);
+
+	//Retrieve departure and arrival :
+	var departure = document.getElementById("departure_modify").value;
+	var arrival = document.getElementById("arrival_modify").value;
+	console.log("dep = "+departure+"	-	arrival : "+arrival);
+
+
+	// Retrieve number of seats
+	var seats = document.getElementById('seats_modify');
+	var seatNumber = seats.options[seats.selectedIndex].value;
+
+	//Retrieve departure moments
+	var dep_date = document.getElementById('departure-date_modify').value;
+	var dep_hour = document.getElementById('departure-hour_modify').value;
+	var dep_min = document.getElementById('departure-minutes_modify').value;
+
+	//Retrieve the price
+	var price = document.getElementById("price_modify").value;
+
+	//Retrieve preferences:
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+
+	//Loop over the Preference div Section
+	var preferences = document.getElementById('preferences_modify');
+	var prefList = preferences.children;
+	for (var i = 0; i < prefList.length; i++){
+		
+		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
+			if (prefList[i].type == 'radio' && prefList[i].checked){
+				
+				if (prefList[i].name == 'animals'){
+					animals = prefList[i].value;
+				}
+
+				if (prefList[i].name == "smoking"){
+					smoking = prefList[i].value;
+				}
+
+				if (prefList[i].name == "luggage"){
+					big_luggage = prefList[i].value;
+				}
+			}
+		}
+	}
+	
+	console.log("preparing request");
+
+	//Prepare ajax request
+	$.ajax({
+	  type: "POST",
+	  url: "/modifyTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({"travel_id" :id,
+	  						"departure" : departure,
+	  						"arrival" : arrival,
+	  						"departure_date" : dep_date,
+	  						"departure_hour" : dep_hour,
+	  						"departure_minutes" : dep_min,
+	  						"price" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage,
+	  						"seats" : seatNumber
+							})
+	})
+	.done(function( data ) { 		
+		console.log("data received back");
+
+		// Hide error field
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		//If there is error, handle appropriate error messages
+		if (data['error']){
+
+			//Display main error banner
+			var addError = document.getElementById("addError");
+			addError.style.display = 'block';
+
+			//error message as a palceholder
+			if (data['error_departure']){
+				$("#departure").attr('placeholder', data['error_departure']);
+			}
+			
+			//error message as a palceholder
+			if (data['error_arrival']){
+				$("#arrival").attr('placeholder', data['error_arrival']);
+			}
+
+			//Error message append to the error banner
+			if (data['error_samedeparture']){
+				var error_div = document.getElementById('addError');
+				error_div.lastChild.data = data['error_samedeparture'];
+			}
+
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_datetime');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
+			var success = document.getElementById("addSuccess");
+			success.style.display = 'block';
+
+			window.setTimeout(function(){
+				window.location.replace("driverTravels");
+			}, 1500);
+		}
+	});
+}
+
