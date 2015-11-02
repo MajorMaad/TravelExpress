@@ -33,18 +33,8 @@ class AddTravel(MainHandler):
 
 	def post(self):
 		# Save data into a dictionnary
-		data = {}
-		data['departure'] = self.request.get('departure')
-		data['arrival'] = self.request.get('arrival')
-		data['departure_date'] = self.request.get('departure-date')
-		data['departure_hour'] = self.request.get('departure-hour')
-		data['departure_minutes'] = self.request.get('departure-minutes')
-		data['price'] = self.request.get('price')
-		data['animals'] = self.request.get('animals')
-		data['smoking'] = self.request.get('smoking')
-		data['luggage'] = self.request.get('luggage')
-
-		self.seats = self.request.get('seats')
+		data = json.loads(self.request.body)
+		self.seats = data['seats']
 
 		# Check data via a dedicated agent
 		travelerAgent = CheckTravel(data)
@@ -55,11 +45,11 @@ class AddTravel(MainHandler):
 			renderingDict = data.copy()
 			renderingDict.update(checkedResult)
 
-			self.render('base.html', 
-				user = self.user,
-				choice = "add",
-				travel_ok = False,
-				**renderingDict)
+			# datetime cannot be json serializable
+			renderingDict.pop('datetime_departure', None)
+
+			# Send back response
+			self.response.out.write(json.dumps(renderingDict))
 
 		else:
 			# Register the new travel into DB
@@ -71,17 +61,14 @@ class AddTravel(MainHandler):
 				'places_remaining'	: int(self.seats),
 				'datetime_departure': checkedResult['datetime_departure'],
 				'price'				: int(data['price']),
-				'animal'			: data['animal_ok'],
-				'smoking'			: data['smoking_ok'],
-				'luggage'			: data['big_luggage_ok']
+				'animal'			: data['animals'],
+				'smoking'			: data['smoking'],
+				'luggage'			: data['luggage']
 			}
 			travel = Travel.add_travel(travel_data)	
 
-			self.render('base.html', 
-							user = self.user, 
-							choice = "add",
-							travel_ok = True, 
-							datetime_departure = datetime.datetime.now())
+			# Send back response
+			self.response.out.write(json.dumps({}))
 
 
 # Modify an owned travel

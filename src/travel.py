@@ -29,9 +29,9 @@ class Travel(db.Model):
 	places_remaining = db.IntegerProperty(required = True)
 	datetime_departure = db.DateTimeProperty(required = True)
 	price = db.IntegerProperty(required = True)
-	animal_ok = db.BooleanProperty(required = True)
-	smoking_ok = db.BooleanProperty(required = True)
-	big_luggage_ok = db.BooleanProperty(required = True)
+	animal_ok = db.StringProperty(required = True)
+	smoking_ok = db.StringProperty(required = True)
+	big_luggage_ok = db.StringProperty(required = True)
 	bookers_id = db.ListProperty(int)
 
 

@@ -1,25 +1,18 @@
 <!-- Include of the dedicated stylesheet -->
 <link rel="stylesheet" type="text/css" href="../scripts/formTravel.css">
 
+
+
+
 <!-- Success or error banner -->
-{% if travel_ok == True %}
-	<div class="alert alert-success" role="alert">
-    	<strong>Done !</strong> 
-    	Travel successfully added. Redirection to the home page in 3 seconds
-    </div>
+<div id="addSuccess" class="alert alert-success" role="alert" style="display:none">
+	<strong>Done !</strong> 
+	Modification correctly saved. Redirection to your travel list.
+</div>
 
-    <script>
-	    window.setTimeout(function(){
-		    window.location.href = "/";
-	    }, 3000);
-    </script>
-
-
-{% elif travel_ok == False %}
-	<div class="alert alert-danger" role="alert">
-    	<strong>Oups !</strong> There has been an error.
-    </div>
-{% endif %}
+<div id="addError" class="alert alert-danger error" role="alert" style="display:none">
+	<strong>Oups !</strong> There has been an error.
+</div>
 
 
 <!-- add Travel form -->
@@ -27,8 +20,12 @@
 
 	<h1 class="text-primary">Add a travel</h1>
 
-	<form role="form" method="post" action="/addTravel" onsubmit="return confirm('Do you really want to submit this travel ?');">
+<!-- 	<div id="gmapArrival" style="width:500px;height:380px;"></div>
+				 -->
 
+	<!-- <form role="form" method="post" action="/addTravel" onsubmit="return confirm('Do you really want to submit this travel ?');">
+ -->
+ 	<div class="container-fluid">
 		<div class="form-group col-md-6">
 			<label for="departure">Departure :</label>
 			<select class="form-control" id="departure" name="departure">
@@ -39,17 +36,22 @@
 		</div>
 
 		<div class="form-group col-md-6">
-			<label for="arrival">Arrival : {% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}</label>
+			<label for="arrival">Arrival : </label>
 			<select class="form-control" id="arrival" name="arrival">
 			    <option value="saguenay" {% if arrival == 'saguenay' %}selected{% endif %}>Saguenay, QC</option>
 			    <option value="quebec" {% if arrival == 'quebec' %}selected{% endif %}>Québec, QC</option>
 				<option value="montreal" {% if arrival == 'montreal' %}selected{% endif %}>Montréal, QC</option>
 			</select>
+			<span id="error_samedeparture" class ="error" style="color:red; display:none"></span>	
 		</div>
+	</div>
 
+
+	<div class="container-fluid">
         <div class="form-group col-md-4">
-        	<label for="departure-date">Departure date {% if error_datetime %}<span style="color:red;"> {{ error_datetime }}</span>{% endif %}</label>
+        	<label for="departure-date">Departure date </label>
         	<input id="departure-date" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value="{{ datetime_departure.strftime('%Y-%m-%d') }}"/>
+        	<span id="error_datetime" class ="error" style="color:red; display:none"></span>
         </div>
 
         <div class="form-group col-md-4">
@@ -81,7 +83,9 @@
         		{% endfor %}
         	</select>
         </div>
+    </div>
 
+    <div class="container-fluid">
         <div class="form-group col-md-6">
         	<label for="seats">Seats available :</label>
 			<select class="form-control" id="seats" name="seats">
@@ -94,45 +98,48 @@
         </div>
 
         <div class="form-group col-md-6">
-        	<label for="price">Price : {% if error_price %}<span style="color:red;"> {{ error_price }}</span>{% endif %}</label>
-        	<input class="form-control" id="price" type="number" maxlength="3" name="price" value={{ price }}>
-        	$
+        	<label for="price">Price : </label>
+        	<input class="form-control" id="price" type="number" maxlength="3" name="price" value={{ price }}> $
+        	<span id="error_price" class ="error" style="color:red; display:none"></span>
         </div>
+    </div>
 
         <!-- Preferences -->
-        <div id="preferences" class="container">
+        <div id="preferences" class="container-fluid" >
+
+        	<!-- <div class="form-group"> -->
+        	<h3 > Choose your travel preferences </h3>
 
 	        <div class="form-group col-md-12">
-	        	<h3>Animals</h3>
-	        	<label class="radio-inline col-md-5">
+	        	<label class="radio-inline col-md-3">
 	        		<input type="radio" name="animals" value="ok" {% if user.animals == "ok" %}checked{% endif %}>Authorized  
 	        		<img src="../scripts/img/animal.jpg">
 	        	</label>
-				<label class="radio-inline col-md-5">
+				<label class="radio-inline col-md-3">
 					<input type="radio" name="animals" value="nok" {% if user.animals == "nok" %}checked{% endif %}>Prohibited  
 					<img src="../scripts/img/no_animal.jpg">
 				</label>
 	        </div>
 
 	        <div class="form-group col-md-12">
-	        	<h3>Smoking</h3>
-	        	<label class="radio-inline col-md-5">
+	        	<!-- <h3>Smoking</h3> -->
+	        	<label class="radio-inline col-md-3">
 	        		<input type="radio" name="smoking" value="ok" {% if user.smoking == "ok" %}checked{% endif %}>Authorized  
 	        		<img src="../scripts/img/smoking.jpg">
 	        	</label>
-				<label class="radio-inline col-md-5">
+				<label class="radio-inline col-md-3">
 					<input type="radio" name="smoking" value="nok" {% if user.smoking == "nok" %}checked{% endif %}>Prohibited  
 					<img src="../scripts/img/no_smoking.jpg">
 				</label>
 	        </div>
 
 	        <div class="form-group col-md-12">
-	        	<h3>Luggage space</h3>
-	        	<label class="radio-inline col-md-5">
+	        	<!-- <h3>Luggage space</h3> -->
+	        	<label class="radio-inline col-md-3">
 	        		<input type="radio" name="luggage" value="sm_bag" {% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
 	        		<img src="../scripts/img/small_bag.jpg">
 	        	</label>
-				<label class="radio-inline col-md-5">
+				<label class="radio-inline col-md-3">
 					<input type="radio" name="luggage" value="suitcase" {% if user.big_luggage == "ok" %}checked{% endif %}>Suitcase  
 					<img src="../scripts/img/suitcase.jpg">
 				</label>
@@ -141,8 +148,118 @@
 	     </div>
 
 
-		<button type="submit" class="btn btn-success">Submit</button>
+		<button type="submit" class="btn btn-success" onclick="submitAddTravel();">Submit</button>
 
-	</form>
+
 
 </div>
+
+
+
+<script>
+function submitAddTravel(){
+
+	//Retrieve preferences:
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+
+	//Loop over the Preference div Section
+	var preferences = document.getElementById('preferences');
+	var prefList = preferences.children;
+	for (var i = 0; i < prefList.length; i++){
+		
+		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
+			if (prefList[i].type == 'radio' && prefList[i].checked){
+				
+				if (prefList[i].name == 'animals'){
+					animals = prefList[i].value;
+				}
+
+				if (prefList[i].name == "smoking"){
+					smoking = prefList[i].value;
+				}
+
+				if (prefList[i].name == "luggage"){
+					big_luggage = prefList[i].value;
+				}
+			}
+		}
+	}
+
+	// Retrieve number of seats
+	var seats = document.getElementById('seats');
+	var seatNumber = seats.options[seats.selectedIndex].value;
+
+	//Retrieve departure moments
+	var dep_date = document.getElementById('departure-date').value;
+	var dep_hour = document.getElementById('departure-hour').value;
+	var dep_min = document.getElementById('departure-minutes').value;
+
+	//Retrieve the price
+	var price = document.getElementById("price").value;
+	
+
+	//Prepare ajax request
+	$.ajax({
+	  type: "POST",
+	  url: "/addTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({ "departure" : "Bidon",
+	  						"arrival" : "prout",
+	  						"departure_date" : dep_date,
+	  						"departure_hour" : dep_hour,
+	  						"departure_minutes" : dep_min,
+	  						"price" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage,
+	  						"seats" : seatNumber
+							})
+	})
+	.done(function( data ) { 		
+		console.log("data received back");
+
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		if (data['error']){
+
+			var addError = document.getElementById("addError");
+			addError.style.display = 'block';
+
+			if (data['error_samedeparture']){
+				var span_error = document.getElementById('error_samedeparture');
+				span_error.innerHTML = data['error_samedeparture']
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_datetime');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			var success = document.getElementById("addSuccess");
+			success.style.display = 'block';
+
+			window.setTimeout(function(){
+				window.location.replace("driverTravels");
+			}, 1500);
+		}
+	});
+
+
+
+}
+
+
+</script>
