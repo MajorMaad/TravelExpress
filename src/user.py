@@ -32,15 +32,13 @@ def reverse_pw(nickName, password, hashed_pw):
 	return hashed_pw == make_pw_hash(nickName, password, salt)
 
 
-
-
-
-
 def user_key(name = 'default'):
 	return db.Key.from_path('user', name)
 
 
 class User(db.Model):
+	# Flag of activity
+	actif = db.BooleanProperty(required = True)
 
 	# Attributes of a user in database
 	name = db.StringProperty(required = False)
@@ -53,9 +51,6 @@ class User(db.Model):
 	animals = db.StringProperty(required = False)
 	smoking = db.StringProperty(required = False)
 	big_luggage = db.StringProperty(required = False)
-
-
-
 
 
 	############################
@@ -94,6 +89,7 @@ class User(db.Model):
 		hash_pwd = make_pw_hash(user_data['nickName'], user_data['password'])
 		#Return an instance of user
 		return User(parent = user_key(),
+					actif = True,
 					name = user_data['name'],
 					firstName = user_data['firstName'],
 					nickName = user_data['nickName'],

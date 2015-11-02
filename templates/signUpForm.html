@@ -81,12 +81,29 @@ $(document).ready(function(e){
 		var textBtn = deploySignUpForm.firstChild;
 		textBtn.data = textBtn.data == "Sign Up" ? "Close" : "Sign Up";
 
-		//Reset span if necessary
+		
 		if (textBtn.data == "Sign Up"){
+			//Reset span messages
 			document.getElementById("error_notif_nick").innerHTML = "";
 			document.getElementById("error_notif_mail").innerHTML = "";
 			document.getElementById("error_notif_pass").innerHTML = "";
 			document.getElementById("error_notif_pass_confirm").innerHTML = "";
+			
+			//Reset input content
+			var input = document.getElementById("name");
+			input.value = '';
+			input = document.getElementById("firstName");
+			input.value = '';
+			input = document.getElementById("nickName");
+			input.value = '';
+			input = document.getElementById("email");
+			input.value = '';
+			input = document.getElementById("passwordSignUp");
+			input.value = '';
+			input = document.getElementById("passValidate");
+			input.value = '';
+			input = document.getElementById("userLogData");
+			input.value = '';
 		}
 
 	};

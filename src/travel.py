@@ -18,6 +18,8 @@ def travel_key(name = 'default'):
 
 
 class Travel(db.Model):
+	# Flag of activity
+	actif = db.BooleanProperty(required = True)
 
 	# Attributes of a travel for the database
 	user_id = db.IntegerProperty(required = True)
@@ -54,7 +56,7 @@ class Travel(db.Model):
 
 	# Look for a travels
 	@classmethod
-	def by_filter(cls, departure = None, arrival = None, date_min = datetime.datetime.now(), animal_ok = None, smoking_ok = None, big_luggage_ok = None):
+	def by_filter(cls, departure = None, arrival = None, date_min = datetime.datetime.now(), animal_ok = None, smoking_ok = None, big_luggage_ok = None, actif = None):
 		query = Travel.all()
 		query.filter('datetime_departure >=', date_min)
 
@@ -72,6 +74,10 @@ class Travel(db.Model):
 
 		if big_luggage_ok is not None:
 			query.filter('big_luggage_ok =', big_luggage_ok)
+
+		# Check only for travel not deleted
+		if actif:
+			query.filter('actif =', actif)
 
 		return query.order('datetime_departure')
 
@@ -99,6 +105,7 @@ class Travel(db.Model):
 	def add_travel(cls, travel_data):
 		travel = None
 		travel = Travel(parent = travel_key(),
+						actif = True,
 						user_id = travel_data['user_id'],
 						departure = travel_data['departure'],
 						arrival = travel_data['arrival'],
@@ -139,11 +146,11 @@ class Travel(db.Model):
 	### 	DELETE METHODS 	 ###
 	############################
 
-	# Delete a travel
+	# Fake a deletion of the travel
 	@classmethod
 	def remove_travel(cls, travel_id, user_id):
 		travel = cls.by_id(travel_id)
 
 		# Make sure it is the driver who deletes it
 		if (travel.user_id == user_id):
-			travel.delete()
+			travel.actif = False

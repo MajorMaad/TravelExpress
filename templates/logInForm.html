@@ -42,8 +42,7 @@ $(document).ready(function(e){
 		var LogInClass = document.getElementsByClassName('form-group log-in');
 		for(i=0; i<LogInClass.length; i++){
 			if(LogInClass[i].style.display !== 'none'){
-				LogInClass[i].style.display = 'none';
-				console.log("hide");
+				LogInClass[i].style.display = 'none';				
 			}
 			else{
 				LogInClass[i].style.display = 'block';
@@ -57,8 +56,12 @@ $(document).ready(function(e){
 			textBtn.data = "Close";	
 		}
 		else{
-			document.getElementById("error_notif_logIn").innerHTML = "";
+			document.getElementById("error_notif_logIn").innerHTML = "";			
 			textBtn.data = "Log In";
+			var input = document.getElementById("userLogData");
+			input.value = "";
+			input = document.getElementById("passwordLogIn");
+			input.value = '';
 		}
 	};
 });

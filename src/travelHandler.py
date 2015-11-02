@@ -10,9 +10,6 @@
 # 	* Display list of travels of a traveler
 #########################################################################
 
-
-
-
 from src.handler import *
 from src.travel import *
 from src.travelChecker import *
@@ -187,7 +184,8 @@ class SearchTravel(MainHandler):
 										checkedResult['date_min'], 
 										checkedResult['animal_ok'], 
 										checkedResult['smoking_ok'],
-										checkedResult['big_luggage_ok'])
+										checkedResult['big_luggage_ok'],
+										actif = True)
 			self.render('base.html', 
 						user = self.user,
 						choice = "resultSearch", 
