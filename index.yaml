@@ -19,6 +19,12 @@ indexes:
 
 - kind: Travel
   properties:
+  - name: actif
+  - name: user_id
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
   - name: animal_ok
   - name: arrival
   - name: big_luggage_ok

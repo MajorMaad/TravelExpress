@@ -187,9 +187,12 @@ class SearchTravel(MainHandler):
 class DeleteTravel(MainHandler):
 
 	def get(self):
-		self.travel_id = int(self.request.get('id'))
-		Travel.remove_travel(self.travel_id, self.user.key().id())
-		self.redirect('/')
+		self.redirect('/driverTravels')
+
+	def post(self):
+		data = json.loads(self.request.body)
+		Travel.remove_travel(data['travel_id'], self.user.key().id())
+		self.response.out.write(json.dumps({}))
 
 
 # Register for a travel as a traveller
@@ -220,8 +223,16 @@ class ShowDriverTravels(MainHandler):
 	##############################################################
 
 	def get(self):
-		travels = Travel.by_author(self.user.key().id())
-		self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+		travels = Travel.by_author_still_actif(self.user.key().id())
+		if travels.count() == 0:
+			logging.info("empty : yes")
+			self.render('base.html', user = self.user, choice = "driverTravels", noTravel = True)
+		else:
+			logging.info("empty : no")
+			self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+
+
+		
 
 
 # Show my travels as a traveller

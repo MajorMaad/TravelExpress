@@ -2,12 +2,10 @@
 
 <!-- Body -->
 
-{% if travels.get() == None %}
-
+{% if noTravel %}
 	<div class="alert alert-warning" role="alert">
 		<strong>Warning !</strong> You do not have any travels set yet. <a href="/addTravel">Add one</a>
 	</div>
-
 {% endif %}
 
 <div id="driverTravels" class="container">
@@ -25,7 +23,7 @@
 				        	<span class="glyphicon glyphicon-edit"></span>
 				        </a>
 
-						<a type="button" href="/deleteTravel?id={{ travel.key().id() }}" class="btn btn-danger">
+				        <button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id()}} );">
 				        	<span class="glyphicon glyphicon-trash"></span>
 				        </a>
 		        </div>
@@ -64,15 +62,22 @@
 
 <script type="text/javascript">
 
-$(document).ready(function() {
 
-	$('.btn-danger').click(function() {
+function deleteTravel(travel_id){
+	if ( confirm('Are you sure you want to delte this travel ?') ){
 
-		return confirm('Are you sure ?');
-
-	});
-
-});
-
+		$.ajax({
+			type: "POST",
+			url: "/deleteTravel",
+			dataType: 'json',
+			data: JSON.stringify({ "travel_id" : travel_id	})
+			})
+			.done(function( data ) { 
+				window.setTimeout(function(){
+					window.location.replace("driverTravels");
+				}, 1500);
+			});	
+	}
+}
 </script>
 

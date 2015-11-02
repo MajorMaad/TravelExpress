@@ -54,6 +54,10 @@ class Travel(db.Model):
 	def by_author(cls, user_id):
 		return Travel.all().filter('user_id =', user_id).order('datetime_departure')
 
+	@classmethod
+	def by_author_still_actif(cls, user_id):
+		return Travel.all().filter('user_id =', user_id).filter('actif =', True ).order('datetime_departure')
+
 	# Look for a travels
 	@classmethod
 	def by_filter(cls, departure = None, arrival = None, date_min = datetime.datetime.now(), animal_ok = None, smoking_ok = None, big_luggage_ok = None, actif = None):
@@ -154,3 +158,4 @@ class Travel(db.Model):
 		# Make sure it is the driver who deletes it
 		if (travel.user_id == user_id):
 			travel.actif = False
+			travel.put()
