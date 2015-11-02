@@ -62,11 +62,11 @@ class CheckTravel():
 
 		checkingResult['datetime_departure'] = departure_datetime
 
-		now = datetime.datetime.now()
+		yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
 
 		# Datetime of departure must be after now
-		if departure_datetime <= now:
-			checkingResult['error_datetime'] = "Wrong Date / Time"
+		if departure_datetime <= yesterday:
+			checkingResult['error_datetime'] = "You must enter a posterior date"
 			error = True
 	
 		#price checking
@@ -88,11 +88,6 @@ class CheckTravel():
 		# Checking global result
 		checkingResult['error'] = error
 
-		# #Preferences checking
-		# checkingResult['animal_ok'] = self.animals == 'ok'
-		# checkingResult['smoking_ok'] = self.smoking == 'ok'
-		# checkingResult['big_luggage_ok'] = self.luggage == 'suitcase'
-
 		return checkingResult
 
 
@@ -104,61 +99,44 @@ class CheckSearchTravel():
 		self.departure 			= data['departure']
 		self.arrival 			= data['arrival']
 		self.departure_date 	= data['departure_date']
-		self.departure_hour 	= data['departure_hour']
-		self.departure_minutes 	= data['departure_minutes']
-		self.animals 			= data['animals']
-		self.smoking 			= data['smoking']
-		self.luggage 			= data['luggage']
+		self.price_max 			= data['price_max']
 
 	def check(self):
 		# The checking status will be returned as a dictionnary
 		checkingResult = {}
 		checkingResult['error'] = False
 
-		# Departure and arrival must be different
-		if self.departure == self.arrival:
-			checkingResult['error_samedeparture'] = "cannot be the same as departure"
+		if self.departure == '' and self.arrival == '':
+			checkingResult['error_src_dest'] = "No destination and no arrival"
 			checkingResult['error'] = True		
 
+		# Departure and arrival must be different
+		elif self.departure == self.arrival:
+			checkingResult['error_samedeparture'] = "Cannot be the same as departure"
+			checkingResult['error'] = True		
 
-		date_tab = self.departure_date.split('-')
-		try:
-			year = int(date_tab[0])
-			month = int(date_tab[1])
-			day = int(date_tab[2])
-		except ValueError:
-			year = 2000
-			month = 1
-			day = 1
+		# Ensure date is posterior
+		if self.departure_date != '':
+			date_tab = self.departure_date.split('-')
+			try:
+				year = int(date_tab[0])
+				month = int(date_tab[1])
+				day = int(date_tab[2])
+			except ValueError:
+				year = 2000
+				month = 1
+				day = 1
+			
+			search_date = datetime.datetime(year, month, day)
+			yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
 
-		hour = int(self.departure_hour)
-		minutes = int(self.departure_minutes)
+			# Datetime of departure must be after now
+			if search_date < yesterday:
+				checkingResult['error_datetime'] = "You must enter a posterior date"
+				checkingResult['error'] = True	
 
-		#Save the date
-		checkingResult['date_min'] = datetime.datetime(year, month, day, hour, minutes)
-
-		#Save preferences (True, False, None):
-		if self.animals == 'ok':
-			checkingResult['animal_ok'] = True
-		elif self.animals == 'ni':
-			checkingResult['animal_ok'] = None
-		else:
-			checkingResult['animal_ok'] = False
-
-
-		if self.smoking == 'ok':
-			checkingResult['smoking_ok'] = True
-		elif self.smoking == 'ni':
-			checkingResult['smoking_ok'] = None
-		else:
-			checkingResult['smoking_ok'] = False
-
-
-		if self.luggage == 'suitcase':
-			checkingResult['big_luggage_ok'] = True
-		elif self.luggage == 'ni':
-			checkingResult['big_luggage_ok'] = None
-		else:
-			checkingResult['big_luggage_ok'] = False
+		if self.price_max != '' and int(self.price_max) <= 0:
+				checkingResult['error_price'] = "price must be positive"
+				checkingResult['error'] = True	
 
 		return checkingResult

@@ -1,4 +1,11 @@
+<!-- Include of the dedicated stylesheet -->
 <link rel="stylesheet" type="text/css" href="../scripts/formTravel.css">
+
+<!-- Inclusion of google map and realtive functions -->
+<script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+<script type="text/javascript" src="/scripts/js/travel.js" ></script>
+
+
 
 <!-- Success or error banner -->
 {% if error == True %}
@@ -13,128 +20,208 @@
 	</div>
 {% endif %}
 
+<!-- Success or error banner -->
+<div id="searchSuccess" class="alert alert-success" role="alert" style="display:none">
+	<strong>Done !</strong> 
+	Research complete. Redirection to result page.
+</div>
+
+<div id="searchError" class="alert alert-danger error" role="alert" style="display:none">
+	<strong>Oups !</strong> There has been an error.
+</div>
+
 
 <!-- Body -->
 <div class="jumbotron">
 
 	<h1 class="text-primary">Look for a travel</h1>
 
-	<form role="form" method="post" action="/searchTravel">
-
+	<div class="container-fluid">
 		<div class="form-group col-md-6">
-			<label for="departure">Departure :</label>
-			<select class="form-control" name="departure">
-				<option value="saguenay">Saguenay, QC</option>
-				<option value="quebec">Québec, QC</option>
-				<option value="montreal">Montréal, QC</option>
-			</select>
+			<label for="departure_search">Departure :</label>
+			<input id="departure_search" class="form-control alert-departure-arival"></input>
+			<br>
 		</div>
 
 		<div class="form-group col-md-6">
-			<label for="arrival">Arrival : {% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}</label>
-			<select class="form-control" name="arrival">
-				<option value="saguenay">Saguenay, QC</option>
-				<option value="quebec">Québec, QC</option>
-				<option value="montreal">Montréal, QC</option>
-			</select>
+			<label for="arrival_search">Arrival : </label>
+			<input id="arrival_search" class="form-control alert-departure-arival"></input>
+			<br>
 		</div>
+	</div>
 
+	<div class="container-fluid">
 		<div class="form-group col-md-4">
-			<label for="departure-date">Departure date</label>
-			<input class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value={{ today }}>
+			<label for="date_search">Departure date</label>
+			<input id="date_search" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value={{ today }}>
+			<span id="error_date_search" class ="error" style="color:red; display:none"></span>
 		</div>
 
-		<div class="form-group col-md-4">
-			<label for="departure-hour">Hour</label>
-			<select class="form-control" name="departure-hour">
-				{% for i in range(24) %}
+		<div class="form-group col-md-6">
+        	<label for="price_search">Higher price : </label>
+        	<input id="price_search" type="number" class="form-control" maxlength="3"> $
+        	<span id="error_price_search" class ="error" style="color:red; display:none"></span>
+        </div>
+		
 
-					{% if i < 10 %}
-						<option value="{{ i }}">{{ '0' + i|string + ' h' }}</option>
-					{% else %}
-						<option value="{{ i }}">{{ i|string + ' h' }}</option>
-					{% endif %}
-
-				{% endfor %}
-			</select>
-		</div>
-
-		<div class="form-group col-md-4">
-			<label for="departure-minutes">Minutes</label>
-			<select class="form-control" name="departure-minutes">
-				{% for i in range(60) %}
-
-					{% if i < 10 %}
-						<option value="{{ i }}">{{ '0' + i|string }}</option>
-					{% else %}
-						<option value="{{ i }}">{{ i|string }}</option>
-					{% endif %}
-
-				{% endfor %}
-			</select>
-		</div>
+	</div>
 
 
-		<!-- Preferences -->
-		<div id="preferences_search" class="container">
+	<!-- Preferences -->
 
-			<div class="form-group col-md-12">
-				<h3>Animals</h3>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="animals" value="ni" {% if user.animals == "ni" %}checked{% endif %}>Not important 
-					<img src="../scripts/img/not_important.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="animals" value="ok" {% if user.animals == "ok" %}checked{% endif %}>Authorized  
-					<img src="../scripts/img/animal.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="animals" value="nok" {% if user.animals == "nok" %}checked{% endif %}>Prohibited  
-					<img src="../scripts/img/no_animal.jpg">
-				</label>
-			</div>
+	<div id="preferences_search" class="container-fluid">
 
-			<div class="form-group col-md-12">
-				<h3>Smoking</h3>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="smoking" value="ni" {% if user.smoking == "ni" %}checked{% endif %}>Not important 
-					<img src="../scripts/img/not_important.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="smoking" value="ok" {% if user.smoking == "ok" %}checked{% endif %}>Authorized  
-					<img src="../scripts/img/smoking.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="smoking" value="nok" {% if user.smoking == "nok" %}checked{% endif %}>Prohibited  
-					<img src="../scripts/img/no_smoking.jpg">
-				</label>
-			</div>
+		<h3 > Choose your travel preferences </h3>
 
-			<div class="form-group col-md-12">
-				<h3>Luggage space</h3>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="luggage" value="ni" {% if user.big_luggage == "ni" %}checked{% endif %}>Not important 
-					<img src="../scripts/img/not_important.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="luggage" value="sm_bag" {% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
-					<img src="../scripts/img/small_bag.jpg">
-				</label>
-				<label class="radio-inline col-md-3">
-					<input type="radio" name="luggage" value="suitcase" {% if user.big_luggage == "ok" %}checked{% endif %}>Suitcase  
-					<img src="../scripts/img/suitcase.jpg">
-				</label>
-			</div>
+        <div class="form-group col-md-12">
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="animals" value="ok" {% if user.animals == "ok" %}checked{% endif %}>Authorized  
+        		<img src="../scripts/img/animal.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="animals" value="nok" {% if user.animals == "nok" %}checked{% endif %}>Prohibited  
+				<img src="../scripts/img/no_animal.jpg">
+			</label>
+        </div>
 
-		 </div>
+        <div class="form-group col-md-12">
+        	<!-- <h3>Smoking</h3> -->
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="smoking" value="ok" {% if user.smoking == "ok" %}checked{% endif %}>Authorized  
+        		<img src="../scripts/img/smoking.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="smoking" value="nok" {% if user.smoking == "nok" %}checked{% endif %}>Prohibited  
+				<img src="../scripts/img/no_smoking.jpg">
+			</label>
+        </div>
+
+        <div class="form-group col-md-12">
+        	<!-- <h3>Luggage space</h3> -->
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="luggage" value="sm_bag" {% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
+        		<img src="../scripts/img/small_bag.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="luggage" value="suitcase" {% if user.big_luggage == "ok" %}checked{% endif %}>Suitcase  
+				<img src="../scripts/img/suitcase.jpg">
+			</label>
+        </div>
+
+     </div>
 
 
-		<button type="submit" class="btn btn-success">
-
-			Search
-			<span class="glyphicon glyphicon-search"></span>
-		</button>
-
-	</form>
-
+	<button class="btn btn-success" onclick="searchTravel();">
+		Search <span class="glyphicon glyphicon-search"></span>
+	</button>
 </div>
+
+<script>
+
+function searchTravel(){
+
+	console.log("Retrieve search parameter");
+	//Get search parameters
+	var departure = document.getElementById("departure_search").value;
+	var arrival = document.getElementById("arrival_search").value;
+	if (departure == ""){
+		console.log("departure empty");	
+	}
+	if (arrival == ""){
+		console.log("arrival empty");	
+	}
+	console.log("dep : "+departure+"	-	arrival : "+arrival);
+
+	var date = document.getElementById("date_search").value;
+	var price = document.getElementById("price_search").value;
+
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+	
+	var preferences = document.getElementById("preferences_search").children;	
+	for (var i = 0; i < preferences.length; i++){
+
+		if (preferences[i].tagName == 'input' || preferences[i].tagName == 'INPUT'){
+			
+			if (preferences[i].type == 'radio' && preferences[i].checked){				
+				if (preferences[i].name == 'animals'){
+					animals = preferences[i].value;
+				}
+				if (preferences[i].name == "smoking"){
+					smoking = preferences[i].value;
+				}
+				if (preferences[i].name == "luggage"){
+					big_luggage = preferences[i].value;
+				}
+			}
+		}
+	}
+
+	console.log("Request preparation");
+	$.ajax({
+	  type: "POST",
+	  url: "/searchTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({"departure" : departure,
+	  						"arrival" : arrival,
+	  						"departure_date" : date,
+	  						"price_max" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage
+							})
+	})
+	.done(function( data ) { 	
+		console.log("data received back");
+
+		// Hide error field
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		//If there is error, handle appropriate error messages
+		if (data['error']){
+
+			//Display main error banner
+			var searchError = document.getElementById("searchError");
+			searchError.style.display = 'block';
+
+			//error message as a palceholder
+			if (data['error_src_dest']){
+				$("#departure_search").attr('placeholder', data['error_src_dest']);
+				$("#arrival_search").attr('placeholder', data['error_src_dest']);
+			}
+
+			//Error message append to the error banner
+			if (data['error_samedeparture']){
+				var error_div = document.getElementById('searchError');
+				error_div.lastChild.data = data['error_samedeparture'];
+			}
+
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_date_search');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price_search');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
+			var success = document.getElementById("searchSuccess");
+			success.style.display = 'block';
+			window.location.replace("/resultSearch");
+		}
+	});	
+
+
+
+}
+
+</script>

@@ -23,7 +23,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 # Main rendering function
 def render_str(template, **params):
 	t = jinja_env.get_template(template)
-	return t.render(params)
+	return t.render(params).encode('utf-8')
 
 # Hmac secret key
 secret = 'thisIsReallyABigSecret'

@@ -13,6 +13,7 @@
 from src.handler import *
 from src.travel import *
 from src.travelChecker import *
+from google.appengine.api import memcache
 import datetime
 import json
 
@@ -143,15 +144,7 @@ class SearchTravel(MainHandler):
 
 	def post(self):
 		# Save data into dictionnary
-		data = {}
-		data['departure'] = self.request.get('departure')
-		data['arrival'] = self.request.get('arrival')
-		data['departure_date'] = self.request.get('departure-date')
-		data['departure_hour'] = self.request.get('departure-hour')
-		data['departure_minutes'] = self.request.get('departure-minutes')
-		data['animals'] = self.request.get('animals')
-		data['smoking'] = self.request.get('smoking')
-		data['luggage'] = self.request.get('luggage')
+		data = json.loads(self.request.body)
 
 		# Check data via a dediacted agent
 		searchAgent = CheckSearchTravel(data)
@@ -159,27 +152,34 @@ class SearchTravel(MainHandler):
 
 
 		if checkedResult['error']:
-			today = datetime.datetime.now().strftime("%Y-%m-%d")
-			self.render('base.html',
-				user = self.user,
-				choice = "search",
-				error = checkedResult['error'],
-				error_samedeparture = checkedResult['error_samedeparture'],
-				today = today)
+			self.response.out.write(json.dumps(checkedResult))
 
 		else:
 			# Get back travels that match the filter
-			travels = Travel.by_filter(data['departure'], 
-										data['arrival'], 
-										checkedResult['date_min'], 
-										checkedResult['animal_ok'], 
-										checkedResult['smoking_ok'],
-										checkedResult['big_luggage_ok'],
-										actif = True)
-			self.render('base.html', 
-						user = self.user,
-						choice = "resultSearch", 
-						travels = travels)
+			travels = Travel.by_filter(departure = data['departure'], 
+										arrival = data['arrival'], 
+										date = data['departure_date'], 
+										animal_ok = data['animals'], 
+										smoking_ok = data['smoking'],
+										big_luggage_ok = data['luggage'])
+			self.response.out.write(json.dumps({}))
+			# Store request into memcache to acces it later
+			# Delay to handle memcache is of 5 seconds
+			memcache.delete(key=str(self.user.key().id()))
+			memcache.add(key=str(self.user.key().id()), value=travels, time=5)
+
+
+# Display result of a research
+class ResultSearchTravel(MainHandler):
+
+	def get(self):
+		previous_request = memcache.get(key=str(self.user.key().id()))
+		if previous_request is not None:
+			logging.info("request returned : "+str(previous_request.count()))
+
+			self.render('base.html', user=self.user, choice="resultSearch", travels = previous_request)
+		else:
+			self.redirect('/searchTravel')
 
 
 # Delete a previously created travel

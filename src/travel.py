@@ -60,23 +60,35 @@ class Travel(db.Model):
 
 	# Look for a travels
 	@classmethod
-	def by_filter(cls, departure = None, arrival = None, date_min = datetime.datetime.now(), animal_ok = None, smoking_ok = None, big_luggage_ok = None, actif = None):
+	def by_filter(cls, departure, arrival, date, animal_ok, smoking_ok, big_luggage_ok, actif = True):
 		query = Travel.all()
-		query.filter('datetime_departure >=', date_min)
 
-		if departure is not None:
+		if departure != "":
 			query.filter('departure =', departure)
 
-		if arrival is not None:
+		if arrival != "":
 			query.filter('arrival =', arrival)
 
-		if animal_ok is not None:
+		if date != "":
+			# Recompose the date
+			date_tab = date.split('-')
+			try:
+				year = int(date_tab[0])
+				month = int(date_tab[1])
+				day = int(date_tab[2])
+
+				date_min = datetime.datetime(year, month, day)
+				query.filter('datetime_departure >=', date_min)
+			except:
+				logging.info("date problem")
+
+		if animal_ok != "ni":
 			query.filter('animal_ok =', animal_ok)
 
-		if smoking_ok is not None:
+		if smoking_ok != "ni":
 			query.filter('smoking_ok =', smoking_ok)
 
-		if big_luggage_ok is not None:
+		if big_luggage_ok != "ni":
 			query.filter('big_luggage_ok =', big_luggage_ok)
 
 		# Check only for travel not deleted
