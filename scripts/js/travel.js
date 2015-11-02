@@ -2,16 +2,21 @@
 var marker_dep;
 var marker_arr;
 
-function initializeGoogleMapsAdder() {
-
-	var mapOptions = {
+var mapOptions = {
 	    center:new google.maps.LatLng(46.887678, -72.260262),
 	    zoom:5,
 	    mapTypeId:google.maps.MapTypeId.ROADMAP,
 	    mapTypeControl: false,
 		streetViewControl: false
 	};
+
+
 	
+
+
+function initializeGoogleMapsAdder() {
+
+		
 	//Create 2 map objects
 	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture"), mapOptions);
 	var map_arr = new google.maps.Map(document.getElementById("gmapArrival"), mapOptions);

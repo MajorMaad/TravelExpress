@@ -90,7 +90,6 @@ class ModifyTravel(MainHandler):
 		# Save data into a dictionnary
 		data = json.loads(self.request.body)
 		self.travel_id = int(data['travel_id'])
-		logging.info("travel id : %d"%self.travel_id)
 		self.seats = data['seats']
 
 		# Check data via a dedicated agent

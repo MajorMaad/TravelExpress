@@ -23,8 +23,8 @@ class Travel(db.Model):
 
 	# Attributes of a travel for the database
 	user_id = db.IntegerProperty(required = True)
-	departure = db.StringProperty(required = True)
-	arrival = db.StringProperty(required = True)
+	departure = db.StringListProperty(required = True)
+	arrival = db.StringListProperty(required = True)
 	places_number = db.IntegerProperty(required = True)
 	places_remaining = db.IntegerProperty(required = True)
 	datetime_departure = db.DateTimeProperty(required = True)
@@ -107,12 +107,22 @@ class Travel(db.Model):
 	# Add a travel
 	@classmethod
 	def add_travel(cls, travel_data):
+		# Split the departure and arrival data to determine country, province, and city
+		full_dep_addr = travel_data['departure'].split(', ')
+		full_arr_addr = travel_data['arrival'].split(', ')
+
+		if len(full_dep_addr) >= 3:
+			full_dep_addr = full_dep_addr[-3:]
+
+		if len(full_arr_addr) >= 3:
+			full_arr_addr = full_arr_addr[-3:]
+
 		travel = None
 		travel = Travel(parent = travel_key(),
 						actif = True,
 						user_id = travel_data['user_id'],
-						departure = travel_data['departure'],
-						arrival = travel_data['arrival'],
+						departure = full_dep_addr,
+						arrival = full_arr_addr,
 						places_number = travel_data['places_number'],
 						places_remaining = travel_data['places_number'],
 						datetime_departure = travel_data['datetime_departure'],
@@ -133,8 +143,18 @@ class Travel(db.Model):
 	def modify_travel(cls, travel_id, travel_data):
 		travel = cls.by_id(travel_id)
 
-		travel.departure = travel_data['departure']
-		travel.arrival = travel_data['arrival']
+		# Split the departure and arrival data to determine country, province, and city
+		full_dep_addr = travel_data['departure'].split(', ')
+		full_arr_addr = travel_data['arrival'].split(', ')
+
+		if len(full_dep_addr) >= 3:
+			full_dep_addr = full_dep_addr[-3:]
+
+		if len(full_arr_addr) >= 3:
+			full_arr_addr = full_arr_addr[-3:]
+
+		travel.departure = full_dep_addr
+		travel.arrival = full_arr_addr
 		travel.places_number = travel_data['places_number']
 		travel.places_remaining = travel_data['places_number']
 		travel.datetime_departure = travel_data['datetime_departure']
