@@ -51,11 +51,15 @@ class AddTravel(MainHandler):
 		checkedResult = travelerAgent.check()
 
 		if checkedResult['error']:
+			# Merge the 2 dicts
+			renderingDict = data.copy()
+			renderingDict.update(checkedResult)
+
 			self.render('base.html', 
 				user = self.user,
 				choice = "add",
 				travel_ok = False,
-				**checkedResult)
+				**renderingDict)
 
 		else:
 			# Register the new travel into DB
@@ -67,9 +71,9 @@ class AddTravel(MainHandler):
 				'places_remaining'	: int(self.seats),
 				'datetime_departure': checkedResult['datetime_departure'],
 				'price'				: int(data['price']),
-				'animal'			: checkedResult['animal_ok'],
-				'smoking'			: checkedResult['smoking_ok'],
-				'luggage'			: checkedResult['big_luggage_ok']
+				'animal'			: data['animal_ok'],
+				'smoking'			: data['smoking_ok'],
+				'luggage'			: data['big_luggage_ok']
 			}
 			travel = Travel.add_travel(travel_data)	
 

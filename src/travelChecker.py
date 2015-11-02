@@ -80,10 +80,10 @@ class CheckTravel():
 		# Checking global result
 		checkingResult['error'] = error
 
-		#Preferences checking
-		checkingResult['animal_ok'] = self.animals == 'ok'
-		checkingResult['smoking_ok'] = self.smoking == 'ok'
-		checkingResult['big_luggage_ok'] = self.luggage == 'suitcase'
+		# #Preferences checking
+		# checkingResult['animal_ok'] = self.animals == 'ok'
+		# checkingResult['smoking_ok'] = self.smoking == 'ok'
+		# checkingResult['big_luggage_ok'] = self.luggage == 'suitcase'
 
 		return checkingResult
 
