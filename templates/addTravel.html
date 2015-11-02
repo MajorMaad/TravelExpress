@@ -116,25 +116,14 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMaps);
  	<div class="container-fluid">
 		<div class="form-group col-md-6">
 			<label for="departure">Departure :</label>
-			<input id="departure" class="form-control"></input>
-			<!-- <select class="form-control" id="departure" name="departure">
-			    <option value="saguenay" {% if departure == 'saguenay' %}selected{% endif %}>Saguenay, QC</option>
-			    <option value="quebec" {% if departure == 'quebec' %}selected{% endif %}>Québec, QC</option>
-				<option value="montreal" {% if departure == 'montreal' %}selected{% endif %}>Montréal, QC</option>
-			</select> -->
+			<input id="departure" class="form-control alert-departure-arival"></input>
 			<br>
 			<div id="gmapDeparture" style="width:70%;height:350px;"></div>
 		</div>
 
 		<div class="form-group col-md-6">
 			<label for="arrival">Arrival : </label>
-			<input id="arrival" class="form-control"></input>
-<!-- 			<select class="form-control" id="arrival" name="arrival">
-			    <option value="saguenay" {% if arrival == 'saguenay' %}selected{% endif %}>Saguenay, QC</option>
-			    <option value="quebec" {% if arrival == 'quebec' %}selected{% endif %}>Québec, QC</option>
-				<option value="montreal" {% if arrival == 'montreal' %}selected{% endif %}>Montréal, QC</option>
-			</select> -->
-			<span id="error_samedeparture" class ="error" style="color:red; display:none"></span>	
+			<input id="arrival" class="form-control alert-departure-arival"></input>
 			<br>
 			<div id="gmapArrival" style="width:70%;height:350px;"></div>
 		</div>
@@ -319,28 +308,35 @@ function submitAddTravel(){
 	.done(function( data ) { 		
 		console.log("data received back");
 
+		// Hide error field
 		var alert_components = document.getElementsByClassName('error');
 		for (var i = 0; i < alert_components.length; i++){
 			alert_components[i].style.display = 'none';
 		}
 
+		//If there is error, handle appropriate error messages
 		if (data['error']){
 
+			//Display main error banner
 			var addError = document.getElementById("addError");
 			addError.style.display = 'block';
 
+			//error message as a palceholder
 			if (data['error_departure']){
-				console.log("ERROR : "+data['error_departure'] );
+				$("#departure").attr('placeholder', data['error_departure']);
 			}
 			
+			//error message as a palceholder
 			if (data['error_arrival']){
-				console.log("ERROR : "+data['error_arrival'] );
+				$("#arrival").attr('placeholder', data['error_arrival']);
 			}
 
-
+			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				onsole.log("prout");
+				var error_div = document.getElementById('addError');
+				error_div.lastChild.data = data['error_samedeparture'];
 			}
+
 
 			if (data['error_datetime']){
 				var span_error = document.getElementById('error_datetime');
@@ -354,6 +350,7 @@ function submitAddTravel(){
 				span_error.style.display = 'block';
 			}
 		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
 			var success = document.getElementById("addSuccess");
 			success.style.display = 'block';
 

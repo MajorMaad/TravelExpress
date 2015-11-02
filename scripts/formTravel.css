@@ -47,5 +47,5 @@ img {
 }
 
 .alert-departure-arival::-webkit-input-placeholder {
-    color: #b2cde0
+    color: red;
 }

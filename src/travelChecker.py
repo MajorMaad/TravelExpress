@@ -40,9 +40,9 @@ class CheckTravel():
 		elif self.arrival == "":
 			checkingResult['error_arrival'] = "You have to set a destination location"
 			error = True 
-			
+
 		elif self.departure == self.arrival:
-			checkingResult['error_samedeparture'] = "cannot be the same as departure"
+			checkingResult['error_samedeparture'] = "Departure and destination must be different places"
 			error = True
 
 		# Datetime checking
