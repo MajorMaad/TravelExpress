@@ -45,7 +45,7 @@ function initializeGoogleMaps() {
 //function to put marker on specific map
 function placeMarker(location, targetMap, context) {
 
-	if (context == "departure"){
+	if (context == "departure" || context =="departure_modify"){
 
 		if (!marker_dep){
 			console.log("new marker !!");
@@ -60,7 +60,7 @@ function placeMarker(location, targetMap, context) {
 		}
 	}
 
-	if (context == "arrival"){
+	if (context == "arrival" || context =="arrival_modify"){
 		if (!marker_arr){
 			console.log("new marker !!");
 			marker_arr = new google.maps.Marker({
