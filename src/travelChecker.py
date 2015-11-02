@@ -32,8 +32,16 @@ class CheckTravel():
 
 		error = False
 
-		# Departure and arrival must be different
-		if self.departure == self.arrival:
+		# Departure and arrival checking
+		if self.departure == "":
+			checkingResult['error_departure'] = "You have to set a departure location"
+			error = True 
+
+		elif self.arrival == "":
+			checkingResult['error_arrival'] = "You have to set a destination location"
+			error = True 
+			
+		elif self.departure == self.arrival:
 			checkingResult['error_samedeparture'] = "cannot be the same as departure"
 			error = True
 
