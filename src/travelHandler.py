@@ -78,42 +78,42 @@ class ModifyTravel(MainHandler):
 	#######################################################
 
 	def get(self):
-		self.travel_id = int(self.request.get('id'))
-		travel = Travel.by_id(self.travel_id)
-		self.render('base.html', user = self.user, choice = "modify", travel = travel)
+		try:
+			self.travel_id = int(self.request.get('id'))
+			travel = Travel.by_id(self.travel_id)
+			self.render('base.html', user = self.user, choice = "modify", travel = travel)
+		except:
+			self.redirect('/driverTravels')
+		
 
 	def post(self):
-		self.travel_id = int(self.request.get('travel_id'))
-
 		# Save data into a dictionnary
-		data = {}
-		data['departure'] = self.request.get('departure')
-		data['arrival'] = self.request.get('arrival')
-		data['departure_date'] = self.request.get('departure-date')
-		data['departure_hour'] = self.request.get('departure-hour')
-		data['departure_minutes'] = self.request.get('departure-minutes')
-		data['price'] = self.request.get('price')
-		data['animals'] = self.request.get('animals')
-		data['smoking'] = self.request.get('smoking')
-		data['luggage'] = self.request.get('luggage')
+		data = json.loads(self.request.body)
+		self.travel_id = int(data['travel_id'])
+		logging.info("travel id : %d"%self.travel_id)
+		self.seats = data['seats']
 
-		self.seats = self.request.get('seats')
-
-		# Tests to change a travel are same to a new Travel
-		# So the agent is the same as the one used in AddTravel
+		# Check data via a dedicated agent
 		travelerAgent = CheckTravel(data)
 		checkedResult = travelerAgent.check()
 
 		if checkedResult['error']:
-			self.render('base.html', 
-				user = self.user,
-				choice = "modify",
-				travel = Travel.by_id(self.travel_id),
-				travel_ok = False,
-				**checkedResult)
+			# Merge the 2 dicts
+			renderingDict = data.copy()
+			renderingDict.update(checkedResult)
+
+			# datetime cannot be json serializable
+			renderingDict.pop('datetime_departure', None)
+
+			# Send back response
+			self.response.out.write(json.dumps(renderingDict))
 
 		else:
-			# Bring changes to the targeted travel
+			for k in data:
+				logging.info('my data are : %r : %r '%(k, data[k]))
+
+
+			# Register the new travel into DB
 			travel_data = {
 				'user_id'			: self.user.key().id(),
 				'departure'			: data['departure'],
@@ -122,12 +122,12 @@ class ModifyTravel(MainHandler):
 				'places_remaining'	: int(self.seats),
 				'datetime_departure': checkedResult['datetime_departure'],
 				'price'				: int(data['price']),
-				'animal'			: checkedResult['animal_ok'],
-				'smoking'			: checkedResult['smoking_ok'],
-				'luggage'			: checkedResult['big_luggage_ok']
+				'animal'			: data['animals'],
+				'smoking'			: data['smoking'],
+				'luggage'			: data['luggage']
 			}
 			travel = Travel.modify_travel(self.travel_id, travel_data)
-			self.render('base.html', user = self.user, choice = 'modify', travel = Travel.by_id(self.travel_id), travel_ok = True)
+			self.response.out.write(json.dumps({}))
 
 
 # Look for a travel

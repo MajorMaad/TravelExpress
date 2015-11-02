@@ -1,15 +1,130 @@
 <link rel="stylesheet" type="text/css" href="../scripts/formTravel.css">
 
+
+<!-- Inclusion of google map and realtive functions -->
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+
+<script>
+//Global variables
+var marker_dep;
+var marker_arr;
+
+function initializeGoogleMaps() {
+
+	var mapOptions = {
+	    center:new google.maps.LatLng(46.887678, -72.260262),
+	    zoom:5,
+	    mapTypeId:google.maps.MapTypeId.ROADMAP,
+	    mapTypeControl: false,
+		streetViewControl: false
+	};
+	
+	//Create 2 map objects
+	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture_modify"), mapOptions);
+	var map_arr = new google.maps.Map(document.getElementById("gmapArrival_modify"), mapOptions);
+
+	//Create the geocoder guy
+	var geocoder = new google.maps.Geocoder;
+
+	//Bind listener for a specific marker and process the input	
+	map_dep.addListener('click', function(event) {
+		placeMarker(event.latLng, map_dep, "departure_modify");
+	    geocodeLatLng(geocoder, map_dep, event.latLng, "departure_modify");
+	});
+	
+	map_arr.addListener('click', function(event) {		
+		placeMarker(event.latLng, map_arr, "arrival_modify");
+		geocodeLatLng(geocoder, map_arr, event.latLng, "arrival_modify");
+	});
+
+	//Bind the input to the marker creation
+	codeAddress(geocoder, map_dep, "departure_modify");
+	codeAddress(geocoder, map_arr, "arrival_modify");
+}
+
+//function to put marker on specific map
+function placeMarker(location, targetMap, context) {
+
+	if (context == "departure"){
+
+		if (!marker_dep){
+			console.log("new marker !!");
+			marker_dep = new google.maps.Marker({
+		        position: location, 
+		        map: targetMap,
+		        visble: true
+		    });
+		}else{
+			console.log("already here");
+			marker_dep.setPosition(location);
+		}
+	}
+
+	if (context == "arrival"){
+		if (!marker_arr){
+			console.log("new marker !!");
+			marker_arr = new google.maps.Marker({
+		        position: location, 
+		        map: targetMap,
+		        visble: true
+		    });
+		}else{
+			console.log("already here");
+			marker_arr.setPosition(location);
+		}		
+	}
+}
+
+//Decode latLng to a readable address
+//https://developers.google.com/maps/documentation/javascript/examples/geocoding-reverse
+function geocodeLatLng(geocoder, map, location, context) {
+	geocoder.geocode({'location': location}, function(results, status) {
+		if (status === google.maps.GeocoderStatus.OK) {
+			if (results[1]) {
+				map.setZoom(8);
+				map.setCenter(location);
+				var readableField = document.getElementById(context);
+				readableField.value = results[1].formatted_address;
+			} else {
+				window.alert('No results found');
+			}
+		} else {
+		  window.alert('Geocoder failed due to: ' + status);
+		}
+	});
+}
+
+//Encode LatLng from an address
+function codeAddress(geocoder, target_map, context) {
+    var address = document.getElementById(context).value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        target_map.setCenter(results[0].geometry.location);
+        var position_marker = results[0].geometry.location
+        placeMarker(position_marker, target_map, context);
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  }
+
+
+//Add the google maps to dom and call the init function
+google.maps.event.addDomListener(window, 'load', initializeGoogleMaps);
+
+</script>
+
+
+
 <!-- Success or error banner -->
-{% if travel_ok == True %}
-	<div class="alert alert-success" role="alert">
-    	<strong>Done !</strong> Travel successfully modified. <a href="/driverTravels">Return</a>
-    </div>
-{% elif travel_ok == False %}
-	<div class="alert alert-danger" role="alert">
-    	<strong>Oups !</strong> There has been an error.
-    </div>
-{% endif %}
+<div id="addSuccess" class="alert alert-success" role="alert" style="display:none">
+	<strong>Done !</strong> 
+	Modification correctly saved. Redirection to your travel list.
+</div>
+
+<div id="addError" class="alert alert-danger error" role="alert" style="display:none">
+	<strong>Oups !</strong> There has been an error.
+</div>
 
 
 <!-- Body -->
@@ -17,31 +132,29 @@
 
 	<h1 class="text-primary">Modify a travel</h1>
 
-	<form role="form" method="post" action="/modifyTravel" onsubmit="return confirm('Do you really want to modify this travel ?');">
+	<input type="hidden" id="travel_id_modif" name="travel_id_modif" value="{{ travel.key().id() }}">
 
-		<input type="hidden" id="travel_id" name="travel_id" value="{{ travel.key().id() }}">
-
+	<div class="container-fluid">
 		<div class="form-group col-md-6">
-			<label for="departure">Departure :</label>
-			<select class="form-control" id="departure_modify" name="departure" value="{{ travel.departure }}">
-			    <option value="saguenay" {% if travel.departure == 'saguenay' %}selected{% endif %}>Saguenay, QC</option>
-			    <option value="quebec" {% if travel.departure == 'quebec' %}selected{% endif %}>Québec, QC</option>
-				<option value="montreal" {% if travel.departure == 'montreal' %}selected{% endif %}>Montréal, QC</option>
-			</select>
+			<label for="departure_modify">Departure :</label>
+			<input id="departure_modify" class="form-control alert-departure-arival" value="{{travel.departure}}"></input>
+			<br>
+			<div id="gmapDeparture_modify" style="width:70%;height:350px;"></div>
 		</div>
 
 		<div class="form-group col-md-6">
-			<label for="arrival">Arrival : {% if error_samedeparture %}<span style="color:red;"> {{ error_samedeparture }}</span>{% endif %}</label>
-			<select class="form-control" id="arrival_modify" name="arrival">
-			    <option value="saguenay" {% if travel.arrival == 'saguenay' %}selected{% endif %}>Saguenay, QC</option>
-			    <option value="quebec" {% if travel.arrival == 'quebec' %}selected{% endif %}>Québec, QC</option>
-				<option value="montreal" {% if travel.arrival == 'montreal' %}selected{% endif %}>Montréal, QC</option>
-			</select>
+			<label for="arrival_modify">Arrival : </label>
+			<input id="arrival_modify" class="form-control alert-departure-arival" value="{{travel.arrival}}"></input>
+			<br>
+			<div id="gmapArrival_modify" style="width:70%;height:350px;"></div>
 		</div>
+	</div>
 
+	<div class="container-fluid">
 		<div class="form-group col-md-4">
-        	<label for="departure-date">Departure date {% if error_datetime %}<span style="color:red;"> {{ error_datetime }}</span>{% endif %}</label>
+        	<label for="departure-date">Departure date </label>
         	<input id="departure-date_modify" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value="{{ travel.datetime_departure.strftime('%Y-%m-%d') }}"/>
+        	<span id="error_datetime" class ="error" style="color:red; display:none"></span>
         </div>
 
         <div class="form-group col-md-4">
@@ -73,7 +186,9 @@
         		{% endfor %}
         	</select>
         </div>
+    </div>
 
+	<div class="container-fluid">
         <div class="form-group col-md-6">
         	<label for="seats">Seats available :</label>
 			<select class="form-control" id="seats_modify" name="seats">
@@ -86,38 +201,190 @@
         </div>
 
         <div class="form-group col-md-6">
-        	<label for="price">Price : {% if error_price %}<span style="color:red;"> {{ error_price }}</span>{% endif %}</label>
+        	<label for="price">Price : </label>
         	<input class="form-control" id="price_modify" type="number" maxlength="3" name="price" value="{{ travel.price }}">
         	$
+        	<span id="error_price" class ="error" style="color:red; display:none"></span>
+        </div>
+    </div>
+
+    <!-- Preferences -->
+    <div id="preferences_modify" class="container-fluid">
+
+        <h3 > Modify your travel preferences </h3>
+
+        <div class="form-group col-md-12">
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="animals" value="ok" {% if travel.animals == "ok" %}checked{% endif %}>Authorized  
+        		<img src="../scripts/img/animal.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="animals" value="nok" {% if travel.animals == "nok" %}checked{% endif %}>Prohibited  
+				<img src="../scripts/img/no_animal.jpg">
+			</label>
         </div>
 
-        <!-- Preferences -->
-        <div id="preferences_modify" class="container">
+        <div class="form-group col-md-12">
+        	<!-- <h3>Smoking</h3> -->
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="smoking" value="ok" {% if travel.smoking == "ok" %}checked{% endif %}>Authorized  
+        		<img src="../scripts/img/smoking.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="smoking" value="nok" {% if travel.smoking == "nok" %}checked{% endif %}>Prohibited  
+				<img src="../scripts/img/no_smoking.jpg">
+			</label>
+        </div>
 
-	        <div class="form-group col-md-12">
-	        	<h3>Animals</h3>
-	        	<label class="radio-inline col-md-5"><input type="radio" name="animals" value="ok" {% if travel.animal_ok %}checked{% endif %}>Authorized  <img src="../scripts/img/animal.jpg"></label>
-				<label class="radio-inline col-md-5"><input type="radio" name="animals" value="nok" {% if not travel.animal_ok %}checked{% endif %}>Prohibited  <img src="../scripts/img/no_animal.jpg"></label>
-	        </div>
+        <div class="form-group col-md-12">
+        	<!-- <h3>Luggage space</h3> -->
+        	<label class="radio-inline col-md-3">
+        		<input type="radio" name="luggage" value="sm_bag" {% if travel.big_luggage == "nok" %}checked{% endif %}>Small bag  
+        		<img src="../scripts/img/small_bag.jpg">
+        	</label>
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="luggage" value="suitcase" {% if travel.big_luggage == "ok" %}checked{% endif %}>Suitcase  
+				<img src="../scripts/img/suitcase.jpg">
+			</label>
+        </div>
 
-	        <div class="form-group col-md-12">
-	        	<h3>Smoking</h3>
-	        	<label class="radio-inline col-md-5"><input type="radio" name="smoking" value="ok" {% if travel.smoking_ok %}checked{% endif %}>Authorized  <img src="../scripts/img/smoking.jpg"></label>
-				<label class="radio-inline col-md-5"><input type="radio" name="smoking" value="nok" {% if not travel.smoking_ok %}checked{% endif %}>Prohibited  <img src="../scripts/img/no_smoking.jpg"></label>
-	        </div>
+     </div>
 
-	        <div class="form-group col-md-12">
-	        	<h3>Luggage space</h3>
-	        	<label class="radio-inline col-md-5"><input type="radio" name="luggage" value="sm_bag" {% if not travel.big_luggage_ok %}checked{% endif %}>Small bag  <img src="../scripts/img/small_bag.jpg"></label>
-				<label class="radio-inline col-md-5"><input type="radio" name="luggage" value="suitcase" {% if travel.big_luggage_ok %}checked{% endif %}>Suitcase  <img src="../scripts/img/suitcase.jpg"></label>
-	        </div>
-
-	     </div>
-
-
-		<button type="submit" class="btn btn-success">Submit</button>
-
-	</form>
+	<button type="submit" class="btn btn-success" onclick="submitModificationTravel();">Submit</button>
 
 </div>
 
+
+<script>
+function submitModificationTravel(){
+
+	console.log("getting data");
+
+	//Get trvel id
+	var id = document.getElementById("travel_id_modif").value;
+	console.log("id given is :"+id);
+
+	//Retrieve departure and arrival :
+	var departure = document.getElementById("departure_modify").value;
+	var arrival = document.getElementById("arrival_modify").value;
+	console.log("dep = "+departure+"	-	arrival : "+arrival);
+
+
+	// Retrieve number of seats
+	var seats = document.getElementById('seats_modify');
+	var seatNumber = seats.options[seats.selectedIndex].value;
+
+	//Retrieve departure moments
+	var dep_date = document.getElementById('departure-date_modify').value;
+	var dep_hour = document.getElementById('departure-hour_modify').value;
+	var dep_min = document.getElementById('departure-minutes_modify').value;
+
+	//Retrieve the price
+	var price = document.getElementById("price_modify").value;
+
+	//Retrieve preferences:
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+
+	//Loop over the Preference div Section
+	var preferences = document.getElementById('preferences_modify');
+	var prefList = preferences.children;
+	for (var i = 0; i < prefList.length; i++){
+		
+		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
+			if (prefList[i].type == 'radio' && prefList[i].checked){
+				
+				if (prefList[i].name == 'animals'){
+					animals = prefList[i].value;
+				}
+
+				if (prefList[i].name == "smoking"){
+					smoking = prefList[i].value;
+				}
+
+				if (prefList[i].name == "luggage"){
+					big_luggage = prefList[i].value;
+				}
+			}
+		}
+	}
+	
+	console.log("preparing request");
+
+	//Prepare ajax request
+	$.ajax({
+	  type: "POST",
+	  url: "/modifyTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({"travel_id" :id,
+	  						"departure" : departure,
+	  						"arrival" : arrival,
+	  						"departure_date" : dep_date,
+	  						"departure_hour" : dep_hour,
+	  						"departure_minutes" : dep_min,
+	  						"price" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage,
+	  						"seats" : seatNumber
+							})
+	})
+	.done(function( data ) { 		
+		console.log("data received back");
+
+		// Hide error field
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		//If there is error, handle appropriate error messages
+		if (data['error']){
+
+			//Display main error banner
+			var addError = document.getElementById("addError");
+			addError.style.display = 'block';
+
+			//error message as a palceholder
+			if (data['error_departure']){
+				$("#departure").attr('placeholder', data['error_departure']);
+			}
+			
+			//error message as a palceholder
+			if (data['error_arrival']){
+				$("#arrival").attr('placeholder', data['error_arrival']);
+			}
+
+			//Error message append to the error banner
+			if (data['error_samedeparture']){
+				var error_div = document.getElementById('addError');
+				error_div.lastChild.data = data['error_samedeparture'];
+			}
+
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_datetime');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
+			var success = document.getElementById("addSuccess");
+			success.style.display = 'block';
+
+			window.setTimeout(function(){
+				window.location.replace("driverTravels");
+			}, 1500);
+		}
+	});
+}
+
+
+</script>

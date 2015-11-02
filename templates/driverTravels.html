@@ -19,13 +19,13 @@
 				</div>
 
 				<div class="btn-group">
-						<a type="button" href="/modifyTravel?id={{ travel.key().id() }}" class="btn btn-warning">
+						<button type="button" class="btn btn-warning" onclick="modifyTravel({{ travel.key().id() }});" >
 				        	<span class="glyphicon glyphicon-edit"></span>
-				        </a>
+				        </button>
 
 				        <button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id()}} );">
 				        	<span class="glyphicon glyphicon-trash"></span>
-				        </a>
+				        </button>
 		        </div>
 
 	        </div>
@@ -79,5 +79,12 @@ function deleteTravel(travel_id){
 			});	
 	}
 }
+
+function modifyTravel(travel_id){
+	if ( confirm('Do you want to modify this travel ?') ){
+		window.location.replace("/modifyTravel?id="+travel_id);
+	}
+}
+
 </script>
 
