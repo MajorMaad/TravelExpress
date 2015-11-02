@@ -10,10 +10,6 @@ var mapOptions = {
 		streetViewControl: false
 	};
 
-
-	
-
-
 function initializeGoogleMapsAdder() {
 
 		
@@ -34,6 +30,11 @@ function initializeGoogleMapsAdder() {
 		placeMarker(event.latLng, map_arr, "arrival");
 		geocodeLatLng(geocoder, map_arr, event.latLng, "arrival");
 	});
+
+	//Enable the autocomplete feature
+	autocompleteOn("departure", map_dep);
+	autocompleteOn("arrival", map_arr);
+
 }
 
 function initializeGoogleMapsModifyer() {
@@ -67,6 +68,10 @@ function initializeGoogleMapsModifyer() {
 	//Bind the input to the marker creation
 	codeAddress(geocoder, map_dep, "departure_modify");
 	codeAddress(geocoder, map_arr, "arrival_modify");
+
+	//Enable the autocomplete feature
+	autocompleteOn("departure_modify", map_dep);
+	autocompleteOn("arrival_modify", map_arr);
 }
 
 //function to put marker on specific map
@@ -132,7 +137,39 @@ function codeAddress(geocoder, target_map, context) {
         alert("Geocode was not successful for the following reason: " + status);
       }
     });
-  }
+}
+
+//Enable autocomplete
+// https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete
+function autocompleteOn(targetInput, targetMap){		
+	var input = /** @type {!HTMLInputElement} */(
+		document.getElementById(targetInput)
+	);
+
+	var depComplete = new google.maps.places.Autocomplete(input);
+  	depComplete.bindTo('bounds', targetMap);
+
+  	depComplete.addListener('place_changed', function() {
+	    var place = depComplete.getPlace();
+	    if (!place.geometry) {
+	      window.alert("Autocomplete's returned place contains no geometry");
+	      return;
+	    }
+
+	    //Put a marker on place :
+	    placeMarker(place.geometry.location, targetMap, targetInput);
+
+	    var address = '';
+	    if (place.address_components) {
+	      address = [
+	        (place.address_components[0] && place.address_components[0].short_name || ''),
+	        (place.address_components[1] && place.address_components[1].short_name || ''),
+	        (place.address_components[2] && place.address_components[2].short_name || '')
+	      ].join(', ');
+	    }
+  	});
+}
+
 
 
 function submitAddTravel(){
