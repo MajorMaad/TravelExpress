@@ -12,9 +12,11 @@ var marker_arr;
 function initializeGoogleMaps() {
 
 	var mapOptions = {
-	    center:new google.maps.LatLng(51.508742,-0.120850),
+	    center:new google.maps.LatLng(46.887678, -72.260262),
 	    zoom:5,
-	    mapTypeId:google.maps.MapTypeId.ROADMAP
+	    mapTypeId:google.maps.MapTypeId.ROADMAP,
+	    mapTypeControl: false,
+		streetViewControl: false
 	};
 	
 	//Create 2 map objects
@@ -75,7 +77,7 @@ function geocodeLatLng(geocoder, map, location, context) {
 	geocoder.geocode({'location': location}, function(results, status) {
 		if (status === google.maps.GeocoderStatus.OK) {
 			if (results[1]) {
-				map.setZoom(11);
+				map.setZoom(8);
 				map.setCenter(location);
 				var readableField = document.getElementById(context);
 				readableField.value = results[1].formatted_address;
