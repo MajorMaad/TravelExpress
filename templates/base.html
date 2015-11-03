@@ -38,14 +38,14 @@
 
 		<!-- Nav bar -->
 		<ul class="nav nav-tabs nav-justified">
-			<li class="active">
+			<li {% if not choice %}class="active"{% endif %}>
 				<a href="/">
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					Home
 				</a>
 			</li>
 
-			<li class="dropdown">
+			<li class="dropdown {% if choice == "search" or choice == "resultSearch" or choice == "travelerTravels" or choice == "userPage" %}active{% endif %}">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 					<span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>
 					Traveler <span class="caret"></span>
@@ -54,10 +54,12 @@
 					<li><a href="/travelerTravels">Show my travels</a></li>
 					<li role="separator" class="divider"></li>
 					<li><a href="/searchTravel">Look for a travel</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="/myProfile">Settings</a></li>
 				</ul>
 			</li>
 
-			<li class="dropdown">
+			<li class="dropdown {% if choice == "add" or choice == "driverTravels" or choice == "modify" %}active{% endif %}">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 					<span class="glyphicon glyphicon-road" aria-hidden="true"></span>
 					Driver <span class="caret"></span>
@@ -87,7 +89,7 @@
 
 
 		<!-- Display Quick links -->
-		{% if not choice %}			
+		{% if not choice %}
 			<div id="quickLinks" class="row">
 
 				<div class="col-xs-12 col-sm-6 col-md-4">
@@ -116,31 +118,31 @@
 
 			</div>
 
-		<!-- Or display specific functionnalities -->		
+		<!-- Or display specific functionnalities -->
 		{% elif choice == "add" %}
 			<!-- Add a travel -->
 			{% include "addTravel.html" with context %}
-		
+
 		{% elif choice == "search" %}
 			<!-- Look for a travel -->
 			{% include "searchTravel.html" with context %}
-		
+
 		{% elif choice == "resultSearch" %}
 			<!-- Display result of a research -->
 			{% include "resultSearch.html" with context %}
-		
+
 		{% elif choice == "driverTravels" %}
 			<!-- Display travels where driver === user -->
 			{% include "driverTravels.html" with context %}
-		
+
 		{% elif choice == "travelerTravels" %}
 			<!-- Display travels where user != driver -->
 			{% include "travelerTravels.html" with context %}
-		
+
 		{% elif choice == "modify" %}
 			<!-- Modify a registered travel, owned by user -->
 			{% include "modifyTravel.html" with context %}
-		
+
 		{% elif choice == "userPage" %}
 			<!-- Access User profile page -->
 			{% include "userPage.html" with context %}
@@ -150,7 +152,7 @@
 
 	<!-- If user is not logged in : display Sign Up / Log In section -->
 	{% else %}
-		
+
 		<div class="jumbotron">
 			<div id="jumpInSection" class="container">
 				<p>If you want to benefit of our website, you have to log in =/ </p>
@@ -170,12 +172,37 @@
 			</div>
 		</div>
 	{% endif %}
-	
+
 	<!-- Welcome Message -->
 	<div id="welcomeSection">
 		<p> Welcome to Travel Express, the web service allowing you to travel without using your feet !! </p>
 	</div>
 
+
+
+
+	<script type="text/javascript">
+
+		$(document).ready(function () {
+
+			$(this).keypress(function (e) {
+
+				if (e.which == 13) {
+
+					var $inputFocused = $(':focus').parent();
+
+					if ($inputFocused.hasClass("sign-up"))
+						$("#submitSignUpBtn").click();
+					else if ($inputFocused.hasClass("log-in"))
+						$("#submitLogInBtn").click();
+
+				}
+
+			});
+
+		});
+
+	</script>
 
 </body>
 
