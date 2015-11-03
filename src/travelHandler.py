@@ -207,11 +207,13 @@ class AddUserToTravel(MainHandler):
 		self.travel_id = int(self.request.get('travel_id'))
 		self.places_reservation = int(self.request.get('places_reservation'))		
 
-		added = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
+		status, msg = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
 
-		if added:
+		if status:
+			logging.info("CORRECT book a travel : "+msg)
 			self.redirect('/?success_booking=True')
 		else:
+			logging.info("ERROR book a travel : "+msg)
 			self.redirect('/searchTravel?success_booking=False')
 
 

@@ -116,13 +116,22 @@ class Travel(db.Model):
 	def add_user(cls, user_id, travel_id, places):
 		travel = Travel.by_id(travel_id)
 
+		# Traveler cannot be the driver
 		if user_id == travel.user_id:
-			return False
-		else:
-			travel.bookers_id.append(user_id)
-			travel.places_remaining -= places
-			travel.put()
-			return True	
+			return (False, "You cannot book this travel : you re the driver.")
+
+		# traveler cannot book twice the same travel
+		if user_id in travel.bookers_id:
+			return (False, "You have already book this travel.")
+
+		# Ensure there are enough places
+		if (travel.places_remaining - places ) < 0:
+			return (False, "There are not enough places.")
+
+		travel.bookers_id.append(user_id)
+		travel.places_remaining -= places
+		travel.put()
+		return (True, "Your reservation has been saved.")
 
 	# Add a travel
 	@classmethod
