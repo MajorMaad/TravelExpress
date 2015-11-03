@@ -17,7 +17,11 @@
 		<div class="panel-heading">
 			<div class="row">
 				<div class="col-md-8">
-					<h3 class="panel-title"><strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong> {{ travel.departure|capitalize }} - {{ travel.arrival|capitalize }}</h3>
+					<h3 class="panel-title"><strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong> 
+						{{ travel.departure|join(', ')|capitalize }}
+						<span class="glyphicon glyphicon-arrow-right"> </span>
+						{{ travel.arrival|join(', ')|capitalize }}
+					</h3>
 				</div>
 
 				<div class="btn-group">
