@@ -1,6 +1,8 @@
 //Global variables
 var marker_dep;
 var marker_arr;
+var research_auto_complete_dep;
+var research_auto_complete_arr;
 
 var mapOptions = {
 	    center:new google.maps.LatLng(46.887678, -72.260262),
@@ -72,6 +74,22 @@ function initializeGoogleMapsModifyer() {
 	//Enable the autocomplete feature
 	autocompleteOn("departure_modify", map_dep);
 	autocompleteOn("arrival_modify", map_arr);
+}
+
+
+function initializeResearchAutocomplete(){
+
+	var research_auto_complete_dep = new google.maps.places.Autocomplete(
+		/** @type {HTMLInputElement} */(document.getElementById('departure_search')),
+		{ types: ['geocode'] }
+		);
+	google.maps.event.addListener(research_auto_complete_dep, 'place_changed', function() {});
+		
+	var research_auto_complete_arr = new google.maps.places.Autocomplete(
+		/** @type {HTMLInputElement} */(document.getElementById('arrival_search')),
+		{ types: ['geocode'] }
+		);
+	google.maps.event.addListener(research_auto_complete_arr, 'place_changed', function() {});
 }
 
 //function to put marker on specific map
@@ -423,4 +441,108 @@ function submitModificationTravel(){
 		}
 	});
 }
+
+function searchTravel(){
+
+	console.log("Retrieve search parameter");
+	//Get search parameters
+	var departure = document.getElementById("departure_search").value;
+	var arrival = document.getElementById("arrival_search").value;
+	if (departure == ""){
+		console.log("departure empty");	
+	}
+	if (arrival == ""){
+		console.log("arrival empty");	
+	}
+	console.log("dep : "+departure+"	-	arrival : "+arrival);
+
+	var date = document.getElementById("date_search").value;
+	var price = document.getElementById("price_search").value;
+
+	var animals = "ni";
+	var smoking = "ni";
+	var big_luggage = "ni";
+	
+	var preferences = document.getElementById("preferences_search").children;	
+	for (var i = 0; i < preferences.length; i++){
+
+		if (preferences[i].tagName == 'input' || preferences[i].tagName == 'INPUT'){
+			
+			if (preferences[i].type == 'radio' && preferences[i].checked){				
+				if (preferences[i].name == 'animals'){
+					animals = preferences[i].value;
+				}
+				if (preferences[i].name == "smoking"){
+					smoking = preferences[i].value;
+				}
+				if (preferences[i].name == "luggage"){
+					big_luggage = preferences[i].value;
+				}
+			}
+		}
+	}
+
+	console.log("Request preparation");
+	$.ajax({
+	  type: "POST",
+	  url: "/searchTravel",
+	  dataType: 'json',
+	  data: JSON.stringify({"departure" : departure,
+	  						"arrival" : arrival,
+	  						"departure_date" : date,
+	  						"price_max" : price,
+	  						"animals" : animals,
+	  						"smoking" : smoking,
+	  						"luggage" : big_luggage
+							})
+	})
+	.done(function( data ) { 	
+		console.log("data received back");
+
+		// Hide error field
+		var alert_components = document.getElementsByClassName('error');
+		for (var i = 0; i < alert_components.length; i++){
+			alert_components[i].style.display = 'none';
+		}
+
+		//If there is error, handle appropriate error messages
+		if (data['error']){
+
+			//Display main error banner
+			var searchError = document.getElementById("searchError");
+			searchError.style.display = 'block';
+
+			//error message as a palceholder
+			if (data['error_src_dest']){
+				$("#departure_search").attr('placeholder', data['error_src_dest']);
+				$("#arrival_search").attr('placeholder', data['error_src_dest']);
+			}
+
+			//Error message append to the error banner
+			if (data['error_samedeparture']){
+				var error_div = document.getElementById('searchError');
+				error_div.lastChild.data = data['error_samedeparture'];
+			}
+
+
+			if (data['error_datetime']){
+				var span_error = document.getElementById('error_date_search');
+				span_error.innerHTML = data['error_datetime'];
+				span_error.style.display = 'block';
+			}
+
+			if (data['error_price']){
+				var span_error = document.getElementById('error_price_search');
+				span_error.innerHTML = data['error_price'];
+				span_error.style.display = 'block';
+			}
+		}else{
+			//handle success and redirect to the list of travel whereuser is the driver
+			var success = document.getElementById("searchSuccess");
+			success.style.display = 'block';
+			window.location.replace("/resultSearch");
+		}
+	});	
+}
+
 

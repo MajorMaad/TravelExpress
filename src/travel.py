@@ -11,6 +11,7 @@
 
 from google.appengine.ext import db
 import datetime
+import logging
 
 
 def travel_key(name = 'default'):
@@ -64,10 +65,14 @@ class Travel(db.Model):
 		query = Travel.all()
 
 		if departure != "":
-			query.filter('departure =', departure)
+			departure_addr = cls.split_address(departure)
+			for part in departure_addr:
+				query.filter('departure =', part)
 
 		if arrival != "":
-			query.filter('arrival =', arrival)
+			arrival_addr = cls.split_address(arrival)
+			for part in arrival_addr:
+				query.filter('arrival =', part)
 
 		if date != "":
 			# Recompose the date
@@ -120,14 +125,9 @@ class Travel(db.Model):
 	@classmethod
 	def add_travel(cls, travel_data):
 		# Split the departure and arrival data to determine country, province, and city
-		full_dep_addr = travel_data['departure'].split(', ')
-		full_arr_addr = travel_data['arrival'].split(', ')
-
-		if len(full_dep_addr) >= 3:
-			full_dep_addr = full_dep_addr[-3:]
-
-		if len(full_arr_addr) >= 3:
-			full_arr_addr = full_arr_addr[-3:]
+		# Split the departure and arrival data to determine country, province, and city
+		full_dep_addr = cls.split_address(travel_data['departure'])
+		full_arr_addr = cls.split_address(travel_data['arrival'])
 
 		travel = None
 		travel = Travel(parent = travel_key(),
@@ -156,14 +156,8 @@ class Travel(db.Model):
 		travel = cls.by_id(travel_id)
 
 		# Split the departure and arrival data to determine country, province, and city
-		full_dep_addr = travel_data['departure'].split(', ')
-		full_arr_addr = travel_data['arrival'].split(', ')
-
-		if len(full_dep_addr) >= 3:
-			full_dep_addr = full_dep_addr[-3:]
-
-		if len(full_arr_addr) >= 3:
-			full_arr_addr = full_arr_addr[-3:]
+		full_dep_addr = cls.split_address(travel_data['departure'])
+		full_arr_addr = cls.split_address(travel_data['arrival'])
 
 		travel.departure = full_dep_addr
 		travel.arrival = full_arr_addr
@@ -191,3 +185,10 @@ class Travel(db.Model):
 		if (travel.user_id == user_id):
 			travel.actif = False
 			travel.put()
+
+	@classmethod
+	def split_address(cls, address):
+		full_addr = address.split(', ')
+		if len(full_addr) >= 3:
+			return full_addr[-3:]
+		return full_addr
