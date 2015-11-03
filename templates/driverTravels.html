@@ -2,6 +2,13 @@
 
 <!-- Body -->
 
+
+<div id="delSuccess" class="alert alert-success" role="alert" style="display:none">
+	<strong>Done !</strong> 
+	Deletion correctly saved. This page will now refresh
+</div>
+
+
 {% if noTravel %}
 	<div class="alert alert-warning" role="alert">
 		<strong>Warning !</strong> You do not have any travels set yet. <a href="/addTravel">Add one</a>
@@ -78,9 +85,11 @@ function deleteTravel(travel_id){
 			data: JSON.stringify({ "travel_id" : travel_id	})
 			})
 			.done(function( data ) { 
+				var success = document.getElementById("delSuccess");
+				success.style.display = "block";
 				window.setTimeout(function(){
 					window.location.replace("driverTravels");
-				}, 1500);
+				}, 1000);
 			});	
 	}
 }
