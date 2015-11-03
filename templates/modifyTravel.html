@@ -4,6 +4,7 @@
 
 <!-- Inclusion of google map and realtive functions -->
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+<script type="text/javascript" src="/scripts/js/gmap.js" ></script>
 <script type="text/javascript" src="/scripts/js/travel.js" ></script>
 
 
@@ -113,11 +114,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 
         <div class="form-group col-md-12">
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animals == "ok" %}checked{% endif %}>Authorized  
+        		<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animal_ok == "ok" %}checked{% endif %}>Authorized  
         		<img src="../scripts/img/animal.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.animals == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.animal_ok == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_animal.jpg">
 			</label>
         </div>
@@ -125,11 +126,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
         <div class="form-group col-md-12">
         	<!-- <h3>Smoking</h3> -->
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking == "ok" %}checked{% endif %}>Authorized  
+        		<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking_ok == "ok" %}checked{% endif %}>Authorized  
         		<img src="../scripts/img/smoking.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.smoking == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.smoking_ok == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_smoking.jpg">
 			</label>
         </div>
@@ -137,11 +138,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
         <div class="form-group col-md-12">
         	<!-- <h3>Luggage space</h3> -->
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage == "nok" %}checked{% endif %}>Small bag  
+        		<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage_ok == "nok" %}checked{% endif %}>Small bag  
         		<img src="../scripts/img/small_bag.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.big_luggage == "ok" %}checked{% endif %}>Suitcase  
+				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.big_luggage_ok == "ok" %}checked{% endif %}>Suitcase  
 				<img src="../scripts/img/suitcase.jpg">
 			</label>
         </div>
