@@ -23,17 +23,28 @@ class Travel(db.Model):
 	actif = db.BooleanProperty(required = True)
 
 	# Attributes of a travel for the database
+	# Owner
 	user_id = db.IntegerProperty(required = True)
+
+	# target locations
 	departure = db.StringListProperty(required = True)
 	arrival = db.StringListProperty(required = True)
-	places_number = db.IntegerProperty(required = True)
-	places_remaining = db.IntegerProperty(required = True)
+
+	# Date / Price / Preferences
 	datetime_departure = db.DateTimeProperty(required = True)
 	price = db.IntegerProperty(required = True)
 	animal_ok = db.StringProperty(required = True)
 	smoking_ok = db.StringProperty(required = True)
 	big_luggage_ok = db.StringProperty(required = True)
+
+	# Places system
+	places_number = db.IntegerProperty(required = True)
+	places_remaining = db.IntegerProperty(required = True)
+
+	# Booking system	
 	bookers_id = db.ListProperty(int)
+	places_bind_to_each_reservation = db.ListProperty(int)
+
 
 
 
@@ -128,8 +139,14 @@ class Travel(db.Model):
 		if (travel.places_remaining - places ) < 0:
 			return (False, "There are not enough places.")
 
+		# Register the user and the associated number of places
 		travel.bookers_id.append(user_id)
+		travel.places_bind_to_each_reservation.append(places)
+
+		# Update the places system
 		travel.places_remaining -= places
+
+		# Register and return 
 		travel.put()
 		return (True, "Your reservation has been saved.")
 
@@ -197,6 +214,32 @@ class Travel(db.Model):
 		if (travel.user_id == user_id):
 			travel.actif = False
 			travel.put()
+
+
+	@classmethod
+	def remove_user_from_travel(cls, travel_id, user_id):
+		travel = cls.by_id(travel_id)
+
+		# Make sure user was in this travel
+		if user_id in travel.bookers_id:
+			
+			# Get index of the user
+			idx = travel.bookers_id.index(user_id) 
+
+			# Remove user and the corresponding number of reserved places
+			travel.bookers_id.remove(user_id)
+			places = travel.places_bind_to_each_reservation.pop(idx)
+
+			# Update the places_remaining variable
+			travel.places_remaining += places
+
+			travel.put()
+
+
+	############################
+	### 	TOOLS METHODS 	 ###
+	############################
+
 
 	@classmethod
 	def split_address(cls, address):

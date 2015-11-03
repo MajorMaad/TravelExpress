@@ -216,6 +216,21 @@ class AddUserToTravel(MainHandler):
 			logging.info("ERROR book a travel : "+msg)
 			self.redirect('/searchTravel?success_booking=False')
 
+# Unregister user of a travel
+class RmUserOfTravel(MainHandler):
+
+	def post(self):
+		self.user_id = int(self.user.key().id())
+		
+		data = json.loads(self.request.body)
+		self.travel_id = int(data['travel_id'])
+
+		Travel.remove_user_from_travel(self.travel_id, self.user_id)
+		self.response.out.write(json.dumps({}))
+
+
+
+
 
 # Show my travels as a driver
 class ShowDriverTravels(MainHandler):
