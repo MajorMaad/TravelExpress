@@ -61,21 +61,21 @@
 			<div class="inline_panel">
 				<p><strong>{{ travel.price }}$</strong></p>
 
-				{% if travel.animal_ok %}
+				{% if travel.animal_ok == 'ok' %}
 					<img src="../scripts/img/animal.jpg" alt="Animal OK">
-				{% else %}
+				{% elif travel.animal_ok == 'nok' %}
 					<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
 				{% endif %}
 
-				{% if travel.smoking_ok %}
+				{% if travel.smoking_ok == 'ok' %}
 					<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
-				{% else %}
+				{% elif travel.smoking_ok == 'nok' %}
 					<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
 				{% endif %}
 
-				{% if travel.big_luggage_ok %}
+				{% if travel.big_luggage_ok == 'ok' %}
 					<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
-				{% else %}
+				{% elif travel.big_luggage_ok == 'nok'%}
 					<img src="../scripts/img/small_bag.jpg" alt="Small bag">
 				{% endif %}
 			</div>

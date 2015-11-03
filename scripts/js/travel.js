@@ -209,33 +209,28 @@ function submitAddTravel(){
 	//Retrieve the price
 	var price = document.getElementById("price").value;
 
-	//Retrieve preferences:
 	var animals = "ni";
 	var smoking = "ni";
 	var big_luggage = "ni";
+	
+	var preferences = document.getElementsByClassName("preferences");	
+	for (var i = 0; i < preferences.length; i++){
 
-	//Loop over the Preference div Section
-	var preferences = document.getElementById('preferences');
-	var prefList = preferences.children;
-	for (var i = 0; i < prefList.length; i++){
-		
-		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
-			if (prefList[i].type == 'radio' && prefList[i].checked){
-				
-				if (prefList[i].name == 'animals'){
-					animals = prefList[i].value;
-				}
-
-				if (prefList[i].name == "smoking"){
-					smoking = prefList[i].value;
-				}
-
-				if (prefList[i].name == "luggage"){
-					big_luggage = prefList[i].value;
-				}
+		if (preferences[i].checked){				
+			if (preferences[i].name == 'animals'){			
+				animals = preferences[i].value;
 			}
+			if (preferences[i].name == "smoking"){
+				smoking = preferences[i].value;
+			}
+			if (preferences[i].name == "luggage"){
+				big_luggage = preferences[i].value;
+			}			
 		}
 	}
+	console.log("animals : "+animals);
+	console.log("smoking "+smoking);
+	console.log("luggage "+big_luggage);
 	
 
 	//Prepare ajax request
@@ -338,34 +333,28 @@ function submitModificationTravel(){
 	//Retrieve the price
 	var price = document.getElementById("price_modify").value;
 
-	//Retrieve preferences:
 	var animals = "ni";
 	var smoking = "ni";
 	var big_luggage = "ni";
+	
+	var preferences = document.getElementsByClassName("preferences");	
+	for (var i = 0; i < preferences.length; i++){
 
-	//Loop over the Preference div Section
-	var preferences = document.getElementById('preferences_modify');
-	var prefList = preferences.children;
-	for (var i = 0; i < prefList.length; i++){
-		
-		if (prefList[i].tagName == 'input' || prefList[i].tagName == 'INPUT'){
-			if (prefList[i].type == 'radio' && prefList[i].checked){
-				
-				if (prefList[i].name == 'animals'){
-					animals = prefList[i].value;
-				}
-
-				if (prefList[i].name == "smoking"){
-					smoking = prefList[i].value;
-				}
-
-				if (prefList[i].name == "luggage"){
-					big_luggage = prefList[i].value;
-				}
+		if (preferences[i].checked){				
+			if (preferences[i].name == 'animals'){			
+				animals = preferences[i].value;
 			}
+			if (preferences[i].name == "smoking"){
+				smoking = preferences[i].value;
+			}
+			if (preferences[i].name == "luggage"){
+				big_luggage = preferences[i].value;
+			}			
 		}
 	}
-	
+	console.log("animals : "+animals);
+	console.log("smoking "+smoking);
+	console.log("luggage "+big_luggage);
 	console.log("preparing request");
 
 	//Prepare ajax request
@@ -463,24 +452,24 @@ function searchTravel(){
 	var smoking = "ni";
 	var big_luggage = "ni";
 	
-	var preferences = document.getElementById("preferences_search").children;	
+	var preferences = document.getElementsByClassName("preferences");	
 	for (var i = 0; i < preferences.length; i++){
 
-		if (preferences[i].tagName == 'input' || preferences[i].tagName == 'INPUT'){
-			
-			if (preferences[i].type == 'radio' && preferences[i].checked){				
-				if (preferences[i].name == 'animals'){
-					animals = preferences[i].value;
-				}
-				if (preferences[i].name == "smoking"){
-					smoking = preferences[i].value;
-				}
-				if (preferences[i].name == "luggage"){
-					big_luggage = preferences[i].value;
-				}
+		if (preferences[i].checked){				
+			if (preferences[i].name == 'animals'){			
+				animals = preferences[i].value;
 			}
+			if (preferences[i].name == "smoking"){
+				smoking = preferences[i].value;
+			}
+			if (preferences[i].name == "luggage"){
+				big_luggage = preferences[i].value;
+			}			
 		}
 	}
+	console.log("animals : "+animals);
+	console.log("smoking "+smoking);
+	console.log("luggage "+big_luggage);
 
 	console.log("Request preparation");
 	$.ajax({

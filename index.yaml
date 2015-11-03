@@ -13,6 +13,30 @@ indexes:
 - kind: Travel
   properties:
   - name: actif
+  - name: animal_ok
+  - name: big_luggage_ok
+  - name: departure
+  - name: smoking_ok
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: animal_ok
+  - name: departure
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: animal_ok
+  - name: departure
+  - name: smoking_ok
+  - name: datetime_departure
+
+- kind: Travel
+  properties:
+  - name: actif
   - name: arrival
   - name: datetime_departure
 

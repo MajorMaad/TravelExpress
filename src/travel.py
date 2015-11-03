@@ -88,12 +88,15 @@ class Travel(db.Model):
 				logging.info("date problem")
 
 		if animal_ok != "ni":
+			logging.info("preferences : animal_ok "+animal_ok)
 			query.filter('animal_ok =', animal_ok)
 
 		if smoking_ok != "ni":
+			logging.info("preferences : smoking_ok "+smoking_ok)
 			query.filter('smoking_ok =', smoking_ok)
 
 		if big_luggage_ok != "ni":
+			logging.info("preferences : big_luggage_ok "+big_luggage_ok)
 			query.filter('big_luggage_ok =', big_luggage_ok)
 
 		# Check only for travel not deleted

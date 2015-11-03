@@ -107,17 +107,17 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
     </div>
 
     <!-- Preferences -->
-    <div id="preferences_modify" class="container-fluid">
+    <div class="container-fluid">
 
         <h3 > Modify your travel preferences </h3>
 
         <div class="form-group col-md-12">
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="animals" value="ok" {% if travel.animals == "ok" %}checked{% endif %}>Authorized  
+        		<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animals == "ok" %}checked{% endif %}>Authorized  
         		<img src="../scripts/img/animal.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="animals" value="nok" {% if travel.animals == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.animals == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_animal.jpg">
 			</label>
         </div>
@@ -125,11 +125,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
         <div class="form-group col-md-12">
         	<!-- <h3>Smoking</h3> -->
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="smoking" value="ok" {% if travel.smoking == "ok" %}checked{% endif %}>Authorized  
+        		<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking == "ok" %}checked{% endif %}>Authorized  
         		<img src="../scripts/img/smoking.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="smoking" value="nok" {% if travel.smoking == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.smoking == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_smoking.jpg">
 			</label>
         </div>
@@ -137,11 +137,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
         <div class="form-group col-md-12">
         	<!-- <h3>Luggage space</h3> -->
         	<label class="radio-inline col-md-3">
-        		<input type="radio" name="luggage" value="sm_bag" {% if travel.big_luggage == "nok" %}checked{% endif %}>Small bag  
+        		<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage == "nok" %}checked{% endif %}>Small bag  
         		<img src="../scripts/img/small_bag.jpg">
         	</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="luggage" value="suitcase" {% if travel.big_luggage == "ok" %}checked{% endif %}>Suitcase  
+				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.big_luggage == "ok" %}checked{% endif %}>Suitcase  
 				<img src="../scripts/img/suitcase.jpg">
 			</label>
         </div>
