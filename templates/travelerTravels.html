@@ -34,13 +34,7 @@
 
 				<!-- Manager : Send mail to driver (not implemented) / Delete this travel from my travel list -->
 				<div class="btn-group">
-						<a type="button"
-						{% for tuple in couples_id_mail %}
-							{% if tuple[0] == travel.key().id() %}
-								href="mailto:{{ tuple[1] }}"
-							{% endif %}
-						{% endfor %}
-						class="btn btn-info">
+						<a type="button" class="btn btn-info" onclick="alert('Not implemented yet');">
 							Contact
 							<span class="glyphicon glyphicon-envelope"></span>
 						</a>
@@ -82,7 +76,7 @@
 		<!-- Travel Latest Information -->
 		{% if not travel.actif %}
 		<div class="panel-footer alert-warning">
-			<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations</p>
+			<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations.</p>
 		</div>
 		{% endif %}
 	</div>
