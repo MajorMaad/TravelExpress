@@ -1,10 +1,17 @@
 #########################################################################
 # This module describe the model used in database to represent a travel
 # Ensure : 
-# 	* Creation
-# 	* Research in DB
-# 	* Modification
-# 	* Destruction
+# 	* Creation			--> add_travel
+# 	* Research in DB 	--> by_... methods
+# 	* Modification 		--> modify_travel
+# 	* User Booking 		--> add_user
+# 	* Cancel Booking 	--> remove_user_from_travel
+# 	* Destruction 		--> remove_travel
+# 
+# Important !!!!!
+# 	* An object with the '.filter' method is a db.Query 
+# 	* This type is mandatory to request several entities in DB
+# 	* Raise Error when .filter with several inequalities (db restriction)
 #########################################################################
 
 
@@ -75,7 +82,11 @@ class Travel(db.Model):
 	def by_author_still_actif(cls, user_id):
 		return Travel.all().filter('user_id =', user_id).filter('actif =', True ).order('datetime_departure')
 
-	# Look for a travels
+	
+	############################
+	### 	ADVANCE RESEARCH ###
+	############################
+
 	@classmethod
 	def by_filter(cls, departure, arrival, date, price_max, animal_ok, smoking_ok, big_luggage_ok, actif = True):
 
@@ -95,27 +106,35 @@ class Travel(db.Model):
 			for part in arrival_addr:
 				query.filter('arrival =', part)
 
-		# App Engine DataStore cannot handl several inequalities
+		# #######################################################
+		# App Engine DataStore cannot handle several inequalities
+		# --> filter can only handle date XOR price_max : not both
+		# #######################################################
+
+		
 		if date != "":
-			# Recompose the date
+			# 1 ) Date case
 			date_tab = date.split('-')
 			try:
 				year = int(date_tab[0])
 				month = int(date_tab[1])
 				day = int(date_tab[2])
-
 				date_min = datetime.datetime(year, month, day)
-				query.filter('datetime_departure >=', date_min)
+
+				# Filter with inequality
+				query.filter('datetime_departure >=', date_min)	
 				query.order('datetime_departure')
 			except:
 				logging.info("date problem")
-
-
+		
 		elif price_max != "":
+			# 2 ) XOR case price (cf elif)
+			# Filter with inequality
 			query.filter('price <=', int(price_max))
 			query.order('price')
 
-		
+
+		# Preferences checking
 		if animal_ok != "ni":
 			logging.info("preferences : animal_ok "+animal_ok)
 			query.filter('animal_ok =', animal_ok)
@@ -129,10 +148,7 @@ class Travel(db.Model):
 			query.filter('big_luggage_ok =', big_luggage_ok)
 
 
-		
-
-
-
+		# Return the db.Query object
 		return query
 			
 		
@@ -167,7 +183,7 @@ class Travel(db.Model):
 		# Update the places system
 		travel.places_remaining -= places
 
-		# Register and return 
+		# Register and return status withstatus message
 		travel.put()
 		return (True, "Your reservation has been saved.")
 
@@ -237,6 +253,7 @@ class Travel(db.Model):
 			travel.put()
 
 
+	# Remove user from a privious booked travel
 	@classmethod
 	def remove_user_from_travel(cls, travel_id, user_id):
 		travel = cls.by_id(travel_id)

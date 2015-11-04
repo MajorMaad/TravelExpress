@@ -16,7 +16,7 @@
 #
 
 
-# Import handlers
+# Import URL handlers
 from src.handler import *
 from src.userHandler import *
 from src.travelHandler import *

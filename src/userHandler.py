@@ -24,6 +24,7 @@ class SignUp(MainHandler):
 	def get(self):
 		self.redirect('/')
 
+	# Powered by Ajax
 	def post(self):
 		data = json.loads(self.request.body)
 		
@@ -38,7 +39,7 @@ class SignUp(MainHandler):
 			user.put()
 			self.jumpIn(user)
 
-		#Send back the computed data
+		# Ajax response
 		self.response.out.write(json.dumps(ajaxResponse))
 
 
@@ -49,6 +50,7 @@ class LogIn(MainHandler):
 	def get(self):
 		self.redirect('/')
 
+	# Powered by Ajax
 	def post(self):
 		data = json.loads(self.request.body)
 
@@ -61,6 +63,8 @@ class LogIn(MainHandler):
 		if not ajaxResponse['error_login']:
 			user = User.logIn( data['nickname'], data['password'], data['is_email'])
 
+
+			# If user exists : log him
 			if not user:
 				ajaxResponse['error_login_msg'] = "The given informations don't match any user"
 				ajaxResponse['error_login'] = True
@@ -68,6 +72,7 @@ class LogIn(MainHandler):
 			else:
 				self.jumpIn(user)
 
+		# Ajax response
 		self.response.out.write(json.dumps(ajaxResponse))
 
 
@@ -75,9 +80,8 @@ class LogIn(MainHandler):
 class LogOut(MainHandler):
 
 	def get(self):
+		# MainHandler doExit method : destroy cookie and redirect to '/'
 		self.doExit()
-
-
 
 
 
@@ -90,18 +94,21 @@ class LogOut(MainHandler):
 class MyProfile(MainHandler):
 
 	def get(self):
+		# Check if user is logged before rendering his profile page
 		if not self.user:
 			self.redirect('/')
 		else:
 			self.render('base.html', user=self.user, choice="userPage")
 
-	# Handle user modification
+	# Powered by Ajax
 	def post(self):
 		data = json.loads(self.request.body)
 
-		
 		response = {}
 		response['error'] = False
+
+		# Check all key of the loaded JSON with attribute of a User : 
+		# If there is a modification and the modification is correct : apply changes to database
 
 		if data['attr'] == 'name':
 			self.user.name = data['value']
@@ -112,7 +119,9 @@ class MyProfile(MainHandler):
 			self.user.put()		
 
 		elif data['attr'] == 'email':
+			# ensure email wanted is not already in use
 			alreadyUsed = User.by_email(data['value'])
+
 			if alreadyUsed:
 				response['error'] = True
 				response['error_msg'] = "Email address already used"
@@ -128,7 +137,7 @@ class MyProfile(MainHandler):
 			if logTest:
 
 				if data['newPass'] != '':						
-					# Change password
+					# Generate new hashed password
 					hashedPWD = self.user.changePWD(self.user, data['newPass'])
 					self.user.password = hashedPWD
 					self.user.put()
@@ -146,7 +155,7 @@ class MyProfile(MainHandler):
 			self.user.big_luggage = data['luggage']
 			self.user.put()
 
-		
+		# Ajax response
 		self.response.out.write(json.dumps(response))	
 
 

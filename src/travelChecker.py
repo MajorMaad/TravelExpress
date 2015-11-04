@@ -1,8 +1,7 @@
 #####################################################################
 # This module ensure data received from the client are correct for :
-# 	* add a new travel
-# 	* modify a travel
-# 	* look for a travel
+# 	* add / modify a travel --> CheckTravel
+# 	* research a travel 	--> CheckSearchTravel
 #####################################################################
 
 
@@ -64,7 +63,7 @@ class CheckTravel():
 
 		yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
 
-		# Datetime of departure must be after now
+		# Datetime of departure must be after yesterday
 		if departure_datetime <= yesterday:
 			checkingResult['error_datetime'] = "You must enter a posterior date"
 			error = True

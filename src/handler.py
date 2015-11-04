@@ -1,7 +1,7 @@
 #########################################################################
 # This module provides the main url handler
 # Mother handler class
-# Render template with the kinka main rendering function
+# Render template with the jinja2 main rendering function
 # Manage user connection and disconnection via securecookies
 #########################################################################
 

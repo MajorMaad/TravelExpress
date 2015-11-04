@@ -1,8 +1,8 @@
 #####################################################################
 # This module ensure data received from the client are correct for :
-# 	* a new user to sign up
-# 	* a user to log in 
-# 	* representation of data to string is also provided
+# 	* a new user to sign up --> CheckSignUp
+# 	* a user to log in 		--> CheckLogIn
+# 	* Both classes have method toString to display input data
 #####################################################################
 
 

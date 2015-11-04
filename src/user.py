@@ -32,8 +32,13 @@ def reverse_pw(nickName, password, hashed_pw):
 	return hashed_pw == make_pw_hash(nickName, password, salt)
 
 
+############################
+###  DB  PARENT  BIND	 ###
+############################
+
 def user_key(name = 'default'):
 	return db.Key.from_path('user', name)
+
 
 
 class User(db.Model):
@@ -116,17 +121,9 @@ class User(db.Model):
 			return user
 
 
+
+	# Method used when user wants to change password
 	@classmethod
 	def changePWD(cls, user, new_pass):
 		hash_pwd = make_pw_hash(user.nickName, new_pass)
 		return hash_pwd
-		
-
-
-
-
-
-
-
-
-

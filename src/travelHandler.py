@@ -1,13 +1,14 @@
 #########################################################################
 # This module provides url handler dedicated to travel
 # Ensure : 
-# 	* Creation	
-# 	* Modification
-# 	* Research
-# 	* Destruction
-# 	* Register of a user for a travel
-# 	* Display list of travels of a driver
-# 	* Display list of travels of a traveler
+# 	* Creation	--> AddTravel
+# 	* Modification	--> ModifyTravel
+# 	* Research 	--> SearchTravel & ResultSearchTravel
+# 	* Destruction 	--> DeleteTravel
+# 	* Register user for a travel 	--> AddUserToTravel
+#	* Cancel registration of a user --> RmUserOfTravel
+# 	* Display list of travels of a driver 	--> ShowDriverTravels
+# 	* Display list of travels of a traveler --> ShowTravelerTravels
 #########################################################################
 
 from src.handler import *
@@ -32,6 +33,8 @@ class AddTravel(MainHandler):
 	def get(self):	
 		self.render('base.html', user = self.user, choice="add", datetime_departure = datetime.datetime.now())
 
+
+	# Powered by Ajax
 	def post(self):
 		# Save data into a dictionnary
 		data = json.loads(self.request.body)
@@ -87,6 +90,7 @@ class ModifyTravel(MainHandler):
 			self.redirect('/driverTravels')
 		
 
+	# Powered by Ajax
 	def post(self):
 		# Save data into a dictionnary
 		data = json.loads(self.request.body)
@@ -142,6 +146,8 @@ class SearchTravel(MainHandler):
 		success_booking = self.request.get('success_booking')
 		self.render('base.html', user = self.user, choice = "search", today = today, success_booking = success_booking)
 
+
+	# Powered by Ajax
 	def post(self):
 		# Save data into dictionnary
 		data = json.loads(self.request.body)
@@ -172,10 +178,11 @@ class SearchTravel(MainHandler):
 			memcache.add(key=str(self.user.key().id()), value=travels, time=5)
 
 
-# Display result of a research
+# Display result of query handled by SearchTravel.post method
 class ResultSearchTravel(MainHandler):
 
 	def get(self):
+		# Look into memcache to retrieve latest data of this user
 		previous_request = memcache.get(key=str(self.user.key().id()))
 		if previous_request is not None:
 			self.render('base.html', user=self.user, choice="resultSearch", travels = previous_request)
@@ -189,6 +196,7 @@ class DeleteTravel(MainHandler):
 	def get(self):
 		self.redirect('/driverTravels')
 
+	# Powered by Ajax
 	def post(self):
 		data = json.loads(self.request.body)
 		Travel.remove_travel(data['travel_id'], self.user.key().id())
@@ -203,6 +211,7 @@ class AddUserToTravel(MainHandler):
 	# --> cf redirect on SearchTravel class
 	#######################################################
 
+	# NOT POWEREDBY AJAX
 	def post(self):
 		self.user_id = self.user.key().id()
 		self.travel_id = int(self.request.get('travel_id'))
@@ -220,6 +229,7 @@ class AddUserToTravel(MainHandler):
 # Unregister user of a travel
 class RmUserOfTravel(MainHandler):
 
+	# Powered by Ajax
 	def post(self):
 		self.user_id = int(self.user.key().id())
 		
@@ -227,6 +237,8 @@ class RmUserOfTravel(MainHandler):
 		self.travel_id = int(data['travel_id'])
 
 		Travel.remove_user_from_travel(self.travel_id, self.user_id)
+
+		# Ajax response
 		self.response.out.write(json.dumps({}))
 
 
