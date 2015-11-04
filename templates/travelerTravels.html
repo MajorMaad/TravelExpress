@@ -78,6 +78,13 @@
 				{% endif %}
 			</div>
 		</div>
+
+		<!-- Travel Latest Information -->
+		{% if not travel.actif %}
+		<div class="panel-footer alert-warning">
+			<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations</p>
+		</div>
+		{% endif %}
 	</div>
 
 {% endfor %}
