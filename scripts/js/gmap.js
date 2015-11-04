@@ -1,9 +1,13 @@
-//Global variables
+/*Global variables :*/
+//Markers
 var marker_dep;
 var marker_arr;
+
+//Autocompletion
 var research_auto_complete_dep;
 var research_auto_complete_arr;
 
+//mapOption for the map creation
 var mapOptions = {
 	    center:new google.maps.LatLng(46.887678, -72.260262),
 	    zoom:5,
@@ -12,9 +16,9 @@ var mapOptions = {
 		streetViewControl: false
 	};
 
-function initializeGoogleMapsAdder() {
 
-		
+/*Initialize 2 google maps for the AddTravel.html template*/
+function initializeGoogleMapsAdder() {		
 	//Create 2 map objects
 	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture"), mapOptions);
 	var map_arr = new google.maps.Map(document.getElementById("gmapArrival"), mapOptions);
@@ -36,19 +40,11 @@ function initializeGoogleMapsAdder() {
 	//Enable the autocomplete feature
 	autocompleteOn("departure", map_dep);
 	autocompleteOn("arrival", map_arr);
-
 }
 
-function initializeGoogleMapsModifyer() {
 
-	var mapOptions = {
-	    center:new google.maps.LatLng(46.887678, -72.260262),
-	    zoom:5,
-	    mapTypeId:google.maps.MapTypeId.ROADMAP,
-	    mapTypeControl: false,
-		streetViewControl: false
-	};
-	
+/*Initialize 2 google maps for the ModifyTravel.html template*/
+function initializeGoogleMapsModifyer() {
 	//Create 2 map objects
 	var map_dep = new google.maps.Map(document.getElementById("gmapDeparture_modify"), mapOptions);
 	var map_arr = new google.maps.Map(document.getElementById("gmapArrival_modify"), mapOptions);
@@ -77,8 +73,8 @@ function initializeGoogleMapsModifyer() {
 }
 
 
+/*Create 2 autocompletion objects for the ReserachTravel.html template*/
 function initializeResearchAutocomplete(){
-
 	var research_auto_complete_dep = new google.maps.places.Autocomplete(
 		/** @type {HTMLInputElement} */(document.getElementById('departure_search')),
 		{ types: ['geocode'] }
@@ -107,6 +103,7 @@ function placeMarker(location, targetMap, context) {
 			console.log("already here");
 			marker_dep.setPosition(location);
 		}
+		targetMap.setCenter(location);
 	}
 
 	if (context == "arrival" || context =="arrival_modify"){
@@ -120,7 +117,8 @@ function placeMarker(location, targetMap, context) {
 		}else{
 			console.log("already here");
 			marker_arr.setPosition(location);
-		}		
+		}	
+		targetMap.setCenter(location);	
 	}
 }
 

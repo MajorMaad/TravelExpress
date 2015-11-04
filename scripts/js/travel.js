@@ -1,3 +1,4 @@
+/*Perform ajax request to add a travel*/
 function submitAddTravel(){
 
 	//Retrieve departure and arrival :
@@ -115,6 +116,7 @@ function submitAddTravel(){
 }
 
 
+/*Perform ajax request to modify an existing travel*/
 function submitModificationTravel(){
 
 	console.log("getting data");
@@ -239,6 +241,9 @@ function submitModificationTravel(){
 	});
 }
 
+
+
+/*Perform an ajax request to search a travel according to criteria*/
 function searchTravel(){
 
 	console.log("Retrieve search parameter");
