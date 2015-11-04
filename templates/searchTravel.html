@@ -40,7 +40,7 @@
 	<div class="container-fluid">
 		<div class="form-group col-md-4">
 			<label for="date_search">Departure date</label>
-			<input id="date_search" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value={{ today }}>
+			<input id="date_search" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date">
 			<span id="error_date_search" class ="error" style="color:red; display:none"></span>
 		</div>
 
@@ -106,6 +106,21 @@
 <script>
 $(document).ready(function(e){
 	initializeResearchAutocomplete();
+
+	//Ensure only one input between date and price has a value
+	$("#date_search").focus(function() {
+		var price = document.getElementById("price_search");
+		price.value = "";
+		console.log("date : "+price.value);
+	});
+
+	$("#price_search").focus(function() {
+		var date = document.getElementById("date_search");
+		date.value = "";
+		console.log("date : "+date.value);
+	});
+
+
 });
 </script>
 

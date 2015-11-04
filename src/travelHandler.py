@@ -158,11 +158,14 @@ class SearchTravel(MainHandler):
 			# Get back travels that match the filter
 			travels = Travel.by_filter(departure = data['departure'], 
 										arrival = data['arrival'], 
-										date = data['departure_date'], 
+										date = data['departure_date'],
+										price_max = data['price_max'], 
 										animal_ok = data['animals'], 
 										smoking_ok = data['smoking'],
-										big_luggage_ok = data['luggage'])
+										big_luggage_ok = data['luggage'])		
+	
 			self.response.out.write(json.dumps({}))
+			
 			# Store request into memcache to acces it later
 			# Delay to handle memcache is of 5 seconds
 			memcache.delete(key=str(self.user.key().id()))
@@ -175,8 +178,6 @@ class ResultSearchTravel(MainHandler):
 	def get(self):
 		previous_request = memcache.get(key=str(self.user.key().id()))
 		if previous_request is not None:
-			logging.info("request returned : "+str(previous_request.count()))
-
 			self.render('base.html', user=self.user, choice="resultSearch", travels = previous_request)
 		else:
 			self.redirect('/searchTravel')

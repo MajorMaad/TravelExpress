@@ -52,9 +52,14 @@ class Travel(db.Model):
 	### RESEARCH 	METHODS  ###
 	############################
 
+
 	@classmethod
 	def by_id(cls, tid):
 		return Travel.get_by_id(tid, parent = travel_key())
+
+	@classmethod
+	def get_multi(cls, list_ids):
+		return [cls.by_id(x) for x in list_ids]
 
 	# Show my travels (traveler)
 	@classmethod
@@ -72,8 +77,13 @@ class Travel(db.Model):
 
 	# Look for a travels
 	@classmethod
-	def by_filter(cls, departure, arrival, date, animal_ok, smoking_ok, big_luggage_ok, actif = True):
+	def by_filter(cls, departure, arrival, date, price_max, animal_ok, smoking_ok, big_luggage_ok, actif = True):
+
 		query = Travel.all()
+
+		# Check only for travel having the flag actif
+		if actif:
+			query.filter('actif =', actif)
 
 		if departure != "":
 			departure_addr = cls.split_address(departure)
@@ -85,6 +95,7 @@ class Travel(db.Model):
 			for part in arrival_addr:
 				query.filter('arrival =', part)
 
+		# App Engine DataStore cannot handl several inequalities
 		if date != "":
 			# Recompose the date
 			date_tab = date.split('-')
@@ -95,9 +106,16 @@ class Travel(db.Model):
 
 				date_min = datetime.datetime(year, month, day)
 				query.filter('datetime_departure >=', date_min)
+				query.order('datetime_departure')
 			except:
 				logging.info("date problem")
 
+
+		elif price_max != "":
+			query.filter('price <=', int(price_max))
+			query.order('price')
+
+		
 		if animal_ok != "ni":
 			logging.info("preferences : animal_ok "+animal_ok)
 			query.filter('animal_ok =', animal_ok)
@@ -110,11 +128,14 @@ class Travel(db.Model):
 			logging.info("preferences : big_luggage_ok "+big_luggage_ok)
 			query.filter('big_luggage_ok =', big_luggage_ok)
 
-		# Check only for travel not deleted
-		if actif:
-			query.filter('actif =', actif)
 
-		return query.order('datetime_departure')
+		
+
+
+
+		return query
+			
+		
 
 
 
