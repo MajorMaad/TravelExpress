@@ -1,7 +1,7 @@
 <!-- Include of the dedicated stylesheet -->
 <link rel="stylesheet" type="text/css" href="../scripts/formTravel.css">
 
-<!-- Inclusion of google map and realtive functions -->
+<!-- Inclusion of google map and relative functions -->
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
 <script type="text/javascript" src="/scripts/js/gmap.js" ></script>
 <script type="text/javascript" src="/scripts/js/travel.js" ></script>
@@ -18,11 +18,12 @@
 </div>
 
 
-<!-- Body -->
+<!-- Research Form -->
 <div class="jumbotron">
 
 	<h1 class="text-primary">Look for a travel</h1>
 
+	<!-- Departure / Arrival section -->
 	<div class="container-fluid">
 		<div class="form-group col-md-6">
 			<label for="departure_search">Departure :</label>
@@ -37,6 +38,8 @@
 		</div>
 	</div>
 
+	<!-- Date / Price -->
+	<!-- Only one input can be provided to the request-->
 	<div class="container-fluid">
 		<div class="form-group col-md-4">
 			<label for="date_search">Departure date</label>
@@ -45,65 +48,67 @@
 		</div>
 
 		<div class="form-group col-md-6">
-        	<label for="price_search">Higher price : </label>
-        	<input id="price_search" type="number" class="form-control" maxlength="3"> $
-        	<span id="error_price_search" class ="error" style="color:red; display:none"></span>
-        </div>
-		
-
+			<label for="price_search">Higher price : </label>
+			<input id="price_search" type="number" class="form-control" maxlength="3"> $
+			<span id="error_price_search" class ="error" style="color:red; display:none"></span>
+		</div>
 	</div>
 
 
 	<!-- Preferences -->
-
 	<div class="container-fluid">
 
 		<h3 > Choose your travel preferences </h3>
 
-        <div class="form-group col-md-12">
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="animals" value="ok" class="preferences"{% if user.animals == "ok" %}checked{% endif %}>Authorized  
-        		<img src="../scripts/img/animal.jpg">
-        	</label>
+		<!-- Animals -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="animals" value="ok" class="preferences"{% if user.animals == "ok" %}checked{% endif %}>Authorized  
+				<img src="../scripts/img/animal.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="animals" value="nok" class="preferences"{% if user.animals == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_animal.jpg">
 			</label>
-        </div>
+		</div>
 
-        <div class="form-group col-md-12">
-        	<!-- <h3>Smoking</h3> -->
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="smoking" value="ok" class="preferences"{% if user.smoking == "ok" %}checked{% endif %}>Authorized  
-        		<img src="../scripts/img/smoking.jpg">
-        	</label>
+		<!-- Smoking -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="smoking" value="ok" class="preferences"{% if user.smoking == "ok" %}checked{% endif %}>Authorized  
+				<img src="../scripts/img/smoking.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="smoking" value="nok" class="preferences"{% if user.smoking == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_smoking.jpg">
 			</label>
-        </div>
+		</div>
 
-        <div class="form-group col-md-12">
-        	<!-- <h3>Luggage space</h3> -->
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="luggage" value="nok" class="preferences"{% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
-        		<img src="../scripts/img/small_bag.jpg">
-        	</label>
+		<!-- Luggage -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="luggage" value="nok" class="preferences"{% if user.big_luggage == "nok" %}checked{% endif %}>Small bag  
+				<img src="../scripts/img/small_bag.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="luggage" value="ok" class="preferences"{% if user.big_luggage == "ok" %}checked{% endif %}>Suitcase  
 				<img src="../scripts/img/suitcase.jpg">
 			</label>
-        </div>
+		</div>
 
-     </div>
+	</div>
 
-
+	<!-- Call of travel.js/searchTravel function to perform Ajax Request -->
 	<button class="btn btn-success" onclick="searchTravel();">
 		Search <span class="glyphicon glyphicon-search"></span>
 	</button>
 </div>
 
+
+
 <script>
+/*Enable AutoCompletion of departure and arrival via gmap.js*/
+/*Handle date & price specifity : only one can have a value*/
 $(document).ready(function(e){
 	initializeResearchAutocomplete();
 

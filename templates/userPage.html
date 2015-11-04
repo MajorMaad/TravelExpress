@@ -7,10 +7,10 @@
 
 
 
-
-
-
+<!-- User Main Data Section -->
 <div class="jumbotron container-fluid">
+
+
 	<h1 class="text-primary">{{user.nickName}} Profile</h1>
 
 	<!-- Success or error banner -->
@@ -24,8 +24,9 @@
 	</div>
 
 
+	<!-- User personnal data section -->
+	<!-- each section provide a piece of data of the user and a modifier button -->
 	<div class="col-md-6 container userDataSection">
-
 
 		<!-- Name section -->
 		<div class="panel panel-info">
@@ -47,6 +48,7 @@
 				<p style="float:left" ><strong>{{user.name}}</strong></p>				
 			</div>
 
+			<!-- Modifier -->
 			<div id="enterName" class="panel-footer userData" style="display:none">	
 				<input id="newName" class="panel-title" style="float:left" placeholder='Enter your name'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('name', 'newName', 'enterName');">Change</button>
@@ -76,6 +78,7 @@
 				<p style="float:left"><strong>{{user.firstName}}</strong></p>				
 			</div>
 
+			<!-- Modifier -->
 			<div id="enterFirstname" class="panel-footer userData" style="display:none">	
 				<input id="newFirstname" class="panel-title" style="float:left" placeholder='Enter your firstname'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('firstName', 'newFirstname', 'enterFirstname');">Change</button>
@@ -105,6 +108,7 @@
 				<p style="float:left"><strong>{{user.email}}</strong></p>				
 			</div>
 
+			<!-- Modifier -->
 			<div id="enterEmail" class="panel-footer userData" style="display:none">	
 				<input id="newEmail" class="panel-title" style="float:left" placeholder='Enter the new email address'></input>
 				<button class="glyphicon glyphicon-ok-circle btn-success" onclick="submitChange('email', 'newEmail', 'enterEmail');">Change</button>
@@ -129,6 +133,7 @@
 				</div>
 			</div>
 
+			<!-- Modifier -->
 			<div id="changePass" class="panel-footer" style="display:none">
 
 				<div class="userData">
@@ -147,12 +152,13 @@
 	</div>
 	
 	<div class="col-md-6">
-		<h1>PROUT</h1>
+		<h1>Notation</h1>
+		<h1>Statistiques </h1>
 	</div>
 
 </div>
 
-
+<!-- User Preferences Data Section -->
 <div class="jumbotron container-fluid">
 	<h3> PREFERENCES :</h3>
 
@@ -218,14 +224,16 @@
 
 <script>
 
+/*Handle input appropriate width*/
 $(document).ready(function(e){
-
 	//Set an appropriate width to password input : match the placeholder
 	$("input[placeholder]").each(function () {
-        $(this).attr('size', $(this).attr('placeholder').length);
-    });
+		$(this).attr('size', $(this).attr('placeholder').length);
+	});
 });
 
+
+/*Call to open modifier divs*/
 function openDiv(divName){
 	console.log('open call');
 	var targetDiv = document.getElementById(divName);
@@ -241,6 +249,7 @@ function openDiv(divName){
 	}
 }
 
+/*Call to close modifier divs : flush the within content at the same time*/
 function closeDiv(divName){
 	console.log('close call');
 	var targetDiv = document.getElementById(divName);
@@ -248,6 +257,7 @@ function closeDiv(divName){
 	targetDiv.firstChild.data = '';
 }
 
+/*Generic function to perform ajax request about a specific piece of data to change*/
 function submitChange(attr, inputID, targetDiv){
 
 	var input = document.getElementById(inputID);
@@ -290,6 +300,8 @@ function submitChange(attr, inputID, targetDiv){
 
 }
 
+
+/*Perform a dedicated ajax request to change password*/
 function changePassword(oldPassID, newPassID, targetDiv){
 
 	var oldPass = document.getElementById(oldPassID);
@@ -324,6 +336,7 @@ function changePassword(oldPassID, newPassID, targetDiv){
 	});
 }
 
+/*Perform ajax request to save user preferences*/
 function savePreferences(){
 	var animals = 	document.getElementById("animals");
 	var animalChoice = animals.options[animals.selectedIndex].value;
@@ -339,9 +352,9 @@ function savePreferences(){
 	  url: "/myProfile",
 	  dataType: 'json',
 	  data: JSON.stringify({ "attr": "pref", 
-	  						"animals": animalChoice,
-	  						"smoking": smokeChoice,
-	  						"luggage": luggageChoice})
+							"animals": animalChoice,
+							"smoking": smokeChoice,
+							"luggage": luggageChoice})
 	})
 	.done(function( data ) { 		
 		console.log("function has returned");

@@ -1,13 +1,16 @@
 <!-- inclusion of relatives functions -->
 <script type="text/javascript" src="/scripts/js/tools.js" ></script>
 
+
+<!-- Button to deploy the logIn form -->
 <button id="deployLogInForm" type="button" class="btn btn-primary">Log In</button>
 
+<!-- Error displayer -->
 <div class='form-group log-in' style='display:none'>
 	<span id="error_notif_logIn" style="font-size:25px; color:red; float:center"></span>
 </div> 
 
-<!-- User ID (nick or email) -->
+<!-- User input (nick or email) -->
 <div class='form-group log-in' style='display:none'>
 	<label for="userLogData">NickName of Email address</label>
 	<input id="userLogData" class="form-control">
@@ -25,13 +28,14 @@
 	<button id="submitLogInBtn" type="submit" class="btn btn-primary" onclick="submitLogIn();">Log In !!</button>
 </div>
 
+
+
+
 <script>
+
+/*Handle deployment of log in form*/
 $(document).ready(function(e){
 
-	console.log("executed log in");
-
-	//sign Up Form management
-	var is_deployed = false;
 	var deployLogInForm = document.getElementById('deployLogInForm');
 	deployLogInForm.onclick = function(){
 
@@ -66,7 +70,7 @@ $(document).ready(function(e){
 	};
 });
 
-
+/*Perform Ajax request to know if given information is correct*/
 function submitLogIn(){
 	var is_email = validateEmail($("#userLogData").val());
 

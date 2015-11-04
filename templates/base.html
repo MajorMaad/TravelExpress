@@ -31,6 +31,9 @@
 		<h1>Travel Express <small> Travel where ever you want </small></h1>
 	</div>
 
+
+
+	<!-- If user is logged : display navBar -->
 	{% if user %}
 
 		<!-- Nav bar -->
@@ -78,8 +81,8 @@
 
 		{% if success_booking == 'True' %}
 			<div class="alert alert-success" role="alert">
-		    	<strong>Done !</strong> You successfully booked this travel.
-		    </div>
+				<strong>Done !</strong> You successfully booked this travel.
+			</div>
 		{% endif %}
 
 
@@ -113,42 +116,41 @@
 
 			</div>
 
-		<!-- Or display specific functionnalities -->
-
-		<!-- Add a travel -->
+		<!-- Or display specific functionnalities -->		
 		{% elif choice == "add" %}
+			<!-- Add a travel -->
 			{% include "addTravel.html" with context %}
-
-		<!-- Look for a travel -->
+		
 		{% elif choice == "search" %}
+			<!-- Look for a travel -->
 			{% include "searchTravel.html" with context %}
-
-		<!-- Display result of a research -->
+		
 		{% elif choice == "resultSearch" %}
+			<!-- Display result of a research -->
 			{% include "resultSearch.html" with context %}
-
-		<!-- Display travels where driver === user -->
+		
 		{% elif choice == "driverTravels" %}
+			<!-- Display travels where driver === user -->
 			{% include "driverTravels.html" with context %}
-
-		<!-- Display travels where user != driver -->
+		
 		{% elif choice == "travelerTravels" %}
+			<!-- Display travels where user != driver -->
 			{% include "travelerTravels.html" with context %}
-
-		<!-- Modify a registered travel, owned by user -->
+		
 		{% elif choice == "modify" %}
+			<!-- Modify a registered travel, owned by user -->
 			{% include "modifyTravel.html" with context %}
-
-
-		<!-- Access User profile page -->
+		
 		{% elif choice == "userPage" %}
+			<!-- Access User profile page -->
 			{% include "userPage.html" with context %}
 
 		{% endif %}
 
 
+	<!-- If user is not logged in : display Sign Up / Log In section -->
 	{% else %}
-		<!-- Sign Up / Log In section -->
+		
 		<div class="jumbotron">
 			<div id="jumpInSection" class="container">
 				<p>If you want to benefit of our website, you have to log in =/ </p>
@@ -168,14 +170,7 @@
 			</div>
 		</div>
 	{% endif %}
-
-
-
-
-
-
-
-
+	
 	<!-- Welcome Message -->
 	<div id="welcomeSection">
 		<p> Welcome to Travel Express, the web service allowing you to travel without using your feet !! </p>

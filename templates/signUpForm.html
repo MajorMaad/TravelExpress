@@ -56,15 +56,14 @@
 
 
 <script>
+
+/*Handle Sign Up form deployment*/
 $(document).ready(function(e){
 
-	console.log("executed sign up");
-
-	//sign Up Form management
 	var deploySignUpForm = document.getElementById('deploySignUpForm');
 	deploySignUpForm.onclick = function(){
 
-		//Show/hide all forms
+		//Show/hide form
 		var signUpClass = document.getElementsByClassName('form-group sign-up');
 		for(i=0; i<signUpClass.length; i++){
 			if(signUpClass[i].style.display !== 'none'){
@@ -109,7 +108,7 @@ $(document).ready(function(e){
 	};
 });
 
-
+/*Perform ajax request to sgn up*/
 function submitSignUp(){
 	$.ajax({
 	  type: "POST",
@@ -128,7 +127,6 @@ function submitSignUp(){
 		console.log("data received back");
 
 		if (data['error']){
-
 			if (data['error_notif_nick']){
 				document.getElementById("error_notif_nick").innerHTML = data['error_nick_msg'];
 			}else{

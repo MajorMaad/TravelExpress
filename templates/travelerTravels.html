@@ -1,6 +1,7 @@
+<!-- Inclusion of relative css -->
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
-<!-- Body -->
+<!-- Success or error banner -->
 <div id="rmSuccess" class="alert alert-success" role="alert" style="display:none">
 	<strong>Done !</strong> 
 	The travel has been removed from your travel list. This page will now refresh
@@ -12,10 +13,15 @@
 	</div>
 {% endif %}
 
+
+<!-- Content : Travels where user is a traveller -->
 <div id="driverTravels" class="container">
 {% for travel in travels %}
 
+	<!-- A travel HTML instance -->
 	<div class="panel panel-success">
+
+		<!-- Title of a Travel + Buttons -->
 		<div class="panel-heading">
 			<div class="row">
 				<div class="col-md-8">
@@ -26,6 +32,7 @@
 					</h3>
 				</div>
 
+				<!-- Manager : Send mail to driver (not implemented) / Delete this travel from my travel list -->
 				<div class="btn-group">
 						<a type="button"
 						{% for tuple in couples_id_mail %}
@@ -35,18 +42,18 @@
 						{% endfor %}
 						class="btn btn-info">
 							Contact
-				        	<span class="glyphicon glyphicon-envelope"></span>
-				        </a>
+							<span class="glyphicon glyphicon-envelope"></span>
+						</a>
 
-				        <button type="button" class="btn btn-danger" onclick="unbookTravel({{travel.key().id()}} );">
-				        	<span class="glyphicon glyphicon-trash"></span>
-				        </button>
+						<button type="button" class="btn btn-danger" onclick="unbookTravel({{travel.key().id()}} );">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
 
-		        </div>
+				</div>
+			</div>
+		</div>
 
-	        </div>
-	    </div>
-
+		<!-- Travel characteristics -->
 		<div class="panel-body">
 			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
 			<div class="inline_panel">
@@ -77,6 +84,7 @@
 </div>
 
 <script>
+/*Perform ajax request to unbook a travel as a user*/
 function unbookTravel(travel_id){
 	if ( confirm('Are you sure you want to leave this travel ?') ){
 

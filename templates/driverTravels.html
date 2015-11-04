@@ -1,13 +1,12 @@
+<!-- Relative css file -->
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
-<!-- Body -->
 
-
+<!-- Success or error banner -->
 <div id="delSuccess" class="alert alert-success" role="alert" style="display:none">
 	<strong>Done !</strong> 
 	Deletion correctly saved. This page will now refresh
 </div>
-
 
 {% if noTravel %}
 	<div class="alert alert-warning" role="alert">
@@ -15,10 +14,15 @@
 	</div>
 {% endif %}
 
+
+<!-- Content : Travels where user is the driver -->
 <div id="driverTravels" class="container">
 {% for travel in travels %}
 
+	<!-- A travel HTML instance -->
 	<div class="panel panel-primary">
+
+		<!-- Title of a Travel + Buttons -->
 		<div class="panel-heading">
 			<div class="row">
 				<div class="col-md-8">
@@ -32,17 +36,18 @@
 
 				<div class="btn-group">
 						<button type="button" class="btn btn-warning" onclick="modifyTravel({{ travel.key().id() }});" >
-				        	<span class="glyphicon glyphicon-edit"></span>
-				        </button>
+							<span class="glyphicon glyphicon-edit"></span>
+						</button>
 
-				        <button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id()}} );">
-				        	<span class="glyphicon glyphicon-trash"></span>
-				        </button>
-		        </div>
+						<button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id()}} );">
+							<span class="glyphicon glyphicon-trash"></span>
+						</button>
+				</div>
 
-	        </div>
-	    </div>
+			</div>
+		</div>
 
+		<!-- Travel characteristics -->
 		<div class="panel-body">
 			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
 			<div class="inline_panel">
@@ -72,8 +77,9 @@
 {% endfor %}
 </div>
 
-<script type="text/javascript">
 
+<!-- Javascript to handle buttons click -->
+<script type="text/javascript">
 
 function deleteTravel(travel_id){
 	if ( confirm('Are you sure you want to delte this travel ?') ){

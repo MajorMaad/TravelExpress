@@ -2,14 +2,14 @@
 <link rel="stylesheet" type="text/css" href="../scripts/formTravel.css">
 
 
-<!-- Inclusion of google map and realtive functions -->
+<!-- Inclusion of google map and relative functions -->
 <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
 <script type="text/javascript" src="/scripts/js/gmap.js" ></script>
 <script type="text/javascript" src="/scripts/js/travel.js" ></script>
 
 
 <script>
-//Add the google maps to dom and call the init function
+//Add the google maps to dom and call the init function of gmap.js
 google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 </script>
 
@@ -26,13 +26,14 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 </div>
 
 
-<!-- Body -->
+<!-- Modify travel form -->
 <div class="jumbotron">
 
 	<h1 class="text-primary">Modify a travel</h1>
 
 	<input type="hidden" id="travel_id_modif" name="travel_id_modif" value="{{ travel.key().id() }}">
 
+	<!-- Departure / Arrival section -->
 	<div class="container-fluid">
 		<div class="form-group col-md-6">
 			<label for="departure_modify">Departure :</label>
@@ -49,106 +50,112 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 		</div>
 	</div>
 
+
+	<!-- Date Section -->
 	<div class="container-fluid">
 		<div class="form-group col-md-4">
-        	<label for="departure-date">Departure date </label>
-        	<input id="departure-date_modify" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value="{{ travel.datetime_departure.strftime('%Y-%m-%d') }}"/>
-        	<span id="error_datetime" class ="error" style="color:red; display:none"></span>
-        </div>
+			<label for="departure-date">Departure date </label>
+			<input id="departure-date_modify" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value="{{ travel.datetime_departure.strftime('%Y-%m-%d') }}"/>
+			<span id="error_datetime" class ="error" style="color:red; display:none"></span>
+		</div>
 
-        <div class="form-group col-md-4">
-        	<label for="departure-hour">Hour</label>
-        	<select class="form-control" id="departure-hour_modify" name="departure-hour">
-        		{% for i in range(24) %}
+		<div class="form-group col-md-4">
+			<label for="departure-hour">Hour</label>
+			<select class="form-control" id="departure-hour_modify" name="departure-hour">
+				{% for i in range(24) %}
 
-        			{% if i < 10 %}
-        				<option value="{{ i }}" {% if travel.datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ '0' + i|string + ' h' }}</option>
-        			{% else %}
-        				<option value="{{ i }}" {% if travel.datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ i|string + ' h' }}</option>
-        			{% endif %}
+					{% if i < 10 %}
+						<option value="{{ i }}" {% if travel.datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ '0' + i|string + ' h' }}</option>
+					{% else %}
+						<option value="{{ i }}" {% if travel.datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ i|string + ' h' }}</option>
+					{% endif %}
 
-        		{% endfor %}
-        	</select>
-        </div>
-
-        <div class="form-group col-md-4">
-        	<label for="departure-minutes">Minutes</label>
-        	<select class="form-control" id="departure-minutes_modify" name="departure-minutes">
-        		{% for i in range(60) %}
-
-        			{% if i < 10 %}
-        				<option value="{{ i }}" {% if travel.datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ '0' + i|string }}</option>
-        			{% else %}
-        				<option value="{{ i }}" {% if travel.datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ i|string }}</option>
-        			{% endif %}
-
-        		{% endfor %}
-        	</select>
-        </div>
-    </div>
-
-	<div class="container-fluid">
-        <div class="form-group col-md-6">
-        	<label for="seats">Seats available :</label>
-			<select class="form-control" id="seats_modify" name="seats">
-			    <option value="1" {% if travel.places_remaining == 1 %}selected{% endif %}>1</option>
-			    <option value="2" {% if travel.places_remaining == 2 %}selected{% endif %}>2</option>
-			    <option value="3" {% if travel.places_remaining == 3 %}selected{% endif %}>3</option>
-			    <option value="4" {% if travel.places_remaining == 4 %}selected{% endif %}>4</option>
-			    <option value="5" {% if travel.places_remaining == 5 %}selected{% endif %}>5</option>
+				{% endfor %}
 			</select>
-        </div>
+		</div>
 
-        <div class="form-group col-md-6">
-        	<label for="price">Price : </label>
-        	<input class="form-control" id="price_modify" type="number" maxlength="3" name="price" value="{{ travel.price }}">
-        	$
-        	<span id="error_price" class ="error" style="color:red; display:none"></span>
-        </div>
-    </div>
+		<div class="form-group col-md-4">
+			<label for="departure-minutes">Minutes</label>
+			<select class="form-control" id="departure-minutes_modify" name="departure-minutes">
+				{% for i in range(60) %}
 
-    <!-- Preferences -->
-    <div class="container-fluid">
+					{% if i < 10 %}
+						<option value="{{ i }}" {% if travel.datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ '0' + i|string }}</option>
+					{% else %}
+						<option value="{{ i }}" {% if travel.datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ i|string }}</option>
+					{% endif %}
 
-        <h3 > Modify your travel preferences </h3>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 
-        <div class="form-group col-md-12">
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animal_ok == "ok" %}checked{% endif %}>Authorized  
-        		<img src="../scripts/img/animal.jpg">
-        	</label>
+
+	<!-- Seats / Price Section -->
+	<div class="container-fluid">
+		<div class="form-group col-md-6">
+			<label for="seats">Seats available :</label>
+			<select class="form-control" id="seats_modify" name="seats">
+				<option value="1" {% if travel.places_remaining == 1 %}selected{% endif %}>1</option>
+				<option value="2" {% if travel.places_remaining == 2 %}selected{% endif %}>2</option>
+				<option value="3" {% if travel.places_remaining == 3 %}selected{% endif %}>3</option>
+				<option value="4" {% if travel.places_remaining == 4 %}selected{% endif %}>4</option>
+				<option value="5" {% if travel.places_remaining == 5 %}selected{% endif %}>5</option>
+			</select>
+		</div>
+
+		<div class="form-group col-md-6">
+			<label for="price">Price : </label>
+			<input class="form-control" id="price_modify" type="number" maxlength="3" name="price" value="{{ travel.price }}">
+			$
+			<span id="error_price" class ="error" style="color:red; display:none"></span>
+		</div>
+	</div>
+
+	<!-- Preferences -->
+	<div class="container-fluid">
+
+		<h3 > Modify your travel preferences </h3>
+
+		<!-- Animals -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animal_ok == "ok" %}checked{% endif %}>Authorized  
+				<img src="../scripts/img/animal.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.animal_ok == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_animal.jpg">
 			</label>
-        </div>
+		</div>
 
-        <div class="form-group col-md-12">
-        	<!-- <h3>Smoking</h3> -->
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking_ok == "ok" %}checked{% endif %}>Authorized  
-        		<img src="../scripts/img/smoking.jpg">
-        	</label>
+		<!-- Smoking -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking_ok == "ok" %}checked{% endif %}>Authorized  
+				<img src="../scripts/img/smoking.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.smoking_ok == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_smoking.jpg">
 			</label>
-        </div>
+		</div>
 
-        <div class="form-group col-md-12">
-        	<!-- <h3>Luggage space</h3> -->
-        	<label class="radio-inline col-md-3">
-        		<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage_ok == "nok" %}checked{% endif %}>Small bag  
-        		<img src="../scripts/img/small_bag.jpg">
-        	</label>
+		<!-- Luggage -->
+		<div class="form-group col-md-12">
+			<label class="radio-inline col-md-3">
+				<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage_ok == "nok" %}checked{% endif %}>Small bag  
+				<img src="../scripts/img/small_bag.jpg">
+			</label>
 			<label class="radio-inline col-md-3">
 				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.big_luggage_ok == "ok" %}checked{% endif %}>Suitcase  
 				<img src="../scripts/img/suitcase.jpg">
 			</label>
-        </div>
+		</div>
 
-     </div>
+	 </div>
 
+	<!-- Call of travel.js/submitModificationTravel function to perform Ajax Request -->
 	<button type="submit" class="btn btn-success" onclick="submitModificationTravel();">Submit</button>
 
 </div>

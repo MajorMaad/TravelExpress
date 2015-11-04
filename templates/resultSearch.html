@@ -1,22 +1,28 @@
-
+<!-- Inclusion of relative css -->
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
-<!-- Body -->
 
+
+<!-- Error banner -->
 {% if travels.get() == None %}
-
 	<div class="alert alert-warning" role="alert">
 		<strong>Warning !</strong> No travels found ! <a href="/searchTravel">Try again</a>
 	</div>
-
 {% endif %}
 
+
+<!-- Content : Travels researched by user -->
 <div id="resultSearch" class="container">
 {% for travel in travels %}
 
+
+	<!-- Display only travels with remaining places -->
 	{% if travel.places_remaining >= 0 %}
 
+	<!-- A travel HTML instance -->
 	<div class="panel panel-primary">
+
+		<!-- Title of a Travel + Buttons -->
 		<div class="panel-heading">
 			<div class="row">
 				<div class="col-md-6">
@@ -28,6 +34,7 @@
 					</h3>
 				</div>
 
+				<!-- Book travel Manager : target the url /addUserToTravel (cf main.py) -->
 				<form method="post" action="/addUserToTravel">
 
 					<input type="hidden" name="travel_id" value="{{ travel.key().id() }}">
@@ -49,13 +56,14 @@
 							<button type="submit" class="btn btn-success">
 							<span class="glyphicon glyphicon-ok"></span>
 							</button>
-			        </div>
+					</div>
 
-			     </form>
+				 </form>
 
-	        </div>
-	    </div>
+			</div>
+		</div>
 
+		<!-- Travel characteristics -->
 		<div class="panel-body">
 			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
 			<div class="inline_panel">
@@ -87,16 +95,20 @@
 {% endfor %}
 </div>
 
+
+
+
 <script type="text/javascript">
 
+/*Handle buttons management*/
 $(document).ready(function() {
 
+	/*Book button*/
 	$('.btn-success').click(function() {
-
 		return confirm('Are you sure you want to book this travel ?');
-
 	});
 
+	/*Button + */
 	$('.plus-btn').click(function() {
 
 		var $input = $(this).prev();
@@ -110,7 +122,7 @@ $(document).ready(function() {
 
 	});
 
-
+	/*Button - */
 	$('.minus-btn').click(function() {
 
 		var $input = $(this).next();
