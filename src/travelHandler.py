@@ -272,13 +272,5 @@ class ShowTravelerTravels(MainHandler):
 
 	def get(self):
 		travels = Travel.by_passenger(self.user.key().id())
-		travel_id_email = []
-
-		# Getting email adress of drivers to be able to send a message
-		for travel in travels:
-			driver_mail = User.by_id(travel.user_id).email
-			couple_travel_mail = (travel.key().id(), driver_mail)
-			travel_id_email.append(couple_travel_mail)
-
-		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = travels, couples_id_mail = travel_id_email)
+		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = travels)
 
