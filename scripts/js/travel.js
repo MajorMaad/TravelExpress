@@ -11,7 +11,7 @@ function submitAddTravel(){
 	var seatNumber = seats.options[seats.selectedIndex].value;
 
 	//Retrieve departure moments
-	var dep_date = document.getElementById('departure-date').value;
+	var dep_day = document.getElementById('departure-day').value;
 	var dep_hour = document.getElementById('departure-hour').value;
 	var dep_min = document.getElementById('departure-minutes').value;
 
@@ -49,7 +49,7 @@ function submitAddTravel(){
 	  dataType: 'json',
 	  data: JSON.stringify({ "departure" : departure,
 	  						"arrival" : arrival,
-	  						"departure_date" : dep_date,
+	  						"departure_day" : dep_day,
 	  						"departure_hour" : dep_hour,
 	  						"departure_minutes" : dep_min,
 	  						"price" : price,

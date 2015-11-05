@@ -46,23 +46,35 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsAdder);
 	</div>
 
 
-	<!-- Date Section -->
+	<!-- Schedule Section -->
 	<div class="container-fluid">
 		<div class="form-group col-md-4">
-			<label for="departure-date">Departure date </label>
-			<input id="departure-date" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date" value="{{ datetime_departure.strftime('%Y-%m-%d') }}"/>
+			<label for="departure-day">Departure day </label>			
+			<select id="departure-day" class="form-control" placeholder="Day" name="departure-day">
+				<option value="monday" 		selected >Monday 	</option>
+				<option value="tuesday" 			 >Tuesday 	</option>
+				<option value="wednesday" 			 >Wednesday </option>
+				<option value="thursday" 			 >Thursday 	</option>
+				<option value="friday" 				 >Friday 	</option>
+				<option value="saturday" 			 >Saturday 	</option>
+				<option value="sunday" 				 >Sunday 	</option>
+			</select>
 			<span id="error_datetime" class ="error" style="color:red; display:none"></span>
 		</div>
 
 		<div class="form-group col-md-4">
-			<label for="departure-hour">Hour</label>
+			<label for="departure-hour">Departure Hour</label>
 			<select class="form-control" id="departure-hour" name="departure-hour">
 				{% for i in range(24) %}
 
 					{% if i < 10 %}
-						<option value="{{ i }}" {% if datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ '0' + i|string + ' h' }}</option>
+						{% if i == 0 %}
+							<option value="{{ i }}" selected >{{ '0' + i|string + ' h' }}</option>
+						{% else %}
+							<option value="{{ i }}" >{{ '0' + i|string + ' h' }}</option>
+						{% endif %}
 					{% else %}
-						<option value="{{ i }}" {% if datetime_departure.strftime('%H')|int == i %}selected{% endif %}>{{ i|string + ' h' }}</option>
+						<option value="{{ i }}" >{{ i|string + ' h' }}</option>
 					{% endif %}
 
 				{% endfor %}
@@ -72,12 +84,17 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsAdder);
 		<div class="form-group col-md-4">
 			<label for="departure-minutes">Minutes</label>
 			<select class="form-control" id="departure-minutes" name="departure-minutes">
-				{% for i in range(60) %}
+				{% for i in range(0, 60, 5) %}
 
 					{% if i < 10 %}
-						<option value="{{ i }}" {% if datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ '0' + i|string }}</option>
+						{% if i == 0 %}
+							<option value="{{ i }}" selected >{{ '0' + i|string + ' min' }}</option>
+						{% else %}
+							<option value="{{ i }}" >{{ '0' + i|string + ' min' }}</option>
+						{% endif %}
+
 					{% else %}
-						<option value="{{ i }}" {% if datetime_departure.strftime('%M')|int == i %}selected{% endif %}>{{ i|string }}</option>
+						<option value="{{ i }}">{{ i|string + ' min' }}</option>
 					{% endif %}
 
 				{% endfor %}

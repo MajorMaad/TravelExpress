@@ -15,7 +15,7 @@
 #########################################################################
 
 
-
+from src.driver import *
 from google.appengine.ext import db
 import datetime
 import logging
@@ -27,22 +27,19 @@ def travel_key(name = 'default'):
 
 class Travel(db.Model):
 	# Flag of activity
-	actif = db.BooleanProperty(required = True)
+	actif = db.BooleanProperty(default = True, required = True)
 
-	# Attributes of a travel for the database
-	# Owner
-	user_id = db.IntegerProperty(required = True)
+	# Driver
+	driver = db.ReferenceProperty(Driver)
 
 	# target locations
 	departure = db.StringListProperty(required = True)
 	arrival = db.StringListProperty(required = True)
 
-	# Date / Price / Preferences
-	datetime_departure = db.DateTimeProperty(required = True)
+	# Price / Date / Preferences
 	price = db.IntegerProperty(required = True)
-	animal_ok = db.StringProperty(required = True)
-	smoking_ok = db.StringProperty(required = True)
-	big_luggage_ok = db.StringProperty(required = True)
+	schedule = db.StringListProperty(default=["monday", "10", "00"], required = True)	
+	preferences = db.StringListProperty(default=["ni", "ni", "ni"], required = True)
 
 	# Places system
 	places_number = db.IntegerProperty(required = True)
@@ -55,14 +52,52 @@ class Travel(db.Model):
 
 
 
+	
+	@classmethod
+	def register_travel(cls, driver, travel_data):
+		travel = Travel(parent = travel_key(),
+						driver =  driver.key(),
+						departure = cls.split_address(travel_data['departure']),
+						arrival = cls.split_address(travel_data['arrival']),
+						price = travel_data['price'],
+						schedule = travel_data['datetime_departure'],
+						preferences =  [travel_data['animal'], travel_data['smoking'], travel_data['luggage']],
+						places_number = travel_data['places_number'],
+						places_remaining = travel_data['places_number']
+			)
+		travel.put()
+
+
+	@classmethod
+	def modify_travel(cls, travel_id, travel_data):
+		travel = cls.by_id(travel_id)
+
+		travel.departure = cls.split_address(travel_data['departure'])
+		travel.arrival = cls.split_address(travel_data['arrival'])
+		travel.places_number = travel_data['places_number']
+		travel.places_remaining = travel_data['places_number']		
+		travel.price = travel_data['price']
+		travel.schedule = travel_data['datetime_departure']
+		travel.preferences = [ travel_data['animal'], travel_data['smoking'], travel_data['luggage'] ]
+
+		travel.put()
+
+
 	############################
 	### RESEARCH 	METHODS  ###
 	############################
 
-
 	@classmethod
 	def by_id(cls, tid):
 		return Travel.get_by_id(tid, parent = travel_key())
+
+	@classmethod
+	def by_driver_still_actif(cls, driver):
+		return Travel.all().filter("driver = ", driver.key()).filter("actif =", True)
+
+
+
+
 
 	@classmethod
 	def get_multi(cls, list_ids):
@@ -187,56 +222,13 @@ class Travel(db.Model):
 		travel.put()
 		return (True, "Your reservation has been saved.")
 
-	# Add a travel
-	@classmethod
-	def add_travel(cls, travel_data):
-		# Split the departure and arrival data to determine country, province, and city
-		# Split the departure and arrival data to determine country, province, and city
-		full_dep_addr = cls.split_address(travel_data['departure'])
-		full_arr_addr = cls.split_address(travel_data['arrival'])
 
-		travel = None
-		travel = Travel(parent = travel_key(),
-						actif = True,
-						user_id = travel_data['user_id'],
-						departure = full_dep_addr,
-						arrival = full_arr_addr,
-						places_number = travel_data['places_number'],
-						places_remaining = travel_data['places_number'],
-						datetime_departure = travel_data['datetime_departure'],
-						price = travel_data['price'],
-						animal_ok = travel_data['animal'],
-						smoking_ok = travel_data['smoking'],
-						big_luggage_ok = travel_data['luggage'])
-
-		travel.put()
-		return travel
 
 	############################
 	### MODIFICATION METHODS ###
 	############################
 
-	# Modify a travel
-	@classmethod
-	def modify_travel(cls, travel_id, travel_data):
-		travel = cls.by_id(travel_id)
 
-		# Split the departure and arrival data to determine country, province, and city
-		full_dep_addr = cls.split_address(travel_data['departure'])
-		full_arr_addr = cls.split_address(travel_data['arrival'])
-
-		travel.departure = full_dep_addr
-		travel.arrival = full_arr_addr
-		travel.places_number = travel_data['places_number']
-		travel.places_remaining = travel_data['places_number']
-		travel.datetime_departure = travel_data['datetime_departure']
-		travel.price = travel_data['price']
-		travel.animal_ok = travel_data['animal']
-		travel.smoking_ok = travel_data['smoking']
-		travel.big_luggage_ok = travel_data['luggage']
-
-		travel.put()
-		return travel
 
 	############################
 	### 	DELETE METHODS 	 ###
@@ -244,13 +236,10 @@ class Travel(db.Model):
 
 	# Fake a deletion of the travel
 	@classmethod
-	def remove_travel(cls, travel_id, user_id):
+	def remove_travel(cls, travel_id):
 		travel = cls.by_id(travel_id)
-
-		# Make sure it is the driver who deletes it
-		if (travel.user_id == user_id):
-			travel.actif = False
-			travel.put()
+		travel.actif = False
+		travel.put()
 
 
 	# Remove user from a privious booked travel

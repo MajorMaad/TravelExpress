@@ -16,14 +16,7 @@ class CheckTravel():
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']
 		self.arrival 			= data['arrival']
-		self.departure_date 	= data['departure_date']
-		self.departure_hour 	= data['departure_hour']
-		self.departure_minutes 	= data['departure_minutes']
 		self.price 				= data['price']
-		self.animals 			= data['animals']
-		self.smoking 			= data['smoking']
-		self.luggage 			= data['luggage']
-
 
 	def check(self):
 		# The checking status will be returned as a dictionnary
@@ -42,30 +35,6 @@ class CheckTravel():
 
 		elif self.departure == self.arrival:
 			checkingResult['error_samedeparture'] = "Departure and destination must be different places"
-			error = True
-
-		# Datetime checking
-		date_tab = self.departure_date.split('-')
-		try:
-			year = int(date_tab[0])
-			month = int(date_tab[1])
-			day = int(date_tab[2])
-		except ValueError:
-			year = 2000
-			month = 1
-			day = 1
-
-		hour = int(self.departure_hour)
-		minutes = int(self.departure_minutes)
-		departure_datetime = datetime.datetime(year, month, day, hour, minutes)
-
-		checkingResult['datetime_departure'] = departure_datetime
-
-		yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-
-		# Datetime of departure must be after yesterday
-		if departure_datetime <= yesterday:
-			checkingResult['error_datetime'] = "You must enter a posterior date"
 			error = True
 	
 		#price checking

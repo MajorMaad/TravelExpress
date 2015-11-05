@@ -14,6 +14,7 @@
 from src.handler import *
 from src.travel import *
 from src.travelChecker import *
+from src.driver import *
 from google.appengine.api import memcache
 import datetime
 import json
@@ -45,33 +46,43 @@ class AddTravel(MainHandler):
 		checkedResult = travelerAgent.check()
 
 		if checkedResult['error']:
+			logging.info("error in add travel")
 			# Merge the 2 dicts
 			renderingDict = data.copy()
 			renderingDict.update(checkedResult)
-
-			# datetime cannot be json serializable
-			renderingDict.pop('datetime_departure', None)
 
 			# Send back response
 			self.response.out.write(json.dumps(renderingDict))
 
 		else:
+			# Bind the new travel to the driver's travel list related to this user
+			driver = Driver.get_driver(self.user.key())
+
+			# Check if user is already a driver
+			if driver is None:
+				logging.info("User "+self.user.nickName+" is not registered as a driver.")
+				driver = Driver.register_as_driver(self.user)
+
+			else:
+				logging.info("User "+self.user.nickName+" is already a driver.")
+					
+
 			# Register the new travel into DB
 			travel_data = {
-				'user_id'			: self.user.key().id(),
 				'departure'			: data['departure'],
 				'arrival'			: data['arrival'],
 				'places_number'		: int(self.seats),
 				'places_remaining'	: int(self.seats),
-				'datetime_departure': checkedResult['datetime_departure'],
+				'datetime_departure': [data['departure_day'], data['departure_hour'], data['departure_minutes'] ],
 				'price'				: int(data['price']),
 				'animal'			: data['animals'],
 				'smoking'			: data['smoking'],
 				'luggage'			: data['luggage']
 			}
-			travel = Travel.add_travel(travel_data)	
+			t = Travel.register_travel(driver, travel_data)	
+			
 
-			# Send back response
+			# # Send back response
 			self.response.out.write(json.dumps({}))
 
 
@@ -119,7 +130,6 @@ class ModifyTravel(MainHandler):
 
 			# Register the new travel into DB
 			travel_data = {
-				'user_id'			: self.user.key().id(),
 				'departure'			: data['departure'],
 				'arrival'			: data['arrival'],
 				'places_number'		: int(self.seats),
@@ -130,8 +140,20 @@ class ModifyTravel(MainHandler):
 				'smoking'			: data['smoking'],
 				'luggage'			: data['luggage']
 			}
-			travel = Travel.modify_travel(self.travel_id, travel_data)
+			Travel.modify_travel(self.travel_id, travel_data)
 			self.response.out.write(json.dumps({}))
+
+# Delete a previously created travel
+class DeleteTravel(MainHandler):
+
+	def get(self):
+		self.redirect('/driverTravels')
+
+	# Powered by Ajax
+	def post(self):
+		data = json.loads(self.request.body)
+		Travel.remove_travel(data['travel_id'])
+		self.response.out.write(json.dumps({}))
 
 
 # Look for a travel
@@ -190,17 +212,7 @@ class ResultSearchTravel(MainHandler):
 			self.redirect('/searchTravel')
 
 
-# Delete a previously created travel
-class DeleteTravel(MainHandler):
 
-	def get(self):
-		self.redirect('/driverTravels')
-
-	# Powered by Ajax
-	def post(self):
-		data = json.loads(self.request.body)
-		Travel.remove_travel(data['travel_id'], self.user.key().id())
-		self.response.out.write(json.dumps({}))
 
 
 # Register for a travel as a traveller
@@ -242,9 +254,6 @@ class RmUserOfTravel(MainHandler):
 		self.response.out.write(json.dumps({}))
 
 
-
-
-
 # Show my travels as a driver
 class ShowDriverTravels(MainHandler):
 	##############################################################
@@ -252,13 +261,19 @@ class ShowDriverTravels(MainHandler):
 	##############################################################
 
 	def get(self):
-		travels = Travel.by_author_still_actif(self.user.key().id())
-		if travels.count() == 0:
-			logging.info("empty : yes")
-			self.render('base.html', user = self.user, choice = "driverTravels", noTravel = True)
-		else:
-			logging.info("empty : no")
-			self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+		# Look for the driver
+		driver = Driver.get_driver(self.user.key())
+
+		if driver is not None:
+			logging.info("is a driver")
+			travels = Travel.by_driver_still_actif(driver)
+
+			if travels.count() > 0:
+				logging.info("empty : no")
+				self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+				return
+
+		self.render('base.html', user = self.user, choice = "driverTravels", noTravel = True)
 
 
 		
