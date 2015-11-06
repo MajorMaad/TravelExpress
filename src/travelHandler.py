@@ -138,6 +138,7 @@ class ModifyTravel(MainHandler):
 			Travel.modify_travel(self.travel_id, travel_data)
 			self.response.out.write(json.dumps({}))
 
+
 # Delete a previously created travel
 class DeleteTravel(MainHandler):
 
@@ -205,10 +206,7 @@ class ResultSearchTravel(MainHandler):
 			self.redirect('/searchTravel')
 
 
-
-
-
-# Register for a travel as a traveller
+# Register traveler for a travel
 class AddUserToTravel(MainHandler):
 	#######################################################
 	# Render the html template bind to choice == "search" #
@@ -218,11 +216,10 @@ class AddUserToTravel(MainHandler):
 
 	# NOT POWEREDBY AJAX
 	def post(self):
-		self.user_id = self.user.key().id()
 		self.travel_id = int(self.request.get('travel_id'))
-		self.places_reservation = int(self.request.get('places_reservation'))		
+		self.places_reservation = int(self.request.get('places_reservation'))
 
-		status, msg = Travel.add_user(self.user_id, self.travel_id, self.places_reservation)
+		status, msg = Travel.add_traveler(self.user, self.travel_id, self.places_reservation)
 
 		if status:
 			logging.info("CORRECT book a travel : "+msg)
@@ -235,13 +232,16 @@ class AddUserToTravel(MainHandler):
 class RmUserOfTravel(MainHandler):
 
 	# Powered by Ajax
-	def post(self):
-		self.user_id = int(self.user.key().id())
-		
+	def post(self):		
 		data = json.loads(self.request.body)
 		self.travel_id = int(data['travel_id'])
 
-		Travel.remove_user_from_travel(self.travel_id, self.user_id)
+		# Get back traveler
+		traveler = Traveler.get_traveler(self.user)
+		if traveler is not None:
+			Travel.remove_user_from_travel(self.travel_id, traveler)
+		else:
+			logging.info("traveler not found")
 
 		# Ajax response
 		self.response.out.write(json.dumps({}))
@@ -279,6 +279,17 @@ class ShowTravelerTravels(MainHandler):
 	################################################################
 
 	def get(self):
-		travels = Travel.by_passenger(self.user.key().id())
-		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = travels)
+		# Look for the traveler
+		traveler = Traveler.get_traveler(self.user.key())
+
+		if traveler is not None:
+			logging.info("is a traveler")
+			travels = Travel.by_traveler(traveler)
+
+			if travels.count() > 0:
+				logging.info("empty : no")
+				self.render('base.html', user = self.user, choice = "travelerTravels", travels = travels, traveler_key = str(traveler.key()) )
+				return
+
+		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = None)
 

@@ -16,6 +16,7 @@
 
 
 from src.driver import *
+from src.traveler import *
 from google.appengine.ext import db
 import datetime
 import logging
@@ -55,7 +56,7 @@ class Travel(db.Model):
 	places_remaining = db.IntegerProperty(required = True)
 
 	# Booking system	
-	bookers_id = db.ListProperty(int)
+	bookers_id = db.StringListProperty()
 	places_bind_to_each_reservation = db.ListProperty(int)
 
 
@@ -111,6 +112,11 @@ class Travel(db.Model):
 	@classmethod
 	def by_driver_still_actif(cls, driver):
 		return Travel.all().filter("driver = ", driver.key()).filter("actif =", True)
+
+	@classmethod
+	def by_traveler(cls, traveler):
+		return Travel.all().filter("bookers_id = ", str(traveler.key()))
+
 
 
 
@@ -197,31 +203,63 @@ class Travel(db.Model):
 
 	# Add a user to a travel
 	@classmethod
-	def add_user(cls, user_id, travel_id, places):
-		travel = Travel.by_id(travel_id)
+	def add_traveler(cls, user, travel_id, places):
 
-		# Traveler cannot be the driver
-		if user_id == travel.user_id:
-			return (False, "You cannot book this travel : you re the driver.")
+		# Ensure the given user is not the driver of this travel
+		user_driver = Driver.get_driver(user.key())
 
-		# traveler cannot book twice the same travel
-		if user_id in travel.bookers_id:
-			return (False, "You have already book this travel.")
+		if user_driver is not None:
+			user_driver_travels = Travel.by_driver_still_actif(user_driver)
+			for t in user_driver_travels:
+				if t.key().id() == travel_id:
+					return (False, "You cannot book this travel : you are the driver.")
 
-		# Ensure there are enough places
-		if (travel.places_remaining - places ) < 0:
-			return (False, "There are not enough places.")
+		# Check if user is already a traveler
+		traveler = Traveler.get_traveler(user.key())
+		
+		if traveler is None:
+			logging.info("User "+user.nickName+" is not registered as a traveler.")
+			traveler = Traveler.register_as_traveler(user)
+		else:
+			logging.info("User "+user.nickName+" is already a traveler.")
 
-		# Register the user and the associated number of places
-		travel.bookers_id.append(user_id)
-		travel.places_bind_to_each_reservation.append(places)
+			
+		this_travel = Travel.by_id(travel_id)
+		if this_travel is None:
+			logging.info("Travel doesn't exist")
+			return(False, "Travel doesn't exists")
+		
+		else:
+			# Check if required places matches the remaining places
+			if (this_travel.places_remaining - places ) < 0:
+				logging.info("Not enough place available")
+				return(False, "Not engouh seats available")
+			
+			else:
+				# Check if this traveler is not already registered for this Traveler
+				target_key = str(traveler.key())
 
-		# Update the places system
-		travel.places_remaining -= places
+				if target_key in this_travel.bookers_id:					
+					logging.info("Traveler already regsitred for this travel")
 
-		# Register and return status withstatus message
-		travel.put()
-		return (True, "Your reservation has been saved.")
+					# Update traveler reservation
+					index = this_travel.bookers_id.index(target_key)
+					this_travel.places_bind_to_each_reservation[index] += places
+
+				else:
+					logging.info("ADDING a new traveler")
+					
+					# Book the Traveler
+					this_travel.bookers_id.append(target_key)
+					this_travel.places_bind_to_each_reservation.append(places)	
+
+				
+				# Update remaining places
+				this_travel.places_remaining -= places
+				# Save into DB
+				this_travel.put()
+				return (True, "Your reservation has been saved.")
+
 
 
 
@@ -245,23 +283,21 @@ class Travel(db.Model):
 
 	# Remove user from a privious booked travel
 	@classmethod
-	def remove_user_from_travel(cls, travel_id, user_id):
-		travel = cls.by_id(travel_id)
+	def remove_user_from_travel(cls, travel_id, traveler):
+		# get back travel and traveler key
+		this_travel = cls.by_id(travel_id)
+		traveler_key = str(traveler.key())
 
-		# Make sure user was in this travel
-		if user_id in travel.bookers_id:
-			
-			# Get index of the user
-			idx = travel.bookers_id.index(user_id) 
+		if traveler_key in this_travel.bookers_id:
+			index = this_travel.bookers_id.index(traveler_key)
 
-			# Remove user and the corresponding number of reserved places
-			travel.bookers_id.remove(user_id)
-			places = travel.places_bind_to_each_reservation.pop(idx)
+			# Remove User and corresponding places from lists
+			this_travel.bookers_id.pop(index)
+			new_places = this_travel.places_bind_to_each_reservation.pop(index)
 
-			# Update the places_remaining variable
-			travel.places_remaining += places
-
-			travel.put()
+			# Update places remaining
+			this_travel.places_remaining += new_places
+			this_travel.put()
 
 
 	############################

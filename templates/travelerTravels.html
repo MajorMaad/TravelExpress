@@ -7,98 +7,119 @@
 	The travel has been removed from your travel list. This page will now refresh
 </div>
 
-{% if travels.get() == None %}
+
+{% if travels is none %}
 	<div class="alert alert-info" role="alert">
 		<strong>Nothing here !</strong> You did not book any travel yet. <a href="/searchTravel">Book one</a>
 	</div>
+{% else %}
+	<!-- Content : Travels where user is a traveller -->
+	<div id="driverTravels" class="container">
+	{% for travel in travels %}
+
+		<!-- A travel HTML instance -->
+		<div class="panel panel-success">
+
+			<!-- Title of a Travel + Buttons -->
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title">
+							<strong>
+								{{ travel.schedule_day|capitalize}}, 
+								
+								{% if travel.schedule_hour < 10 %}
+									{{travel.schedule_hour|string+'0 : '}}
+								{% else %}
+									{{travel.schedule_hour|string+' : '}}
+								{% endif %}
+
+
+								
+								{% if travel.schedule_minute < 10 %}
+									{{travel.schedule_minute|string+'0 '}}
+								{% else %}
+									{{travel.schedule_minute|string}}
+								{% endif %}
+							</strong>						{{ travel.departure|join(', ')|capitalize }} 
+							<span class="glyphicon glyphicon-arrow-right"> </span>
+							{{ travel.arrival|join(', ')|capitalize }}
+						</h3>
+					</div>
+
+					<!-- Manager : Send mail to driver (not implemented) / Delete this travel from my travel list -->
+					<div class="btn-group">
+							<a type="button" class="btn btn-info" onclick="alert('Not implemented yet');">
+								Contact
+								<span class="glyphicon glyphicon-envelope"></span>
+							</a>
+
+							<button type="button" class="btn btn-danger" onclick="unbookTravel({{travel.key().id()}} );">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+
+					</div>
+				</div>
+			</div>
+
+			<!-- Travel characteristics -->
+			<div class="panel-body">
+				<p>
+					<strong>
+						<!-- Get index of the traveler in the bookers ids list -->
+						{% set index = 0 %}
+						{% for ids in travel.bookers_id %}
+							{% if ids == traveler_key %}
+								{% set index = loop.index %}
+							{% endif %}
+						{% endfor %}
+
+						<!-- Get associated places -->
+						{{ travel.places_bind_to_each_reservation[index]|string }}
+					</strong> 
+					place(s) reserved
+				</p>
+				<div class="inline_panel">
+					<p>
+						<strong>
+						{{ travel.price*travel.places_bind_to_each_reservation[index] }}$ 
+						</strong> to pay
+					</p>
+
+					{% if travel.animal_ok == 'ok' %}
+						<img src="../scripts/img/animal.jpg" alt="Animal OK">
+					{% elif travel.animal_ok == 'nok' %}
+						<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
+					{% endif %}
+
+					{% if travel.smoking_ok == 'ok' %}
+						<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
+					{% elif travel.smoking_ok == 'nok' %}
+						<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
+					{% endif %}
+
+					{% if travel.big_luggage_ok == 'ok' %}
+						<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
+					{% elif travel.big_luggage_ok == 'nok'%}
+						<img src="../scripts/img/small_bag.jpg" alt="Small bag">
+					{% endif %}
+				</div>
+			</div>
+
+			<!-- Travel Latest Information -->
+			{% if not travel.actif %}
+			<div class="panel-footer alert-warning">
+				<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations.</p>
+			</div>
+			{% endif %}
+		</div>
+
+	{% endfor %}
+	</div>
+
 {% endif %}
 
 
-<!-- Content : Travels where user is a traveller -->
-<div id="driverTravels" class="container">
-{% for travel in travels %}
-
-	<!-- A travel HTML instance -->
-	<div class="panel panel-success">
-
-		<!-- Title of a Travel + Buttons -->
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-md-8">
-					<h3 class="panel-title">
-						<strong>
-							{{ travel.schedule_day|capitalize}}, 
-							
-							{% if travel.schedule_hour < 10 %}
-								{{travel.schedule_hour|string+'0 : '}}
-							{% else %}
-								{{travel.schedule_hour|string+' : '}}
-							{% endif %}
-
-
-							
-							{% if travel.schedule_minute < 10 %}
-								{{travel.schedule_minute|string+'0 '}}
-							{% else %}
-								{{travel.schedule_minute|string}}
-							{% endif %}
-						</strong>						{{ travel.departure|join(', ')|capitalize }} 
-						<span class="glyphicon glyphicon-arrow-right"> </span>
-						{{ travel.arrival|join(', ')|capitalize }}
-					</h3>
-				</div>
-
-				<!-- Manager : Send mail to driver (not implemented) / Delete this travel from my travel list -->
-				<div class="btn-group">
-						<a type="button" class="btn btn-info" onclick="alert('Not implemented yet');">
-							Contact
-							<span class="glyphicon glyphicon-envelope"></span>
-						</a>
-
-						<button type="button" class="btn btn-danger" onclick="unbookTravel({{travel.key().id()}} );">
-							<span class="glyphicon glyphicon-trash"></span>
-						</button>
-
-				</div>
-			</div>
-		</div>
-
-		<!-- Travel characteristics -->
-		<div class="panel-body">
-			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
-			<div class="inline_panel">
-				<p><strong>{{ travel.price }}$</strong></p>
-
-				{% if travel.animal_ok == 'ok' %}
-					<img src="../scripts/img/animal.jpg" alt="Animal OK">
-				{% elif travel.animal_ok == 'nok' %}
-					<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
-				{% endif %}
-
-				{% if travel.smoking_ok == 'ok' %}
-					<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
-				{% elif travel.smoking_ok == 'nok' %}
-					<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
-				{% endif %}
-
-				{% if travel.big_luggage_ok == 'ok' %}
-					<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
-				{% elif travel.big_luggage_ok == 'nok'%}
-					<img src="../scripts/img/small_bag.jpg" alt="Small bag">
-				{% endif %}
-			</div>
-		</div>
-
-		<!-- Travel Latest Information -->
-		{% if not travel.actif %}
-		<div class="panel-footer alert-warning">
-			<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations.</p>
-		</div>
-		{% endif %}
-	</div>
-
-{% endfor %}
-</div>
 
 <script>
 /*Perform ajax request to unbook a travel as a user*/
