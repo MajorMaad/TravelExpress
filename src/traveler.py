@@ -28,3 +28,5 @@ class Traveler(db.Model):
 		query.filter("user_id = ", user_key)
 		return query.get()
 
+	
+

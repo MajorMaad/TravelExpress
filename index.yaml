@@ -84,6 +84,13 @@ indexes:
 - kind: Travel
   properties:
   - name: actif
+  - name: arrival
+  - name: schedule_day
+  - name: schedule_hour
+
+- kind: Travel
+  properties:
+  - name: actif
   - name: departure
   - name: datetime_departure
 
@@ -113,6 +120,13 @@ indexes:
   - name: departure
   - name: schedule
   - name: schedule
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: departure
+  - name: schedule_day
+  - name: price
 
 - kind: Travel
   properties:

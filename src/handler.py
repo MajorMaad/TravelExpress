@@ -10,8 +10,10 @@ import webapp2
 import jinja2
 import hmac
 import logging
+import json
 
 from src.user import *
+from src.travel import *
 
 
 
@@ -106,3 +108,21 @@ class MainHandler(webapp2.RequestHandler):
 	def doExit(self):
 		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 		self.redirect('/')
+
+
+
+class FastSearch(MainHandler):
+
+	def post(self):
+		data = json.loads(self.request.body)
+
+		if data["db"] == 'user':
+			logging.info("have to look to user")
+
+		elif data["db"] == 'travel':
+			logging.info("have to look into travel")
+		else:
+			logging.info("GO FUCK TUORSELF")
+
+		self.response.out.write(json.dumps({}))
+

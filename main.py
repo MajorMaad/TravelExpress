@@ -35,5 +35,6 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/addUserToTravel', AddUserToTravel),
 								('/rmUserOfTravel', RmUserOfTravel),
 								('/travelerTravels', ShowTravelerTravels),
+								('/quickSearch', FastSearch),
 								('/myProfile', MyProfile)],
 								debug=True)

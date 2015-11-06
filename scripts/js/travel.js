@@ -264,8 +264,6 @@ function searchTravel(){
 
 	//Retrieve departure moments
 	var dep_day = $('#departure-day_search :selected').text();
-	var dep_hour = document.getElementById('departure-hour_search').value;
-
 
 	var price = document.getElementById("price_search").value;
 
@@ -300,7 +298,7 @@ function searchTravel(){
 	  data: JSON.stringify({"departure" : departure,
 	  						"arrival" : arrival,
 	  						"departure_day" : dep_day,
-	  						"departure_hour" : dep_hour,
+	  						"departure_hour" : "",
 	  						"price_max" : price,
 	  						"animals" : animals,
 	  						"smoking" : smoking,

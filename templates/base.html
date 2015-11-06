@@ -90,8 +90,40 @@
 
 		<!-- Display Quick links -->
 		{% if not choice %}
-			<div id="quickLinks" class="row">
+			<br>
+			<!-- Fast search -->
+			<span>
+				<input id="quickSearch" class="form-control" placeholder="Search for users or travel on the flight" value="">
+				</input>
+				<button class='btn-success' onclick="fastSearch();">Go !</button>				
+			</span>
+			<br>
+			<span class="form-control quickSearchInfo" style="display:none"> 
+				Type 'user foobar' to have informations about the foobar user
+				<br>
+			</span>
+			<span class="form-control quickSearchInfo" style="display:none"> 
+				Type 'travel day monday' to have informations about travels scheduled on monday
+				<br>
+			</span>
+			<span class="form-control quickSearchInfo" style="display:none"> 
+				Type 'travel price 15' to have informations about travels having a max price of 15$. 
+				You can replace 'price' by 'hour' or 'min' or 'seats'.
+				<br>
+			</span>
+			<span class="form-control quickSearchInfo" style="display:none"> 
+				Type 'travel from New York' to have informations about travels starting at New York
+				<br>
+			</span>
+			<span class="form-control quickSearchInfo" style="display:none"> 
+				Type 'travel to New York' to have informations about travels arriving to New York
+				<br>
+			</span>
+			
 
+
+			<!-- Main buttons -->
+			<div id="quickLinks" class="row">
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<!-- Choice will be "add" -->
 					<a href="/addTravel" class="thumbnail">
@@ -115,7 +147,6 @@
 						<h3>Settings</h3>
 					</a>
 				</div>
-
 			</div>
 
 		<!-- Or display specific functionnalities -->
@@ -184,23 +215,81 @@
 	<script type="text/javascript">
 
 		$(document).ready(function () {
-
+			/*Sign Up / Log In Form shortcut on enter*/
 			$(this).keypress(function (e) {
-
 				if (e.which == 13) {
-
 					var $inputFocused = $(':focus').parent();
 
 					if ($inputFocused.hasClass("sign-up"))
 						$("#submitSignUpBtn").click();
 					else if ($inputFocused.hasClass("log-in"))
 						$("#submitLogInBtn").click();
-
 				}
-
 			});
 
+			var info = document.getElementsByClassName("quickSearchInfo");
+			$("#quickSearch").hover(
+				function(e){
+					for(var i = 0; i < info.length; i++){
+						$(info[i]).fadeIn(150);
+					}
+				},function(e){
+					for(var i = 0; i < info.length; i++){
+						$(info[i]).fadeOut(300);
+					}
+				}
+			);
 		});
+
+		function fastSearch(){
+			var command = document.getElementById("quickSearch").value;
+
+			if (command != ''){
+				var args = command.split(" ", 3);
+
+				if (args.length < 2){
+					console.log("wrong command line");
+					return;
+				}
+
+				if (args[0].toLowerCase() != 'user' && args[0].toLowerCase() != 'travel'){
+					console.log("wrong pattern");
+					return;
+				}else{
+					var formatted_json;
+					var target = args[0].toLowerCase();
+					
+					var lookForUser = target == 'user';
+
+					if (lookForUser){
+						console.log("searching a user : "+target+", "+args[1]);
+						/*Expected argument that matches a user*/
+						formatted_json = JSON.stringify({"db" : target,	"pattern" : args[1]});
+					}else{
+						console.log('searching travels : '+target+", "+args[1]+", "+args[2]);
+						/*Expect arguments that matches travel element*/
+						formatted_json = JSON.stringify({"db" : target,	"pattern" : args[1], "value": args[2]});
+					}
+
+					console.log("preparing request");
+					$.ajax({
+						type: "POST",
+						url: "/quickSearch",
+						dataType: 'json',
+						data: formatted_json
+					})
+					.done(function(data){
+						console.log("done");
+					});
+
+
+					return
+				}				
+			}
+
+
+		
+		}
 
 	</script>
 

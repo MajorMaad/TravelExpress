@@ -288,7 +288,10 @@ class ShowTravelerTravels(MainHandler):
 
 			if travels.count() > 0:
 				logging.info("empty : no")
-				self.render('base.html', user = self.user, choice = "travelerTravels", travels = travels, traveler_key = str(traveler.key()) )
+				self.render('base.html', user = self.user, 
+										choice = "travelerTravels", 
+										travels = travels, 
+										traveler_key = str(traveler.key()) )
 				return
 
 		self.render('base.html', user = self.user, choice = 'travelerTravels', travels = None)

@@ -101,7 +101,7 @@ class CheckSearchTravel():
 			checkingResult['error'] = True		
 
 		if self.price_max != '' and int(self.price_max) <= 0:
-				checkingResult['error_price'] = "price must be positive"
-				checkingResult['error'] = True	
+			checkingResult['error_price'] = "price must be positive"
+			checkingResult['error'] = True	
 
 		return checkingResult

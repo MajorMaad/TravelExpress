@@ -167,9 +167,6 @@ class Travel(db.Model):
 		
 		if schedule[0] != "":
 			query.filter('schedule_day = ', schedule[0])
-
-		if schedule[1] != "":
-			query.filter('schedule_hour >= ', int(schedule[1]))
 		
 		if price_max != "":
 			query.filter('price <=', int(price_max))

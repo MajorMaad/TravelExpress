@@ -54,25 +54,6 @@
 			</select>
 			<span id="error_datetime" class ="error" style="color:red; display:none"></span>
 		</div>
-
-		<div class="form-group col-md-4">
-			<label for="departure-hour_search">From</label>
-			<select id="departure-hour_search" class="form-control" name="departure-hour_search">
-				{% for i in range(24) %}
-
-					{% if i < 10 %}
-						{% if i == 0 %}
-							<option value="{{ i }}" >{{ '0' + i|string + ' h' }}</option>
-						{% else %}
-							<option value="{{ i }}" >{{ '0' + i|string + ' h' }}</option>
-						{% endif %}
-					{% else %}
-						<option value="{{ i }}" >{{ i|string + ' h' }}</option>
-					{% endif %}
-
-				{% endfor %}
-			</select>
-		</div>
 	</div>
 
 	<!-- Price Section -->
