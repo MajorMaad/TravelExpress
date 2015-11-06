@@ -10,7 +10,7 @@ from src.travel import *
 
 
 ############################################
-### NEW AND MODIFICATION PROCESS CHECKER ###
+### NEW Travel PROCESS CHECKER ###
 ############################################
 class CheckTravel():
 	def __init__(self, data, *args, **kwargs):
@@ -18,10 +18,31 @@ class CheckTravel():
 		self.arrival 			= data['arrival']
 		self.price 				= data['price']
 
-	def check(self):
+	def check(self, user=None, travel_id=None):
 		# The checking status will be returned as a dictionnary
 		checkingResult = {}
 		error = False
+
+		# Modification case :
+		if user is not None and travel_id is not None:
+			# Ensure this travel is owned by the user
+			driver = Driver.get_driver(user.key())
+
+			if driver is None:
+				checkingResult['error_no_driver'] = "You are not registered as a driver."
+				error = True
+
+			if not error :
+				owned = False
+				driver_travels = Travel.by_driver_still_actif(driver)
+				for t in driver_travels:
+					if t.key().id() == travel_id:					
+						owned = True
+						break
+
+				if not owned :
+					checkingResult['error_wrong_driver'] = "You are not the driver of this travel."
+					error = True
 
 		# Departure and arrival checking
 		if self.departure == "":

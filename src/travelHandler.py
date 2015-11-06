@@ -111,7 +111,7 @@ class ModifyTravel(MainHandler):
 
 		# Check data via a dedicated agent
 		travelerAgent = CheckTravel(data)
-		checkedResult = travelerAgent.check()
+		checkedResult = travelerAgent.check(self.user, self.travel_id)
 
 		if checkedResult['error']:
 			# Merge the 2 dicts
@@ -122,27 +122,6 @@ class ModifyTravel(MainHandler):
 			self.response.out.write(json.dumps(renderingDict))
 
 		else:
-			# Ensure this travel is owned by the user
-			driver = Driver.get_driver(self.user.key())
-
-			if driver is None:
-				self.response.out.write(json.dumps({'error':True, 'error_no_driver':"You are not registered as a driver."}))
-				return
-			
-			owned = False
-			driver_travels = Travel.by_driver_still_actif(driver)
-			for t in driver_travels:
-				if t.key().id() == self.travel_id:
-					logging.info("a travel has match the key id")
-					owned = True
-					break
-
-			if not owned :
-				logging.info("potential Travel not in driver travels "+str(potential_travel)+" VS "+str(driver_travels.count()))
-				self.response.out.write(json.dumps({'error':True, 'error_wrong_driver':"You are not the correct owner of this travel."}))
-				return
-
-
 			# Modify travel in DB
 			travel_data = {
 				'departure'			: data['departure'],
