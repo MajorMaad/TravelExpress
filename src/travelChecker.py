@@ -84,7 +84,6 @@ class CheckSearchTravel():
 	def __init__(self, data, *args, **kwargs):
 		self.departure 			= data['departure']
 		self.arrival 			= data['arrival']
-		self.departure_date 	= data['departure_date']
 		self.price_max 			= data['price_max']
 
 	def check(self):
@@ -100,26 +99,6 @@ class CheckSearchTravel():
 		elif self.departure == self.arrival:
 			checkingResult['error_samedeparture'] = "Cannot be the same as departure"
 			checkingResult['error'] = True		
-
-		# Ensure date is posterior
-		if self.departure_date != '':
-			date_tab = self.departure_date.split('-')
-			try:
-				year = int(date_tab[0])
-				month = int(date_tab[1])
-				day = int(date_tab[2])
-			except ValueError:
-				year = 2000
-				month = 1
-				day = 1
-			
-			search_date = datetime.datetime(year, month, day)
-			yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
-
-			# Datetime of departure must be after now
-			if search_date < yesterday:
-				checkingResult['error_datetime'] = "You must enter a posterior date"
-				checkingResult['error'] = True	
 
 		if self.price_max != '' and int(self.price_max) <= 0:
 				checkingResult['error_price'] = "price must be positive"

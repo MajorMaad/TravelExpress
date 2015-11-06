@@ -159,9 +159,8 @@ class SearchTravel(MainHandler):
 
 
 	def get(self):
-		today = datetime.datetime.now().strftime("%Y-%m-%d")
 		success_booking = self.request.get('success_booking')
-		self.render('base.html', user = self.user, choice = "search", today = today, success_booking = success_booking)
+		self.render('base.html', user = self.user, choice = "search", success_booking = success_booking)
 
 
 	# Powered by Ajax
@@ -173,7 +172,6 @@ class SearchTravel(MainHandler):
 		searchAgent = CheckSearchTravel(data)
 		checkedResult = searchAgent.check()
 
-
 		if checkedResult['error']:
 			self.response.out.write(json.dumps(checkedResult))
 
@@ -181,7 +179,7 @@ class SearchTravel(MainHandler):
 			# Get back travels that match the filter
 			travels = Travel.by_filter(departure = data['departure'], 
 										arrival = data['arrival'], 
-										date = data['departure_date'],
+										schedule = [data['departure_day'], data['departure_hour']],
 										price_max = data['price_max'], 
 										animal_ok = data['animals'], 
 										smoking_ok = data['smoking'],

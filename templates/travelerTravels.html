@@ -25,8 +25,24 @@
 		<div class="panel-heading">
 			<div class="row">
 				<div class="col-md-8">
-					<h3 class="panel-title"><strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong> 
-						{{ travel.departure|join(', ')|capitalize }}
+					<h3 class="panel-title">
+						<strong>
+							{{ travel.schedule_day|capitalize}}, 
+							
+							{% if travel.schedule_hour < 10 %}
+								{{travel.schedule_hour|string+'0 : '}}
+							{% else %}
+								{{travel.schedule_hour|string+' : '}}
+							{% endif %}
+
+
+							
+							{% if travel.schedule_minute < 10 %}
+								{{travel.schedule_minute|string+'0 '}}
+							{% else %}
+								{{travel.schedule_minute|string}}
+							{% endif %}
+						</strong>						{{ travel.departure|join(', ')|capitalize }} 
 						<span class="glyphicon glyphicon-arrow-right"> </span>
 						{{ travel.arrival|join(', ')|capitalize }}
 					</h3>

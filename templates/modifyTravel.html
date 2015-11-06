@@ -56,25 +56,25 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 			<label for="departure-day">Departure day </label>			
 			<select id="departure-day_modify" class="form-control" placeholder="Day" name="departure-day_modify">
 				<option value="monday" 	
-					{% if travel.schedule[0] == "monday" %}selected {% endif %}		>Monday 	</option>
+					{% if travel.schedule_day == "monday" %}selected {% endif %}		>Monday 	</option>
 
 				<option value="tuesday" 
-					{% if travel.schedule[0] == "tuesday" %}selected {% endif %}	>Tuesday 	</option>
+					{% if travel.schedule_day == "tuesday" %}selected {% endif %}	>Tuesday 	</option>
 
 				<option value="wednesday" 
-					{% if travel.schedule[0] == "wednesday" %}selected {% endif %}	>Wednesday </option>
+					{% if travel.schedule_day == "wednesday" %}selected {% endif %}	>Wednesday </option>
 
 				<option value="thursday" 
-					{% if travel.schedule[0] == "thursday" %}selected {% endif %}	>Thursday 	</option>
+					{% if travel.schedule_day == "thursday" %}selected {% endif %}	>Thursday 	</option>
 
 				<option value="friday" 	
-					{% if travel.schedule[0] == "friday" %}selected {% endif %}		>Friday 	</option>
+					{% if travel.schedule_day == "friday" %}selected {% endif %}		>Friday 	</option>
 
 				<option value="saturday" 
-					{% if travel.schedule[0] == "saturday" %}selected {% endif %}	>Saturday 	</option>
+					{% if travel.schedule_day == "saturday" %}selected {% endif %}	>Saturday 	</option>
 
 				<option value="sunday" 	
-					{% if travel.schedule[0] == "sunday" %}selected {% endif %}		>Sunday 	</option>
+					{% if travel.schedule_day == "sunday" %}selected {% endif %}		>Sunday 	</option>
 
 			</select>
 			<span id="error_datetime" class ="error" style="color:red; display:none"></span>
@@ -88,18 +88,18 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 					{% if i < 10 %}
 						{% if i == 0 %}
 							<option value="{{ i }}" 
-								{% if travel.schedule[1]|int == i %} selected {% endif %}>
+								{% if travel.schedule_hour|int == i %} selected {% endif %}>
 								{{ '0' + i|string + ' h' }}
 							</option>
 						{% else %}
 							<option value="{{ i }}" 
-								{% if travel.schedule[1]|int == i %} selected {% endif %}>
+								{% if travel.schedule_hour|int == i %} selected {% endif %}>
 								{{ '0' + i|string + ' h' }}
 							</option>
 						{% endif %}
 					{% else %}
 						<option value="{{ i }}" 
-							{% if travel.schedule[1]|int == i %} selected {% endif %}>
+							{% if travel.schedule_hour|int == i %} selected {% endif %}>
 							{{ i|string + ' h' }}
 						</option>
 					{% endif %}
@@ -116,19 +116,19 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 					{% if i < 10 %}
 						{% if i == 0 %}
 							<option value="{{ i }}" 
-								{% if travel.schedule[2]|int == i %} selected {% endif %}>
+								{% if travel.schedule_minute|int == i %} selected {% endif %}>
 								{{ '0' + i|string + ' min' }}
 							</option>
 						{% else %}
 							<option value="{{ i }}" 
-								{% if travel.schedule[2]|int == i %} selected {% endif %}>
+								{% if travel.schedule_minute|int == i %} selected {% endif %}>
 								{{ '0' + i|string + ' min' }}
 							</option>
 						{% endif %}
 
 					{% else %}
 						<option value="{{ i }}"
-							{% if travel.schedule[2]|int == i %} selected {% endif %}>
+							{% if travel.schedule_minute|int == i %} selected {% endif %}>
 							{{ i|string + ' min' }}
 						</option>
 					{% endif %}
@@ -167,11 +167,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 		<!-- Animals -->
 		<div class="form-group col-md-12">
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="animals" value="ok" class="preferences"{% if travel.animal_ok == "ok" %}checked{% endif %}>Authorized  
+				<input type="radio" name="animals" value="ok" class="preferences"{% if travel.pref_animal == "ok" %}checked{% endif %}>Authorized  
 				<img src="../scripts/img/animal.jpg">
 			</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.animal_ok == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="animals" value="nok" class="preferences"{% if travel.pref_animal == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_animal.jpg">
 			</label>
 		</div>
@@ -179,11 +179,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 		<!-- Smoking -->
 		<div class="form-group col-md-12">
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.smoking_ok == "ok" %}checked{% endif %}>Authorized  
+				<input type="radio" name="smoking" value="ok" class="preferences"{% if travel.pref_smoking == "ok" %}checked{% endif %}>Authorized  
 				<img src="../scripts/img/smoking.jpg">
 			</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.smoking_ok == "nok" %}checked{% endif %}>Prohibited  
+				<input type="radio" name="smoking" value="nok" class="preferences"{% if travel.pref_smoking == "nok" %}checked{% endif %}>Prohibited  
 				<img src="../scripts/img/no_smoking.jpg">
 			</label>
 		</div>
@@ -191,11 +191,11 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 		<!-- Luggage -->
 		<div class="form-group col-md-12">
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.big_luggage_ok == "nok" %}checked{% endif %}>Small bag  
+				<input type="radio" name="luggage" value="nok" class="preferences"{% if travel.pref_big_luggage == "nok" %}checked{% endif %}>Small bag  
 				<img src="../scripts/img/small_bag.jpg">
 			</label>
 			<label class="radio-inline col-md-3">
-				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.big_luggage_ok == "ok" %}checked{% endif %}>Suitcase  
+				<input type="radio" name="luggage" value="ok" class="preferences"{% if travel.pref_big_luggage == "ok" %}checked{% endif %}>Suitcase  
 				<img src="../scripts/img/suitcase.jpg">
 			</label>
 		</div>

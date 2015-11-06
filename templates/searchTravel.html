@@ -38,15 +38,45 @@
 		</div>
 	</div>
 
-	<!-- Date / Price -->
-	<!-- Only one input can be provided to the request-->
+
+	<!-- Schedule Section -->
 	<div class="container-fluid">
 		<div class="form-group col-md-4">
-			<label for="date_search">Departure date</label>
-			<input id="date_search" class="form-control" type="date" placeholder="YYYY-MM-DD" name="departure-date">
-			<span id="error_date_search" class ="error" style="color:red; display:none"></span>
+			<label for="departure-day_search">Departure day </label>			
+			<select id="departure-day_search" class="form-control" placeholder="Day" name="departure-day_search">
+				<option value="monday" 		selected >Monday 	</option>
+				<option value="tuesday" 			 >Tuesday 	</option>
+				<option value="wednesday" 			 >Wednesday </option>
+				<option value="thursday" 			 >Thursday 	</option>
+				<option value="friday" 				 >Friday 	</option>
+				<option value="saturday" 			 >Saturday 	</option>
+				<option value="sunday" 				 >Sunday 	</option>
+			</select>
+			<span id="error_datetime" class ="error" style="color:red; display:none"></span>
 		</div>
 
+		<div class="form-group col-md-4">
+			<label for="departure-hour_search">From</label>
+			<select id="departure-hour_search" class="form-control" name="departure-hour_search">
+				{% for i in range(24) %}
+
+					{% if i < 10 %}
+						{% if i == 0 %}
+							<option value="{{ i }}" >{{ '0' + i|string + ' h' }}</option>
+						{% else %}
+							<option value="{{ i }}" >{{ '0' + i|string + ' h' }}</option>
+						{% endif %}
+					{% else %}
+						<option value="{{ i }}" >{{ i|string + ' h' }}</option>
+					{% endif %}
+
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+
+	<!-- Price Section -->
+	<div class="container-fluid">
 		<div class="form-group col-md-6">
 			<label for="price_search">Higher price : </label>
 			<input id="price_search" type="number" class="form-control" maxlength="3"> $

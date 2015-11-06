@@ -36,10 +36,19 @@ class Travel(db.Model):
 	departure = db.StringListProperty(required = True)
 	arrival = db.StringListProperty(required = True)
 
-	# Price / Date / Preferences
+	# Price
 	price = db.IntegerProperty(required = True)
-	schedule = db.StringListProperty(default=["monday", "10", "00"], required = True)	
-	preferences = db.StringListProperty(default=["ni", "ni", "ni"], required = True)
+
+	# Schedule
+	schedule_day = db.StringProperty(default="monday", required = True)	
+	schedule_hour = db.IntegerProperty(default=00, required = True)
+	schedule_minute = db.IntegerProperty(default=00, required = True)
+
+	# Preferences
+	pref_animal = db.StringProperty(default="ni", required=True)
+	pref_smoking = db.StringProperty(default="ni", required=True)
+	pref_big_luggage = db.StringProperty(default="ni", required=True)
+	
 
 	# Places system
 	places_number = db.IntegerProperty(required = True)
@@ -60,8 +69,12 @@ class Travel(db.Model):
 						departure = cls.split_address(travel_data['departure']),
 						arrival = cls.split_address(travel_data['arrival']),
 						price = travel_data['price'],
-						schedule = travel_data['datetime_departure'],
-						preferences =  [travel_data['animal'], travel_data['smoking'], travel_data['luggage']],
+						schedule_day = travel_data['datetime_departure'][0],
+						schedule_hour = int(travel_data['datetime_departure'][1]),
+						schedule_minute = int(travel_data['datetime_departure'][2]),
+						pref_animal = travel_data['animal'],
+						pref_smoking = travel_data['smoking'],
+						pref_big_luggage = travel_data["luggage"],
 						places_number = travel_data['places_number'],
 						places_remaining = travel_data['places_number']
 			)
@@ -77,8 +90,12 @@ class Travel(db.Model):
 		travel.places_number = travel_data['places_number']
 		travel.places_remaining = travel_data['places_number']		
 		travel.price = travel_data['price']
-		travel.schedule = travel_data['datetime_departure']
-		travel.preferences = [ travel_data['animal'], travel_data['smoking'], travel_data['luggage'] ]
+		travel.schedule_day = travel_data['datetime_departure'][0]
+		travel.schedule_hour = int(travel_data['datetime_departure'][1])
+		travel.schedule_minute = int(travel_data['datetime_departure'][2])
+		travel.pref_animal = travel_data['animal']
+		travel.pref_smoking = travel_data['smoking']
+		travel.pref_big_luggage = travel_data['luggage']
 
 		travel.put()
 
@@ -123,7 +140,7 @@ class Travel(db.Model):
 	############################
 
 	@classmethod
-	def by_filter(cls, departure, arrival, date, price_max, animal_ok, smoking_ok, big_luggage_ok, actif = True):
+	def by_filter(cls, departure, arrival, schedule, price_max, animal_ok, smoking_ok, big_luggage_ok, actif = True):
 
 		query = Travel.all()
 
@@ -141,30 +158,14 @@ class Travel(db.Model):
 			for part in arrival_addr:
 				query.filter('arrival =', part)
 
-		# #######################################################
-		# App Engine DataStore cannot handle several inequalities
-		# --> filter can only handle date XOR price_max : not both
-		# #######################################################
-
 		
-		if date != "":
-			# 1 ) Date case
-			date_tab = date.split('-')
-			try:
-				year = int(date_tab[0])
-				month = int(date_tab[1])
-				day = int(date_tab[2])
-				date_min = datetime.datetime(year, month, day)
+		if schedule[0] != "":
+			query.filter('schedule_day = ', schedule[0])
 
-				# Filter with inequality
-				query.filter('datetime_departure >=', date_min)	
-				query.order('datetime_departure')
-			except:
-				logging.info("date problem")
+		if schedule[1] != "":
+			query.filter('schedule_hour >= ', int(schedule[1]))
 		
-		elif price_max != "":
-			# 2 ) XOR case price (cf elif)
-			# Filter with inequality
+		if price_max != "":
 			query.filter('price <=', int(price_max))
 			query.order('price')
 
@@ -172,15 +173,15 @@ class Travel(db.Model):
 		# Preferences checking
 		if animal_ok != "ni":
 			logging.info("preferences : animal_ok "+animal_ok)
-			query.filter('animal_ok =', animal_ok)
+			query.filter('pref_animal =', animal_ok)
 
 		if smoking_ok != "ni":
 			logging.info("preferences : smoking_ok "+smoking_ok)
-			query.filter('smoking_ok =', smoking_ok)
+			query.filter('pref_smoking =', smoking_ok)
 
 		if big_luggage_ok != "ni":
 			logging.info("preferences : big_luggage_ok "+big_luggage_ok)
-			query.filter('big_luggage_ok =', big_luggage_ok)
+			query.filter('pref_big_luggage =', big_luggage_ok)
 
 
 		# Return the db.Query object

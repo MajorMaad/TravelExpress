@@ -90,6 +90,40 @@ indexes:
 - kind: Travel
   properties:
   - name: actif
+  - name: departure
+  - name: pref_animal
+  - name: pref_big_luggage
+  - name: pref_smoking
+  - name: schedule_day
+  - name: schedule_hour
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: departure
+  - name: preferences[0]
+  - name: preferences[1]
+  - name: preferences[2]
+  - name: schedule_day
+  - name: schedule_hour
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: departure
+  - name: schedule
+  - name: schedule
+
+- kind: Travel
+  properties:
+  - name: actif
+  - name: departure
+  - name: schedule_day
+  - name: schedule_hour
+
+- kind: Travel
+  properties:
+  - name: actif
   - name: user_id
   - name: datetime_departure
 

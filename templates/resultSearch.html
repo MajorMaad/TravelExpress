@@ -27,7 +27,23 @@
 			<div class="row">
 				<div class="col-md-6">
 					<h3 class="panel-title">
-						<strong>{{ travel.datetime_departure.strftime('%d /%m/%Y @ %H:%M') }} : </strong>
+						<strong>
+							{{ travel.schedule_day|capitalize}}, 
+							
+							{% if travel.schedule_hour < 10 %}
+								{{travel.schedule_hour|string+'0 : '}}
+							{% else %}
+								{{travel.schedule_hour|string+' : '}}
+							{% endif %}
+
+
+							
+							{% if travel.schedule_minute < 10 %}
+								{{travel.schedule_minute|string+'0 '}}
+							{% else %}
+								{{travel.schedule_minute|string}}
+							{% endif %}
+						</strong>
 						{{ travel.departure|join(', ')|capitalize }} 
 						<span class="glyphicon glyphicon-arrow-right"> </span>
 						{{ travel.arrival|join(', ')|capitalize }}
@@ -69,21 +85,21 @@
 			<div class="inline_panel">
 				<p><strong>{{ travel.price }}$</strong></p>
 
-				{% if travel.animal_ok == 'ok' %}
+				{% if travel.pref_animal == 'ok' %}
 					<img src="../scripts/img/animal.jpg" alt="Animal OK">
-				{% elif travel.animal_ok == 'nok' %}
+				{% elif travel.pref_animal == 'nok' %}
 					<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
 				{% endif %}
 
-				{% if travel.smoking_ok == 'ok' %}
+				{% if travel.pref_smoking == 'ok' %}
 					<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
-				{% elif travel.smoking_ok == 'nok' %}
+				{% elif travel.pref_smoking == 'nok' %}
 					<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
 				{% endif %}
 
-				{% if travel.big_luggage_ok == 'ok' %}
+				{% if travel.pref_big_luggage == 'ok' %}
 					<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
-				{% elif travel.big_luggage_ok == 'nok'%}
+				{% elif travel.pref_big_luggage == 'nok'%}
 					<img src="../scripts/img/small_bag.jpg" alt="Small bag">
 				{% endif %}
 			</div>
