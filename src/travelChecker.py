@@ -21,7 +21,6 @@ class CheckTravel():
 	def check(self):
 		# The checking status will be returned as a dictionnary
 		checkingResult = {}
-
 		error = False
 
 		# Departure and arrival checking
@@ -40,18 +39,16 @@ class CheckTravel():
 		#price checking
 		try:
 			self.price = int(self.price)
+			if self.price <= 0 :			
+				checkingResult['error_price'] = "Price cannot be negative"
+				error = True
+
+			if self.price > 10000:
+				checkingResult['error_price'] = "Are you kidding me ????"
+				error = True
 		except ValueError:
 			checkingResult['error_price'] = "Price must be an integer"
 			error = True
-
-		if self.price <= 0 :			
-			checkingResult['error_price'] = "Price cannot be negative"
-			error = True
-
-		if self.price > 10000:
-			checkingResult['error_price'] = "Are you kidding me ????"
-			error = True
-
 
 		# Checking global result
 		checkingResult['error'] = error

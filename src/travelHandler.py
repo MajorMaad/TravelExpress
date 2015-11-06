@@ -93,13 +93,14 @@ class ModifyTravel(MainHandler):
 	#######################################################
 
 	def get(self):
-		try:
-			self.travel_id = int(self.request.get('id'))
-			travel = Travel.by_id(self.travel_id)
+		self.travel_id = int(self.request.get('id'))
+		travel = Travel.by_id(self.travel_id)
+
+		if travel is None:
+			logging.info('travel is None')
+			self.redirect('/driverTravels')			
+		else:
 			self.render('base.html', user = self.user, choice = "modify", travel = travel)
-		except:
-			self.redirect('/driverTravels')
-		
 
 	# Powered by Ajax
 	def post(self):
@@ -117,29 +118,23 @@ class ModifyTravel(MainHandler):
 			renderingDict = data.copy()
 			renderingDict.update(checkedResult)
 
-			# datetime cannot be json serializable
-			renderingDict.pop('datetime_departure', None)
-
 			# Send back response
 			self.response.out.write(json.dumps(renderingDict))
 
 		else:
-			for k in data:
-				logging.info('my data are : %r : %r '%(k, data[k]))
-
-
-			# Register the new travel into DB
+			# Modify travel in DB
 			travel_data = {
 				'departure'			: data['departure'],
 				'arrival'			: data['arrival'],
 				'places_number'		: int(self.seats),
 				'places_remaining'	: int(self.seats),
-				'datetime_departure': checkedResult['datetime_departure'],
+				'datetime_departure': [data['departure_day'], data['departure_hour'], data['departure_minutes'] ],
 				'price'				: int(data['price']),
 				'animal'			: data['animals'],
 				'smoking'			: data['smoking'],
 				'luggage'			: data['luggage']
 			}
+
 			Travel.modify_travel(self.travel_id, travel_data)
 			self.response.out.write(json.dumps({}))
 

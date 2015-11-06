@@ -39,7 +39,7 @@
 							<span class="glyphicon glyphicon-edit"></span>
 						</button>
 
-						<button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id()}} );">
+						<button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id() }});">
 							<span class="glyphicon glyphicon-trash"></span>
 						</button>
 				</div>
@@ -102,6 +102,7 @@ function deleteTravel(travel_id){
 
 function modifyTravel(travel_id){
 	if ( confirm('Do you want to modify this travel ?') ){
+		console.log("Travel id received = "+travel_id);
 		window.location.replace("/modifyTravel?id="+travel_id);
 	}
 }
