@@ -73,8 +73,8 @@ function submitAddTravel(){
 		if (data['error']){
 
 			//Display main error banner
-			var addError = document.getElementById("addError");
-			addError.style.display = 'block';
+			var statusError = document.getElementById("statusError");
+			statusError.style.display = 'block';
 
 			//error message as a palceholder
 			if (data['error_departure']){
@@ -88,7 +88,7 @@ function submitAddTravel(){
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('addError');
+				var error_div = document.getElementById('statusError');
 				error_div.lastChild.data = data['error_samedeparture'];
 			}
 
@@ -106,7 +106,8 @@ function submitAddTravel(){
 			}
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("addSuccess");
+			var success = document.getElementById("statusSuccess");
+			success.lastChild.data = " This travel added to your lifts list";
 			success.style.display = 'block';
 
 			window.setTimeout(function(){
@@ -200,8 +201,8 @@ function submitModificationTravel(){
 		if (data['error']){
 
 			//Display main error banner
-			var addError = document.getElementById("addError");
-			addError.style.display = 'block';
+			var statusError = document.getElementById("statusError");
+			statusError.style.display = 'block';
 			
 			//error message as a palceholder
 			if (data['error_arrival']){
@@ -210,19 +211,19 @@ function submitModificationTravel(){
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('addError');
+				var error_div = document.getElementById('statusError');
 				error_div.lastChild.data = data['error_samedeparture'];
 			}
 
 			//Error message append to the error banner
 			if (data['error_no_driver']){
-				var error_div = document.getElementById('addError');
+				var error_div = document.getElementById('statusError');
 				error_div.lastChild.data = data['error_no_driver'];
 			}
 
 			//Error message append to the error banner
 			if (data['error_wrong_driver']){
-				var error_div = document.getElementById('addError');
+				var error_div = document.getElementById('statusError');
 				error_div.lastChild.data = data['error_wrong_driver'];
 			}
 
@@ -235,7 +236,8 @@ function submitModificationTravel(){
 
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("addSuccess");
+			var success = document.getElementById("statusSuccess");
+			success.lastChild.data = " This travel has been modified";
 			success.style.display = 'block';
 
 			window.setTimeout(function(){
@@ -318,8 +320,8 @@ function searchTravel(){
 		if (data['error']){
 
 			//Display main error banner
-			var searchError = document.getElementById("searchError");
-			searchError.style.display = 'block';
+			var statusError = document.getElementById("statusError");
+			statusError.style.display = 'block';
 
 			//error message as a palceholder
 			if (data['error_src_dest']){
@@ -329,7 +331,7 @@ function searchTravel(){
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('searchError');
+				var error_div = document.getElementById('statusError');
 				error_div.lastChild.data = data['error_samedeparture'];
 			}
 
@@ -347,7 +349,8 @@ function searchTravel(){
 			}
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("searchSuccess");
+			var success = document.getElementById("statusSuccess");
+			success.lastChild.data = "";
 			success.style.display = 'block';
 			window.location.replace("/resultSearch");
 		}

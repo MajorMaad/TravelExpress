@@ -35,7 +35,6 @@
 
 	<!-- If user is logged : display navBar -->
 	{% if user %}
-
 		<!-- Nav bar -->
 		<ul class="nav nav-tabs nav-justified">
 			<li {% if not choice %}class="active"{% endif %}>
@@ -79,6 +78,46 @@
 			</li>
 
 		</ul>
+		<!-- Fast search -->
+		<br>
+		<div class="row">
+					
+			<div class="col-md-8">
+				<a id="fastSearchInfo" tabindex="0" role="button" 
+					data-toggle="popover" title="How to use Fast Search ?" data-trigger="focus"
+					data-placement="bottom" data-content="changed by Jquery">
+					<span class="glyphicon glyphicon-info-sign"></span>
+				</a>
+				<input id="quickSearch" class="form-control" placeholder="Search for users or travel quickly" value=""></input>
+			</div>
+
+			<div class="col-md-1">
+				<button class='btn-success form-control' onclick="fastSearch();">Go !</button>
+			</div>
+
+			
+			<script>
+				$(function () {
+				  $('[data-toggle="popover"]').popover({html: true})
+				})
+			</script>				
+		</div>
+
+
+		<!-- status bar -->
+		<div id="statusSuccess" class="alert alert-success" role="alert" style="display:none">
+			<strong>Done !</strong> 
+		</div>
+
+		<div id="statusWarning" class="alert alert-warning" role="alert" style="display:none">
+			<strong>Warning !</strong>
+		</div>
+
+		<div id="statusError" class="alert alert-danger error" role="alert" style="display:none">
+			<strong>Oups !</strong>
+		</div>
+
+
 
 
 		{% if success_booking == 'True' %}
@@ -90,35 +129,6 @@
 
 		<!-- Display Quick links -->
 		{% if not choice %}
-			<br>
-			<!-- Fast search -->
-			<span>
-				<input id="quickSearch" class="form-control" placeholder="Search for users or travel on the flight" value="">
-				</input>
-				<button class='btn-success' onclick="fastSearch();">Go !</button>				
-			</span>
-			<br>
-			<span class="form-control quickSearchInfo" style="display:none"> 
-				Type 'user foobar' to have informations about the foobar user
-				<br>
-			</span>
-			<span class="form-control quickSearchInfo" style="display:none"> 
-				Type 'travel day monday' to have informations about travels scheduled on monday
-				<br>
-			</span>
-			<span class="form-control quickSearchInfo" style="display:none"> 
-				Type 'travel price 15' to have informations about travels having a max price of 15$. 
-				You can replace 'price' by 'hour' or 'min' or 'seats'.
-				<br>
-			</span>
-			<span class="form-control quickSearchInfo" style="display:none"> 
-				Type 'travel from New York' to have informations about travels starting at New York
-				<br>
-			</span>
-			<span class="form-control quickSearchInfo" style="display:none"> 
-				Type 'travel to New York' to have informations about travels arriving to New York
-				<br>
-			</span>
 			
 
 
@@ -227,18 +237,15 @@
 				}
 			});
 
-			var info = document.getElementsByClassName("quickSearchInfo");
-			$("#quickSearch").hover(
-				function(e){
-					for(var i = 0; i < info.length; i++){
-						$(info[i]).fadeIn(150);
-					}
-				},function(e){
-					for(var i = 0; i < info.length; i++){
-						$(info[i]).fadeOut(300);
-					}
-				}
-			);
+			var infoDisplayer = document.getElementById("fastSearchInfo");
+			var info = "Looking for a user ?<br />";
+				info += "user alice<br /><hr />";
+			info += "Looking for a travel ?<br />";
+				info += "travel from Washington<br />";
+				info += "travel to Montreal<br />";
+				info += "travel day monday<br />";
+				info += "travel price 15<br />";
+			$(infoDisplayer).attr('data-content', info);
 		});
 
 		function fastSearch(){
@@ -287,9 +294,9 @@
 				}				
 			}
 
-
-		
 		}
+
+
 
 	</script>
 

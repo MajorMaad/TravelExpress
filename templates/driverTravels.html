@@ -2,16 +2,15 @@
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
 
-<!-- Success or error banner -->
-<div id="delSuccess" class="alert alert-success" role="alert" style="display:none">
-	<strong>Done !</strong> 
-	Deletion correctly saved. This page will now refresh
-</div>
-
 {% if noTravel %}
-	<div class="alert alert-warning" role="alert">
-		<strong>Warning !</strong> You do not have any travels set yet. <a href="/addTravel">Add one</a>
-	</div>
+	<script>
+		$(document).ready(function(){
+			var warning = document.getElementById("statusWarning");			
+			var msg = " You do not have any travels set yet. <a href='/addTravel'>Add one</a>";
+			$(warning).html( $(warning).html() + msg);
+			warning.style.display = 'block';
+		});
+	</script>
 {% endif %}
 
 
@@ -108,7 +107,8 @@ function deleteTravel(travel_id){
 			data: JSON.stringify({ "travel_id" : travel_id	})
 			})
 			.done(function( data ) { 
-				var success = document.getElementById("delSuccess");
+				var success = document.getElementById("statusSuccess");
+				success.lastChild.data = "Travel correctly removed. Refreshing...";
 				success.style.display = "block";
 				window.setTimeout(function(){
 					window.location.replace("driverTravels");

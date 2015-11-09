@@ -1,18 +1,19 @@
 <!-- Inclusion of relative css -->
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
-<!-- Success or error banner -->
-<div id="rmSuccess" class="alert alert-success" role="alert" style="display:none">
-	<strong>Done !</strong> 
-	The travel has been removed from your travel list. This page will now refresh
-</div>
-
 
 {% if travels is none %}
-	<div class="alert alert-info" role="alert">
-		<strong>Nothing here !</strong> You did not book any travel yet. <a href="/searchTravel">Book one</a>
-	</div>
+	<script>
+		$(document).ready(function(){
+			var warning = document.getElementById("statusWarning");			
+			var msg = " You did not book any travel yet. <a href='/searchTravel'>Book one</a>";
+			$(warning).html( $(warning).html() + msg);
+			warning.style.display = 'block';
+		});
+	</script>
+
 {% else %}
+
 	<!-- Content : Travels where user is a traveller -->
 	<div id="driverTravels" class="container">
 	{% for travel in travels %}
@@ -133,7 +134,8 @@ function unbookTravel(travel_id){
 			data: JSON.stringify({ "travel_id" : travel_id	})
 			})
 			.done(function( data ) { 
-				var success = document.getElementById("rmSuccess");
+				var success = document.getElementById("statusSuccess");
+				success.lastChild.data = "The travel has been removed from your travel list. Refreshing...";
 				success.style.display = "block";
 				window.setTimeout(function(){
 					window.location.replace("travelerTravels");

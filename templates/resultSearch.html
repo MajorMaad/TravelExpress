@@ -5,9 +5,14 @@
 
 <!-- Error banner -->
 {% if travels.get() == None %}
-	<div class="alert alert-warning" role="alert">
-		<strong>Warning !</strong> No travels found ! <a href="/searchTravel">Try again</a>
-	</div>
+	<script>
+		$(document).ready(function(){
+			var warning = document.getElementById("statusWarning");			
+			var msg = " No travels found ! <a href='/searchTravel'>Try again</a>";
+			$(warning).html( $(warning).html() + msg);
+			warning.style.display = 'block';
+		});
+	</script>
 {% endif %}
 
 
