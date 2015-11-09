@@ -263,7 +263,14 @@ class ShowDriverTravels(MainHandler):
 
 			if travels.count() > 0:
 				logging.info("empty : no")
-				self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+				
+				# Is there a freshly added travel ?
+				status = self.request.get('status')
+				if status:
+					self.render('base.html', user = self.user, choice = "driverTravels", isNew = status, travels = travels)		
+				else:
+					self.render('base.html', user = self.user, choice = "driverTravels", travels = travels)
+
 				return
 
 		self.render('base.html', user = self.user, choice = "driverTravels", noTravel = True)

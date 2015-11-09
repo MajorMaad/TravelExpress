@@ -106,12 +106,8 @@ function submitAddTravel(){
 			}
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("statusSuccess");
-			success.lastChild.data = " This travel added to your lifts list";
-			success.style.display = 'block';
-
 			window.setTimeout(function(){
-				window.location.replace("driverTravels");
+				window.location.replace("driverTravels?status=added");
 			}, 1500);
 		}
 	});
@@ -236,12 +232,8 @@ function submitModificationTravel(){
 
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("statusSuccess");
-			success.lastChild.data = " This travel has been modified";
-			success.style.display = 'block';
-
 			window.setTimeout(function(){
-				window.location.replace("driverTravels");
+				window.location.replace("driverTravels?status=modified");
 			}, 1500);
 		}
 	});
@@ -349,9 +341,6 @@ function searchTravel(){
 			}
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
-			var success = document.getElementById("statusSuccess");
-			success.lastChild.data = "";
-			success.style.display = 'block';
 			window.location.replace("/resultSearch");
 		}
 	});	

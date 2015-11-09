@@ -2,7 +2,25 @@
 <link rel="stylesheet" type="text/css" href="../scripts/listTravels.css">
 
 
-{% if noTravel %}
+{% if isNew == "added" %}
+	<script>
+		$(document).ready(function(){
+			var success = document.getElementById("statusSuccess");			
+			success.lastChild.data = " Travel added to your lifts list";
+			success.style.display = 'block';
+		});
+	</script>
+
+{% elif isNew == "modified" %}
+	<script>
+		$(document).ready(function(){
+			var success = document.getElementById("statusSuccess");			
+			success.lastChild.data = " Travel has been modified";
+			success.style.display = 'block';
+		});
+	</script>
+
+{% elif noTravel %}
 	<script>
 		$(document).ready(function(){
 			var warning = document.getElementById("statusWarning");			
