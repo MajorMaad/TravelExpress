@@ -19,8 +19,9 @@
 			success.style.display = 'block';
 		});
 	</script>
+{% endif %}
 
-{% elif noTravel %}
+{% if noTravel %}
 	<script>
 		$(document).ready(function(){
 			var warning = document.getElementById("statusWarning");			
@@ -29,87 +30,93 @@
 			warning.style.display = 'block';
 		});
 	</script>
-{% endif %}
+
+{% else %}
+
+	<!-- Content : Travels where user is the driver -->
+	<div id="driverTravels" class="container">
+		
+		<h1 style="text-align:center">Your travel as a driver :</h1>
+		<hr>
+
+		{% for travel in travels %}
+
+		<!-- A travel HTML instance -->
+		<div class="panel panel-primary">
+
+			<!-- Title of a Travel + Buttons -->
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title">
+							<strong>
+								{{ travel.schedule_day|capitalize}}, 
+								
+								{% if travel.schedule_hour < 10 %}
+									{{travel.schedule_hour|string+'0 : '}}
+								{% else %}
+									{{travel.schedule_hour|string+' : '}}
+								{% endif %}
 
 
-<!-- Content : Travels where user is the driver -->
-<div id="driverTravels" class="container">
-{% for travel in travels %}
+								
+								{% if travel.schedule_minute < 10 %}
+									{{travel.schedule_minute|string+'0 '}}
+								{% else %}
+									{{travel.schedule_minute|string}}
+								{% endif %}
+							</strong>
+							<br>
+							{{ travel.departure|join(', ')|capitalize }} 
+							<span class="glyphicon glyphicon-arrow-right"> </span>
+							{{ travel.arrival|join(', ')|capitalize }}
+						</h3>
+					</div>
 
-	<!-- A travel HTML instance -->
-	<div class="panel panel-primary">
+					<div class="btn-group">
+							<button type="button" class="btn btn-warning" onclick="modifyTravel({{ travel.key().id() }});" >
+								<span class="glyphicon glyphicon-edit"></span>
+							</button>
 
-		<!-- Title of a Travel + Buttons -->
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-md-8">
-					<h3 class="panel-title">
-						<strong>
-							{{ travel.schedule_day|capitalize}}, 
-							
-							{% if travel.schedule_hour < 10 %}
-								{{travel.schedule_hour|string+'0 : '}}
-							{% else %}
-								{{travel.schedule_hour|string+' : '}}
-							{% endif %}
+							<button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id() }});">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+					</div>
 
-
-							
-							{% if travel.schedule_minute < 10 %}
-								{{travel.schedule_minute|string+'0 '}}
-							{% else %}
-								{{travel.schedule_minute|string}}
-							{% endif %}
-						</strong>
-						<br>
-						{{ travel.departure|join(', ')|capitalize }} 
-						<span class="glyphicon glyphicon-arrow-right"> </span>
-						{{ travel.arrival|join(', ')|capitalize }}
-					</h3>
 				</div>
+			</div>
 
-				<div class="btn-group">
-						<button type="button" class="btn btn-warning" onclick="modifyTravel({{ travel.key().id() }});" >
-							<span class="glyphicon glyphicon-edit"></span>
-						</button>
+			<!-- Travel characteristics -->
+			<div class="panel-body">
+				<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
+				<div class="inline_panel">
+					<p><strong>{{ travel.price }}$</strong></p>
 
-						<button type="button" class="btn btn-danger" onclick="deleteTravel( {{travel.key().id() }});">
-							<span class="glyphicon glyphicon-trash"></span>
-						</button>
+					{% if travel.pref_animal == 'ok' %}
+						<img src="../scripts/img/animal.jpg" alt="Animal OK">
+					{% elif travel.pref_animal == 'nok' %}
+						<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
+					{% endif %}
+
+					{% if travel.pref_smoking == 'ok' %}
+						<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
+					{% elif travel.pref_smoking == 'nok' %}
+						<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
+					{% endif %}
+
+					{% if travel.pref_big_luggage == 'ok' %}
+						<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
+					{% elif travel.pref_big_luggage == 'nok'%}
+						<img src="../scripts/img/small_bag.jpg" alt="Small bag">
+					{% endif %}
 				</div>
-
 			</div>
 		</div>
+		{% endfor %}
 
-		<!-- Travel characteristics -->
-		<div class="panel-body">
-			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
-			<div class="inline_panel">
-				<p><strong>{{ travel.price }}$</strong></p>
-
-				{% if travel.pref_animal == 'ok' %}
-					<img src="../scripts/img/animal.jpg" alt="Animal OK">
-				{% elif travel.pref_animal == 'nok' %}
-					<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
-				{% endif %}
-
-				{% if travel.pref_smoking == 'ok' %}
-					<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
-				{% elif travel.pref_smoking == 'nok' %}
-					<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
-				{% endif %}
-
-				{% if travel.pref_big_luggage == 'ok' %}
-					<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
-				{% elif travel.pref_big_luggage == 'nok'%}
-					<img src="../scripts/img/small_bag.jpg" alt="Small bag">
-				{% endif %}
-			</div>
-		</div>
 	</div>
 
-{% endfor %}
-</div>
+{% endif %}
 
 
 <!-- Javascript to handle buttons click -->

@@ -13,110 +13,112 @@
 			warning.style.display = 'block';
 		});
 	</script>
-{% endif %}
+{% else %}
 
 
-<!-- Content : Travels researched by user -->
-<div id="resultSearch" class="container">
-{% for travel in travels %}
+	<!-- Content : Travels researched by user -->
+	<div id="resultSearch" class="container">
+		<h1 style="text-align:center">Results of your research :</h1>
+		<hr>
+
+		{% for travel in travels %}
 
 
-	<!-- Display only travels with remaining places -->
-	{% if travel.places_remaining >= 0 %}
+		<!-- Display only travels with remaining places -->
+		{% if travel.places_remaining >= 0 %}
+		<!-- A travel HTML instance -->
+		<div class="panel panel-primary">
 
-	<!-- A travel HTML instance -->
-	<div class="panel panel-primary">
-
-		<!-- Title of a Travel + Buttons -->
-		<div class="panel-heading">
-			<div class="row">
-				<div class="col-md-6">
-					<h3 class="panel-title">
-						<strong>
-							{{ travel.schedule_day|capitalize}}, 
-							
-							{% if travel.schedule_hour < 10 %}
-								{{travel.schedule_hour|string+'0 : '}}
-							{% else %}
-								{{travel.schedule_hour|string+' : '}}
-							{% endif %}
+			<!-- Title of a Travel + Buttons -->
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-6">
+						<h3 class="panel-title">
+							<strong>
+								{{ travel.schedule_day|capitalize}}, 
+								
+								{% if travel.schedule_hour < 10 %}
+									{{travel.schedule_hour|string+'0 : '}}
+								{% else %}
+									{{travel.schedule_hour|string+' : '}}
+								{% endif %}
 
 
-							
-							{% if travel.schedule_minute < 10 %}
-								{{travel.schedule_minute|string+'0 '}}
-							{% else %}
-								{{travel.schedule_minute|string}}
-							{% endif %}
-						</strong>
-						{{ travel.departure|join(', ')|capitalize }} 
-						<span class="glyphicon glyphicon-arrow-right"> </span>
-						{{ travel.arrival|join(', ')|capitalize }}
-					</h3>
-				</div>
-
-				<!-- Book travel Manager : target the url /addUserToTravel (cf main.py) -->
-				<form method="post" action="/addUserToTravel">
-
-					<input type="hidden" name="travel_id" value="{{ travel.key().id() }}">
-
-					<div class="plus-minus col-md-3">
-						<button type="button" class="btn btn-default minus-btn">
-							<span class="glyphicon glyphicon-minus"></span>
-						</button>
-
-						<input type="number" name="places_reservation" min="1" max="{{ travel.places_remaining }}" value="1" readonly>
-
-						<button type="button" class="btn btn-default plus-btn">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
+								
+								{% if travel.schedule_minute < 10 %}
+									{{travel.schedule_minute|string+'0 '}}
+								{% else %}
+									{{travel.schedule_minute|string}}
+								{% endif %}
+							</strong>
+							{{ travel.departure|join(', ')|capitalize }} 
+							<span class="glyphicon glyphicon-arrow-right"> </span>
+							{{ travel.arrival|join(', ')|capitalize }}
+						</h3>
 					</div>
 
+					<!-- Book travel Manager : target the url /addUserToTravel (cf main.py) -->
+					<form method="post" action="/addUserToTravel">
 
-					<div class="btn-group col-md-2">
-							<button type="submit" class="btn btn-success">
-							<span class="glyphicon glyphicon-ok"></span>
+						<input type="hidden" name="travel_id" value="{{ travel.key().id() }}">
+
+						<div class="plus-minus col-md-3">
+							<button type="button" class="btn btn-default minus-btn">
+								<span class="glyphicon glyphicon-minus"></span>
 							</button>
-					</div>
 
-				 </form>
+							<input type="number" name="places_reservation" min="1" max="{{ travel.places_remaining }}" value="1" readonly>
 
+							<button type="button" class="btn btn-default plus-btn">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						</div>
+
+
+						<div class="btn-group col-md-2">
+								<button type="submit" class="btn btn-success">
+								<span class="glyphicon glyphicon-ok"></span>
+								</button>
+						</div>
+
+					 </form>
+
+				</div>
+			</div>
+
+			<!-- Travel characteristics -->
+			<div class="panel-body">
+				<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
+				<div class="inline_panel">
+					<p><strong>{{ travel.price }}$</strong></p>
+
+					{% if travel.pref_animal == 'ok' %}
+						<img src="../scripts/img/animal.jpg" alt="Animal OK">
+					{% elif travel.pref_animal == 'nok' %}
+						<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
+					{% endif %}
+
+					{% if travel.pref_smoking == 'ok' %}
+						<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
+					{% elif travel.pref_smoking == 'nok' %}
+						<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
+					{% endif %}
+
+					{% if travel.pref_big_luggage == 'ok' %}
+						<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
+					{% elif travel.pref_big_luggage == 'nok'%}
+						<img src="../scripts/img/small_bag.jpg" alt="Small bag">
+					{% endif %}
+				</div>
 			</div>
 		</div>
 
-		<!-- Travel characteristics -->
-		<div class="panel-body">
-			<p><strong>{{ travel.places_remaining }}</strong> places remaining</p>
-			<div class="inline_panel">
-				<p><strong>{{ travel.price }}$</strong></p>
-
-				{% if travel.pref_animal == 'ok' %}
-					<img src="../scripts/img/animal.jpg" alt="Animal OK">
-				{% elif travel.pref_animal == 'nok' %}
-					<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
-				{% endif %}
-
-				{% if travel.pref_smoking == 'ok' %}
-					<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
-				{% elif travel.pref_smoking == 'nok' %}
-					<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
-				{% endif %}
-
-				{% if travel.pref_big_luggage == 'ok' %}
-					<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
-				{% elif travel.pref_big_luggage == 'nok'%}
-					<img src="../scripts/img/small_bag.jpg" alt="Small bag">
-				{% endif %}
-			</div>
-		</div>
+		{% endif %}
+		{% endfor %}
+		
 	</div>
 
-	{% endif %}
-
-{% endfor %}
-</div>
-
-
+{% endif %}
 
 
 <script type="text/javascript">

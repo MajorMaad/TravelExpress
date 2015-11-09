@@ -16,7 +16,9 @@
 
 	<!-- Content : Travels where user is a traveller -->
 	<div id="driverTravels" class="container">
-	{% for travel in travels %}
+		<h1 style="text-align:center">Travels booked :</h1>
+		<hr>
+		{% for travel in travels %}
 
 		<!-- A travel HTML instance -->
 		<div class="panel panel-success">
@@ -58,7 +60,6 @@
 							<button type="button" class="btn btn-danger" onclick="unbookTravel({{travel.key().id()}} );">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
-
 					</div>
 				</div>
 			</div>
@@ -114,8 +115,8 @@
 			</div>
 			{% endif %}
 		</div>
+		{% endfor %}
 
-	{% endfor %}
 	</div>
 
 {% endif %}
@@ -123,6 +124,8 @@
 
 
 <script>
+
+
 /*Perform ajax request to unbook a travel as a user*/
 function unbookTravel(travel_id){
 	if ( confirm('Are you sure you want to leave this travel ?') ){
@@ -142,8 +145,6 @@ function unbookTravel(travel_id){
 				}, 1000);
 			});	
 	}
-
-
 }
 
 </script>
