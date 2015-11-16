@@ -20,6 +20,7 @@
 from src.handler import *
 from src.userHandler import *
 from src.travelHandler import *
+from src.fastSearch import *
 
 # URL handler dispatcher
 app = webapp2.WSGIApplication([('/', MainHandler),

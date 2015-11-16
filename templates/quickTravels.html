@@ -1,0 +1,93 @@
+{% if travels is none %}
+	<script>
+		$(document).ready(function(){
+			var warning = document.getElementById("statusWarning");			
+			var msg = " The research doesn't match any travels";
+			$(warning).html( $(warning).html() + msg);
+			warning.style.display = 'block';
+		});
+	</script>
+
+{% else %}
+
+	<!-- Content : Travels where user is a traveller -->
+	<div id="driverTravels" class="container">
+		<h1 style="text-align:center"> Looking for a travel ? </h1>
+
+		<hr>
+		{% for travel in travels %}
+
+		<!-- A travel HTML instance -->
+		<div class="panel panel-success">
+
+			<!-- Title of a Travel + Buttons -->
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title">
+							<strong>
+								{{ travel.schedule_day|capitalize}}, 
+								
+								{% if travel.schedule_hour < 10 %}
+									{{travel.schedule_hour|string+'0 : '}}
+								{% else %}
+									{{travel.schedule_hour|string+' : '}}
+								{% endif %}
+
+
+								
+								{% if travel.schedule_minute < 10 %}
+									{{travel.schedule_minute|string+'0 '}}
+								{% else %}
+									{{travel.schedule_minute|string}}
+								{% endif %}
+							</strong>						{{ travel.departure|join(', ')|capitalize }} 
+							<span class="glyphicon glyphicon-arrow-right"> </span>
+							{{ travel.arrival|join(', ')|capitalize }}
+						</h3>
+					</div>
+				</div>
+			</div>
+
+			<!-- Travel characteristics -->
+			<div class="panel-body">
+
+				<div class="inline_panel">
+					<p>
+						<strong>
+						{{ travel.price*travel.places_bind_to_each_reservation[index] }}$ 
+						</strong> to pay
+					</p>
+
+					{% if travel.animal_ok == 'ok' %}
+						<img src="../scripts/img/animal.jpg" alt="Animal OK">
+					{% elif travel.animal_ok == 'nok' %}
+						<img src="../scripts/img/no_animal.jpg" alt="NO Animal">
+					{% endif %}
+
+					{% if travel.smoking_ok == 'ok' %}
+						<img src="../scripts/img/smoking.jpg" alt="Smoking OK">
+					{% elif travel.smoking_ok == 'nok' %}
+						<img src="../scripts/img/no_smoking.jpg" alt="NO Smoking">
+					{% endif %}
+
+					{% if travel.big_luggage_ok == 'ok' %}
+						<img src="../scripts/img/suitcase.jpg" alt="Suitcase">
+					{% elif travel.big_luggage_ok == 'nok'%}
+						<img src="../scripts/img/small_bag.jpg" alt="Small bag">
+					{% endif %}
+				</div>
+			</div>
+
+			<!-- Travel Latest Information -->
+			{% if not travel.actif %}
+			<div class="panel-footer alert-warning">
+				<p><strong>This travel booking is not valid anymore. </strong> Please contact the driver to have additional informations.</p>
+			</div>
+			{% endif %}
+		</div>
+		{% endfor %}
+
+	</div>
+
+{% endif %}

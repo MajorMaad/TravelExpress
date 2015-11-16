@@ -72,43 +72,43 @@ function submitAddTravel(){
 		//If there is error, handle appropriate error messages
 		if (data['error']){
 
-			//Display main error banner
-			var statusError = document.getElementById("statusError");
-			statusError.style.display = 'block';
-
+			var error_msg = '<strong />Oupppppss !</strong>';
 			//error message as a palceholder
 			if (data['error_departure']){
+				error_msg += '<br />'+ data['error_departure'];
 				$("#departure").attr('placeholder', data['error_departure']);
 			}
 			
 			//error message as a palceholder
 			if (data['error_arrival']){
+				error_msg += '<br />'+ data['error_arrival'];
 				$("#arrival").attr('placeholder', data['error_arrival']);
 			}
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('statusError');
-				error_div.lastChild.data = data['error_samedeparture'];
+				error_msg += '<br />'+data['error_samedeparture'];
 			}
 
 
 			if (data['error_datetime']){
-				var span_error = document.getElementById('error_datetime');
-				span_error.innerHTML = data['error_datetime'];
-				span_error.style.display = 'block';
+				error_msg += '<br />'+data['error_datetime'];
 			}
 
 			if (data['error_price']){
-				var span_error = document.getElementById('error_price');
-				span_error.innerHTML = data['error_price'];
-				span_error.style.display = 'block';
+				error_msg += '<br />'+data['error_price'];
 			}
+
+			//Display main error banner
+			var statusError = document.getElementById("statusError");
+			statusError.innerHTML = error_msg;
+			statusError.style.display = 'block';
+
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
 			window.setTimeout(function(){
 				window.location.replace("driverTravels?status=added");
-			}, 1500);
+			}, 100);
 		}
 	});
 }
@@ -196,45 +196,44 @@ function submitModificationTravel(){
 		//If there is error, handle appropriate error messages
 		if (data['error']){
 
-			//Display main error banner
-			var statusError = document.getElementById("statusError");
-			statusError.style.display = 'block';
+			var error_msg = '<strong />Oupppppss !</strong>';
 			
 			//error message as a palceholder
 			if (data['error_arrival']){
+				error_msg += '<br />'+ data['error_arrival'];
 				$("#arrival").attr('placeholder', data['error_arrival']);
 			}
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('statusError');
-				error_div.lastChild.data = data['error_samedeparture'];
+				error_msg += '<br />'+ data['error_samedeparture'];
 			}
 
 			//Error message append to the error banner
 			if (data['error_no_driver']){
-				var error_div = document.getElementById('statusError');
-				error_div.lastChild.data = data['error_no_driver'];
+				error_msg += '<br />'+ data['error_no_driver'];
 			}
 
 			//Error message append to the error banner
 			if (data['error_wrong_driver']){
-				var error_div = document.getElementById('statusError');
-				error_div.lastChild.data = data['error_wrong_driver'];
+				error_msg += '<br />'+ data['error_wrong_driver'];
 			}
 
 			if (data['error_price']){
-				var span_error = document.getElementById('error_price');
-				span_error.innerHTML = data['error_price'];
-				span_error.style.display = 'block';
+				error_msg += '<br />'+ data['error_price'];
 			}
+
+			//Display main error banner
+			var statusError = document.getElementById("statusError");
+			statusError.innerHTML = error_msg;
+			statusError.style.display = 'block';
 
 
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
 			window.setTimeout(function(){
 				window.location.replace("driverTravels?status=modified");
-			}, 1500);
+			}, 100);
 		}
 	});
 }
@@ -311,34 +310,34 @@ function searchTravel(){
 		//If there is error, handle appropriate error messages
 		if (data['error']){
 
-			//Display main error banner
-			var statusError = document.getElementById("statusError");
-			statusError.style.display = 'block';
+			var error_msg = '<strong />Oupppppss !</strong>';
 
 			//error message as a palceholder
 			if (data['error_src_dest']){
+				error_msg += '<br />'+ data['error_src_dest'];
 				$("#departure_search").attr('placeholder', data['error_src_dest']);
 				$("#arrival_search").attr('placeholder', data['error_src_dest']);
 			}
 
 			//Error message append to the error banner
 			if (data['error_samedeparture']){
-				var error_div = document.getElementById('statusError');
-				error_div.lastChild.data = data['error_samedeparture'];
+				error_msg += '<br />'+ data['error_samedeparture'];
 			}
 
 
 			if (data['error_datetime']){
-				var span_error = document.getElementById('error_date_search');
-				span_error.innerHTML = data['error_datetime'];
-				span_error.style.display = 'block';
+				error_msg += '<br />'+ data['error_datetime'];
 			}
 
 			if (data['error_price']){
-				var span_error = document.getElementById('error_price_search');
-				span_error.innerHTML = data['error_price'];
-				span_error.style.display = 'block';
+				error_msg += '<br />'+ data['error_price'];
 			}
+
+			//Display main error banner
+			var statusError = document.getElementById("statusError");
+			statusError.innerHTML = error_msg;
+			statusError.style.display = 'block';
+
 		}else{
 			//handle success and redirect to the list of travel whereuser is the driver
 			window.location.replace("/resultSearch");

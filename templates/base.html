@@ -159,7 +159,7 @@
 				</div>
 			</div>
 
-			
+
 
 		<!-- Or display specific functionnalities -->
 		{% elif choice == "add" %}
@@ -189,6 +189,10 @@
 		{% elif choice == "userPage" %}
 			<!-- Access User profile page -->
 			{% include "userPage.html" with context %}
+
+		{% elif choice == "quickTravel" %}
+		<h1> INcLUSION </h1>
+			{% include "quickTravels.html" with context %}
 
 		{% endif %}
 
@@ -240,9 +244,7 @@
 			});
 
 			var infoDisplayer = document.getElementById("fastSearchInfo");
-			var info = "Looking for a user ?<br />";
-				info += "user alice<br /><hr />";
-			info += "Looking for a travel ?<br />";
+			var info = "Looking for a travel ?<br />";
 				info += "travel from Washington<br />";
 				info += "travel to Montreal<br />";
 				info += "travel day monday<br />";
@@ -252,53 +254,47 @@
 
 		function fastSearch(){
 			var command = document.getElementById("quickSearch").value;
-
-			if (command != ''){
-				var args = command.split(" ", 3);
-
-				if (args.length < 2){
-					console.log("wrong command line");
-					return;
-				}
-
-				if (args[0].toLowerCase() != 'user' && args[0].toLowerCase() != 'travel'){
-					console.log("wrong pattern");
-					return;
-				}else{
-					var formatted_json;
-					var target = args[0].toLowerCase();
-					
-					var lookForUser = target == 'user';
-
-					if (lookForUser){
-						console.log("searching a user : "+target+", "+args[1]);
-						/*Expected argument that matches a user*/
-						formatted_json = JSON.stringify({"db" : target,	"pattern" : args[1]});
-					}else{
-						console.log('searching travels : '+target+", "+args[1]+", "+args[2]);
-						/*Expect arguments that matches travel element*/
-						formatted_json = JSON.stringify({"db" : target,	"pattern" : args[1], "value": args[2]});
-					}
-
-					console.log("preparing request");
-					$.ajax({
-						type: "POST",
-						url: "/quickSearch",
-						dataType: 'json',
-						data: formatted_json
-					})
-					.done(function(data){
-						console.log("done");
-					});
-
-
-					return
-				}				
+			
+			var cmd_re = /travel\s+(to|from|day|price)\s+(\w|(0-9)*)/i;
+			if (! cmd_re.test(command) ){
+				alert("Research not well formed");
+				return;
 			}
 
+			/*Process the regex*/
+			console.log("regex OK");
+			var command_args = command.split(/\s+/);
+
+			/*Check data coherence*/
+			if (command_args[1] == "price"){
+				/*Check if not a number*/
+				if (isNaN(command_args[2]) ){
+					alert("No price found");
+					return;
+				}
+				
+			}else{
+				/*Check if a number*/
+				if (!isNaN(command_args[2]) ){
+					alert("digits found");
+					return;
+				}
+			}
+
+			/*Command line is correct, prepare request*/
+			$.ajax({
+					type: "POST",
+					url: "/quickSearch",
+					dataType: 'json',
+					data: JSON.stringify({"db" : command_args[0],	
+											"criteria" : command_args[1],
+											"value": command_args[2]})
+				})
+				.done(function(data){
+					console.log("done");
+					
+			});
 		}
-
-
 
 	</script>
 
