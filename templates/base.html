@@ -276,10 +276,12 @@
 				}
 			}
 
+			console.log("ULR target = "+location.protocol + '//' + location.host+"/quickSearch");
+
 			/*Command line is correct, prepare request*/
 			$.ajax({
 					type: "POST",
-					url: "/quickSearch",
+					url: location.protocol + '//' + location.host+"/quickSearch",
 					dataType: 'json',
 					data: JSON.stringify({"db" : command_args[0],	
 											"criteria" : command_args[1],
@@ -292,7 +294,7 @@
 						//handle success and redirect to the result fo the research
 						console.log("No error");
 						window.setTimeout(function(){
-							window.location.replace("resultSearch");
+							window.location.replace(location.protocol + '//' + location.host+"/resultSearch");
 						}, 100);
 					}
 			});
