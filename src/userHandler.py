@@ -177,6 +177,10 @@ class MyProfile(MainHandler):
 
 	def getStats(self, member):
 		# According to the user id, get the number of travel booked and the number of travel as a driver
+		nb_booking = 0
+		nb_lifts = 0
+
+
 		traveler = Traveler.get_traveler(member.key())
 		if traveler :
 			nb_booking = Travel.by_traveler(traveler).count()
