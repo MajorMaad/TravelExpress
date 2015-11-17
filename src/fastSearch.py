@@ -40,7 +40,7 @@ class FastSearch(MainHandler):
 			if access_db:
 				if memcache.get(key=str(self.user.key().id())):
 					memcache.delete(key=str(self.user.key().id()))
-				memcache.add(key=str(self.user.key().id()), value=travels, time=5)
+				memcache.add(key=str(self.user.key().id()), value=travels.filter("actif = ", True) , time=5)
 				logging.info("Added to memcache "+str(travels.count()));
 				self.response.out.write(json.dumps({}))
 

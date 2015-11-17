@@ -10,6 +10,12 @@
 from src.handler import *
 from src.user import *
 from src.registration import *
+
+
+from src.traveler import Traveler
+from src.driver import Driver
+from src.travel import Travel
+
 import json
 
 
@@ -98,7 +104,8 @@ class MyProfile(MainHandler):
 		if not self.user:
 			self.redirect('/')
 		else:
-			self.render('base.html', user=self.user, choice="userPage")
+			stats = self.getStats()
+			self.render('base.html', user=self.user, choice="userPage", stats=stats)
 
 	# Powered by Ajax
 	def post(self):
@@ -156,7 +163,18 @@ class MyProfile(MainHandler):
 			self.user.put()
 
 		# Ajax response
-		self.response.out.write(json.dumps(response))	
+		self.response.out.write(json.dumps(response))
 
 
+	def getStats(self):
+		# According to the user id, get the number of travel booked and the number of travel as a driver
+		traveler = Traveler.get_traveler(self.user.key())
+		if traveler :
+			nb_booking = Travel.by_traveler(traveler).count()
+		
+		driver = Driver.get_driver(self.user.key())
+		if driver :
+			nb_lifts = Travel.by_driver(driver).count()
 
+
+		return {'nb_booking':nb_booking, 'nb_lifts':nb_lifts}

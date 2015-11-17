@@ -13,7 +13,6 @@ from google.appengine.ext import db
 from string import letters
 import random
 import hashlib
-
 import logging
 
 

@@ -14,17 +14,6 @@
 	<h1 class="text-primary">{{user.nickName}} Profile</h1>
 	<hr>
 
-	<!-- Success or error banner -->
-	<div id="changeSuccess" class="alert alert-success" role="alert" style="display:none">
-		<strong>Done !</strong> 
-		Modification correctly saved. This page will now refresh
-	</div>
-
-	<div id="changeError" class="alert alert-danger" role="alert" style="display:none">
-		<strong>Oups !</strong> There has been an error.
-	</div>
-
-
 	<!-- User personnal data section -->
 	<!-- each section provide a piece of data of the user and a modifier button -->
 	<div class="col-md-6 container userDataSection">
@@ -155,6 +144,33 @@
 	<div class="col-md-6">
 		<h1>Notation</h1>
 		<h1>Statistiques </h1>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h3 class="panel-title" style="float:left" ><strong>Statistiques </strong></h3>
+					</div>
+				</div>
+			</div>
+
+			<div class="panel-body">
+				<dl style="text-align:left">
+					{% for key, value in stats.iteritems() %}
+						{%if key == 'nb_booking' %}
+							<span>
+								<strong>{{value |e }} </strong>
+								travels already booked ! </span>
+						{%elif key == 'nb_lifts' %}
+							<span>
+								<strong>{{value |e }} </strong>
+								drives publicated ! </span>
+						{% endif %}
+					    <br>
+					{% endfor %}			
+				</dl>
+			</div>
+		</div>
+		
 	</div>
 
 </div>
@@ -265,9 +281,10 @@ function submitChange(attr, inputID, targetDiv){
 	var inputData = input.value;
 
 	if (attr == 'email' && ! validateEmail(inputData) ){
-		$("#changeError").append("Email address is not valid");
-		openDiv('changeError');
-		$("#changeError").fadeOut(5000);
+		var error_div = document.getElementById('statusError');
+		error_div.lastChild.data = "Email address is not valid";
+		openDiv('statusError');
+		$("#statusError").fadeOut(5000);
 		return false;
 	}
 
@@ -281,16 +298,16 @@ function submitChange(attr, inputID, targetDiv){
 		console.log("function has returned");
 
 		if (data['error']){
-			var error_div = document.getElementById('changeError');
+			var error_div = document.getElementById('statusError');
 			error_div.lastChild.data = data['error_msg'];
 
-			openDiv('changeError');
-			$("#changeError").fadeOut(5000, function(){
-				closeDiv('changeError');
+			openDiv('statusError');
+			$("#statusError").fadeOut(5000, function(){
+				closeDiv('statusError');
 			});
 			
 		}else{
-			openDiv('changeSuccess');
+			openDiv('statusSuccess');
 			closeDiv(targetDiv);
 
 			window.setTimeout(function(){
@@ -318,16 +335,16 @@ function changePassword(oldPassID, newPassID, targetDiv){
 		console.log("function has returned");
 
 		if (data['error']){
-			var error_div = document.getElementById('changeError');
+			var error_div = document.getElementById('statusError');
 			error_div.lastChild.data = data['error_msg'];
 
-			openDiv('changeError');
-			$("#changeError").fadeOut(5000, function(){
-				closeDiv('changeError');
+			openDiv('statusError');
+			$("#statusError").fadeOut(5000, function(){
+				closeDiv('statusError');
 			});
 			
 		}else{
-			openDiv('changeSuccess');
+			openDiv('statusSuccess');
 			closeDiv(targetDiv);
 
 			window.setTimeout(function(){
@@ -359,7 +376,7 @@ function savePreferences(){
 	})
 	.done(function( data ) { 		
 		console.log("function has returned");
-		openDiv('changeSuccess');
+		openDiv('statusSuccess');
 
 		window.setTimeout(function(){
 			location.reload();

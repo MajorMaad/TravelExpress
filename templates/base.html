@@ -90,7 +90,7 @@
 					data-placement="bottom" data-content="changed by Jquery">
 					<span class="glyphicon glyphicon-info-sign"></span>
 				</a>
-				<input id="quickSearch" class="form-control" placeholder="Search for users or travel quickly" value=""></input>
+				<input id="quickSearch" class="form-control" placeholder="Search for travels quickly" value=""></input>
 			</div>
 
 			<div class="col-md-1">
@@ -179,10 +179,6 @@
 			<!-- Access User profile page -->
 			{% include "userPage.html" with context %}
 
-		{% elif choice == "quickTravel" %}
-		<h1> INcLUSION </h1>
-			{% include "quickTravels.html" with context %}
-
 		{% endif %}
 
 
@@ -208,13 +204,6 @@
 			</div>
 		</div>
 	{% endif %}
-
-	<!-- Welcome Message -->
-	<div id="welcomeSection">
-		<p> Welcome to Travel Express, the web service allowing you to travel without using your feet !! </p>
-	</div>
-
-
 
 
 	<script type="text/javascript">

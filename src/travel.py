@@ -111,6 +111,10 @@ class Travel(db.Model):
 		return Travel.get_by_id(tid, parent = travel_key())
 
 	@classmethod
+	def by_driver(cls, driver):
+		return Travel.all().filter("driver = ", driver.key())
+
+	@classmethod
 	def by_driver_still_actif(cls, driver):
 		return Travel.all().filter("driver = ", driver.key()).filter("actif =", True)
 

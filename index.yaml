@@ -138,6 +138,11 @@ indexes:
 - kind: Travel
   properties:
   - name: actif
+  - name: price
+
+- kind: Travel
+  properties:
+  - name: actif
   - name: user_id
   - name: datetime_departure
 
