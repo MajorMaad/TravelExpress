@@ -194,7 +194,7 @@
 	<div class="userDataSection" >
 		<label class="userPref"> 
 			Animals 
-			<select id="animals" name="prefAnimals" {% if user != member } disabled {% endif %}>
+			<select id="animals" name="prefAnimals" {% if user != member %} disabled {% endif %}>
 				<option value="ni" {% if member.animals == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -209,7 +209,7 @@
 
 		<label class="userPref"> 
 			Smoking 
-			<select id="smoking" name="prefSmoking" {% if user != member } disabled {% endif %}>
+			<select id="smoking" name="prefSmoking" {% if user != member %} disabled {% endif %}>
 				<option value="ni" {% if member.smoking == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -224,7 +224,7 @@
 
 		<label class="userPref"> 
 			Luggage 
-			<select id="luggage" name="prefLuggage" {% if user != member } disabled {% endif %}>
+			<select id="luggage" name="prefLuggage" {% if user != member %} disabled {% endif %}>
 				<option value="ni" {% if member.big_luggage == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -238,7 +238,7 @@
 		</label>
 
 
-		{% if user == member }
+		{% if user == member %}
 			<div class="userPref">
 				<button class='userPref btn-success' onclick="savePreferences();">
 					Save Preferences 
@@ -303,7 +303,7 @@ function submitChange(attr, inputID, targetDiv){
 
 	$.ajax({
 	  type: "POST",
-	  url: "/myProfile",
+	  url: "/profile/{{user.nickName}}",
 	  dataType: 'json',
 	  data: JSON.stringify({ "attr": attr, "value": inputData})
 	})
@@ -340,7 +340,7 @@ function changePassword(oldPassID, newPassID, targetDiv){
 
 	$.ajax({
 	  type: "POST",
-	  url: "/myProfile",
+	  url: "/profile/{{user.nickName}}",
 	  dataType: 'json',
 	  data: JSON.stringify({ "attr": "changePWD", "oldPass": oldPass.value, "newPass": newPass.value})
 	})
@@ -380,7 +380,7 @@ function savePreferences(){
 
 	$.ajax({
 	  type: "POST",
-	  url: "/myProfile",
+	  url: "/profile/{{user.nickName}}",
 	  dataType: 'json',
 	  data: JSON.stringify({ "attr": "pref", 
 							"animals": animalChoice,
