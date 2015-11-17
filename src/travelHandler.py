@@ -295,10 +295,20 @@ class ShowTravelerTravels(MainHandler):
 			travels = Travel.by_traveler(traveler)
 
 			if travels.count() > 0:
+				# Get back user behind the driver, to display his profile page if necessary
+				drivers_nickname = []
+				for t in travels.run():
+					# drivers_nickname.append(t.driver.nickName)
+					tmp_user = t.driver.user_id
+					logging.info("driver nickname is "+tmp_user.nickName)
+					drivers_nickname.append(tmp_user.nickName)
+
+
 				logging.info("empty : no")
 				self.render('base.html', user = self.user, 
 										choice = "travelerTravels", 
 										travels = travels, 
+										drivers = drivers_nickname,
 										traveler_key = str(traveler.key()) )
 				return
 

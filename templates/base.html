@@ -54,7 +54,7 @@
 					<li role="separator" class="divider"></li>
 					<li><a href="/searchTravel">Look for a travel</a></li>
 					<li role="separator" class="divider"></li>
-					<li><a href="/myProfile">Settings</a></li>
+					<li><a href="/profile/{{user.nickName}}">Settings</a></li>
 				</ul>
 			</li>
 
@@ -141,7 +141,7 @@
 
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<!-- Choice will be "settings" -->
-					<a href="/myProfile" class="thumbnail">
+					<a href="/profile/{{user.nickName}}" class="thumbnail">
 						<img src="scripts/img/parameters_thumbnail.jpg" alt="Settings">
 						<h3>Settings</h3>
 					</a>

@@ -104,8 +104,17 @@ class MyProfile(MainHandler):
 		if not self.user:
 			self.redirect('/')
 		else:
-			stats = self.getStats()
-			self.render('base.html', user=self.user, choice="userPage", stats=stats)
+			url = self.request.url
+			nickname = url.split('/')[-1]
+			logging.info("--> "+nickname)
+
+			if self.user.nickName == nickname:
+				member = self.user
+			else:
+				member = User.by_nickName(nickname)
+				
+			stats = self.getStats(member)
+			self.render('base.html', user=self.user, choice="userPage", member=member, stats=stats)
 
 	# Powered by Ajax
 	def post(self):
@@ -166,13 +175,14 @@ class MyProfile(MainHandler):
 		self.response.out.write(json.dumps(response))
 
 
-	def getStats(self):
+	def getStats(self, member):
 		# According to the user id, get the number of travel booked and the number of travel as a driver
-		traveler = Traveler.get_traveler(self.user.key())
+		traveler = Traveler.get_traveler(member.key())
 		if traveler :
 			nb_booking = Travel.by_traveler(traveler).count()
+			
 		
-		driver = Driver.get_driver(self.user.key())
+		driver = Driver.get_driver(member.key())
 		if driver :
 			nb_lifts = Travel.by_driver(driver).count()
 

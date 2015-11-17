@@ -11,7 +11,7 @@
 <div class="jumbotron container-fluid" style="margin-top: 30px;">
 
 
-	<h1 class="text-primary">{{user.nickName}} Profile</h1>
+	<h1 class="text-primary">{{member.nickName}} Profile</h1>
 	<hr>
 
 	<!-- User personnal data section -->
@@ -26,16 +26,21 @@
 						<h3 class="panel-title" style="float:left" ><strong>Name </strong></h3>
 					</div>
 
-					<div class="btn-group">
-						<button class="btn btn-warning" onclick="openDiv('enterName');">
-							<span class="glyphicon glyphicon-edit"></span>
-						</button>
-					</div>
+
+					{% if user == member %}
+						<div class="btn-group">
+							<button class="btn btn-warning" onclick="openDiv('enterName');">
+								<span class="glyphicon glyphicon-edit"></span>
+							</button>
+						</div>
+					{% endif %}
+
+
 				</div>
 			</div>
 
 			<div class="panel-body">				
-				<p style="float:left" ><strong>{{user.name}}</strong></p>				
+				<p style="float:left" ><strong>{{member.name}}</strong></p>				
 			</div>
 
 			<!-- Modifier -->
@@ -56,16 +61,19 @@
 						<h3 class="panel-title" style="float:left" ><strong>Firstname </strong></h3>
 					</div>
 
-					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterFirstname');" >
-							<span class="glyphicon glyphicon-edit"></span>
-						</a>
-					</div>
+
+					{% if user == member %}
+						<div class="btn-group">
+							<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterFirstname');" >
+								<span class="glyphicon glyphicon-edit"></span>
+							</a>
+						</div>
+					{% endif %}
 				</div>
 			</div>
 
 			<div class="panel-body">
-				<p style="float:left"><strong>{{user.firstName}}</strong></p>				
+				<p style="float:left"><strong>{{member.firstName}}</strong></p>				
 			</div>
 
 			<!-- Modifier -->
@@ -86,16 +94,18 @@
 						<h3 class="panel-title" style="float:left" ><strong>Email address </strong></h3>
 					</div>
 
-					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterEmail');">
-							<span class="glyphicon glyphicon-edit"></span>
-						</a>
-					</div>
+					{% if user == member %}
+						<div class="btn-group">
+							<a type="button" href="#" class="btn btn-warning" onclick="openDiv('enterEmail');">
+								<span class="glyphicon glyphicon-edit"></span>
+							</a>
+						</div>
+					{% endif %}
 				</div>
 			</div>
 
 			<div class="panel-body">
-				<p style="float:left"><strong>{{user.email}}</strong></p>				
+				<p style="float:left"><strong>{{member.email}}</strong></p>				
 			</div>
 
 			<!-- Modifier -->
@@ -108,42 +118,43 @@
 
 
 		<!-- Change password section -->
-		<div class="panel panel-info">
-			<div class="panel-heading">
-				<div class="row">
-					<div class="col-md-8">
-						<h3 class="panel-title" style="float:left" ><strong>Change Password ?</strong></h3>
+		{% if user == member %}
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-md-8">
+							<h3 class="panel-title" style="float:left" ><strong>Change Password ?</strong></h3>
+						</div>
+
+						<div class="btn-group">
+							<a type="button" href="#" class="btn btn-warning" onclick="openDiv('changePass');">
+								<span class="glyphicon glyphicon-edit"></span>
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modifier -->
+				<div id="changePass" class="panel-footer" style="display:none">
+
+					<div class="userData">
+						<input id="oldPass" type="password" class="panel-title" style="float:left" placeholder='Enter the current password'></input>	
+						<button class="glyphicon glyphicon-ok-circle btn-success" onclick="changePassword('oldPass', 'newPass', 'changePass');">Change</button>				
 					</div>
 
-					<div class="btn-group">
-						<a type="button" href="#" class="btn btn-warning" onclick="openDiv('changePass');">
-							<span class="glyphicon glyphicon-edit"></span>
-						</a>
+					<div class="userData">
+						<input id="newPass" type="password" class="panel-title" style="float:left" placeholder='Enter the new password'></input>
+						<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('changePass');">Cancel</button>					
 					</div>
+
 				</div>
 			</div>
-
-			<!-- Modifier -->
-			<div id="changePass" class="panel-footer" style="display:none">
-
-				<div class="userData">
-					<input id="oldPass" type="password" class="panel-title" style="float:left" placeholder='Enter the current password'></input>	
-					<button class="glyphicon glyphicon-ok-circle btn-success" onclick="changePassword('oldPass', 'newPass', 'changePass');">Change</button>				
-				</div>
-
-				<div class="userData">
-					<input id="newPass" type="password" class="panel-title" style="float:left" placeholder='Enter the new password'></input>
-					<button class="glyphicon glyphicon-remove-circle btn-primary" onclick="closeDiv('changePass');">Cancel</button>					
-				</div>
-
-			</div>
-		</div>
+		{% endif %}
 		
 	</div>
 	
 	<div class="col-md-6">
-		<h1>Notation</h1>
-		<h1>Statistiques </h1>
+
 		<div class="panel panel-info">
 			<div class="panel-heading">
 				<div class="row">
@@ -184,13 +195,13 @@
 		<label class="userPref"> 
 			Animals 
 			<select id="animals" name="prefAnimals">
-				<option value="ni" {% if user.animals == "ni" %} selected {% endif %}>
+				<option value="ni" {% if member.animals == "ni" %} selected {% endif %}>
 					not important 
 				</option>
-				<option value="ok" {% if user.animals == "ok" %} selected {% endif %}>
+				<option value="ok" {% if member.animals == "ok" %} selected {% endif %}>
 					authorized
 				</option>
-				<option value="nok" {% if user.animals == "nok" %} selected {% endif %}>
+				<option value="nok" {% if member.animals == "nok" %} selected {% endif %}>
 					prohibited
 				</option>
 			</select>
@@ -199,13 +210,13 @@
 		<label class="userPref"> 
 			Smoking 
 			<select id="smoking" name="prefSmoking">
-				<option value="ni" {% if user.smoking == "ni" %} selected {% endif %}>
+				<option value="ni" {% if member.smoking == "ni" %} selected {% endif %}>
 					not important 
 				</option>
-				<option value="ok" {% if user.smoking == "ok" %} selected {% endif %}>
+				<option value="ok" {% if member.smoking == "ok" %} selected {% endif %}>
 					authorized
 				</option>
-				<option value="nok" {% if user.smoking == "nok" %} selected {% endif %}>
+				<option value="nok" {% if member.smoking == "nok" %} selected {% endif %}>
 					prohibited
 				</option>
 			</select>
@@ -214,13 +225,13 @@
 		<label class="userPref"> 
 			Luggage 
 			<select id="luggage" name="prefLuggage">
-				<option value="ni" {% if user.big_luggage == "ni" %} selected {% endif %}>
+				<option value="ni" {% if member.big_luggage == "ni" %} selected {% endif %}>
 					not important 
 				</option>
-				<option value="ok" {% if user.big_luggage == "ok" %} selected {% endif %}>
+				<option value="ok" {% if member.big_luggage == "ok" %} selected {% endif %}>
 					big
 				</option>
-				<option value="nok" {% if user.big_luggage == "nok" %} selected {% endif %}>
+				<option value="nok" {% if member.big_luggage == "nok" %} selected {% endif %}>
 					small
 				</option>
 			</select>

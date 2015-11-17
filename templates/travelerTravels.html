@@ -18,7 +18,10 @@
 	<div id="driverTravels" class="container">
 		<h1 style="text-align:center">Travels booked :</h1>
 		<hr>
+
+		{% set driver_idx = 0 %}
 		{% for travel in travels %}
+			{% set driver_idx = loop.index-1 %}
 
 		<!-- A travel HTML instance -->
 		<div class="panel panel-success">
@@ -52,8 +55,9 @@
 
 					<!-- Manager : Send mail to driver (not implemented) / Delete this travel from my travel list -->
 					<div class="btn-group">
-							<a type="button" class="btn btn-info" onclick="alert('Not implemented yet');">
-								Contact
+
+							<a type="button" class="btn btn-info" href="/profile/{{drivers[driver_idx]}}">
+								Driver Profile
 								<span class="glyphicon glyphicon-envelope"></span>
 							</a>
 

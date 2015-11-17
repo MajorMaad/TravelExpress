@@ -37,5 +37,5 @@ app = webapp2.WSGIApplication([('/', MainHandler),
 								('/rmUserOfTravel', RmUserOfTravel),
 								('/travelerTravels', ShowTravelerTravels),
 								('/quickSearch', FastSearch),
-								('/myProfile', MyProfile)],
+								(r'/profile/[0-9a-zA-Z]+', MyProfile)],
 								debug=True)
