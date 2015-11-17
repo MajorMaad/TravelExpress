@@ -20,6 +20,7 @@ from src.traveler import *
 from google.appengine.ext import db
 import datetime
 import logging
+import time
 
 
 def travel_key(name = 'default'):
@@ -237,7 +238,7 @@ class Travel(db.Model):
 				target_key = str(traveler.key())
 
 				if target_key in this_travel.bookers_id:					
-					logging.info("Traveler already regsitred for this travel")
+					logging.info("Traveler already registered for this travel")
 
 					# Update traveler reservation
 					index = this_travel.bookers_id.index(target_key)
@@ -254,7 +255,8 @@ class Travel(db.Model):
 				# Update remaining places
 				this_travel.places_remaining -= places
 				# Save into DB
-				this_travel.put()
+				this_travel.put(deadline=1.5)
+				time.sleep(1.5)
 				return (True, "Your reservation has been saved.")
 
 

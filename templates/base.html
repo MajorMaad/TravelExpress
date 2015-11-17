@@ -119,14 +119,6 @@
 
 
 
-
-		{% if success_booking == 'True' %}
-			<div class="alert alert-success" role="alert">
-				<strong>Done !</strong> You successfully booked this travel.
-			</div>
-		{% endif %}
-
-
 		<!-- Display Quick links -->
 		{% if not choice %}
 			
@@ -250,6 +242,23 @@
 				info += "travel day monday<br />";
 				info += "travel price 15<br />";
 			$(infoDisplayer).attr('data-content', info);
+
+			/*Handle the booking false result if necessary*/
+			var booking_status = location.search.split('success_booking=')[1] ? location.search.split('success_booking=')[1] : false;
+			if (booking_status) {
+				if(booking_status.substring(0, 2) == 'Fa'){
+					var error_msg = location.search.split('&')[1].split('=')[1].replace(/%20/g, ' ');
+					//Display main error banner
+					var statusError = document.getElementById("statusError");
+					statusError.innerHTML = error_msg;
+					statusError.style.display = 'block';		
+				}else{
+					//Display main success banner
+					var statusSuccess = document.getElementById("statusSuccess");
+					statusSuccess.innerHTML = "Done. The travel has coorectly been booked";
+					statusSuccess.style.display = 'block';
+				}				
+			}
 		});
 
 		function fastSearch(){

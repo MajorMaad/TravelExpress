@@ -104,11 +104,13 @@
 
 
 <script>
-/*Enable AutoCompletion of departure and arrival via gmap.js*/
-/*Handle date & price specifity : only one can have a value*/
+
+
 $(document).ready(function(e){
+	/*Enable AutoCompletion of departure and arrival via gmap.js*/
 	initializeResearchAutocomplete();
 
+	/*Handle date & price specifity : only one can have a value*/
 	//Ensure only one input between date and price has a value
 	$("#date_search").focus(function() {
 		var price = document.getElementById("price_search");

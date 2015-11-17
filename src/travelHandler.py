@@ -223,10 +223,10 @@ class AddUserToTravel(MainHandler):
 
 		if status:
 			logging.info("CORRECT book a travel : "+msg)
-			self.redirect('/?success_booking=True')
+			self.redirect('/travelerTravels?success_booking=True')
 		else:
 			logging.info("ERROR book a travel : "+msg)
-			self.redirect('/searchTravel?success_booking=False')
+			self.redirect('/searchTravel?success_booking=False&msg='+msg)
 
 # Unregister user of a travel
 class RmUserOfTravel(MainHandler):
