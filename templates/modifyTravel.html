@@ -17,7 +17,8 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 <!-- Modify travel form -->
 <div class="jumbotron">
 
-	<h1 class="text-primary">Modify a travel</h1>
+	<h1 class="text-primary" style="text-align:center">Modify a travel</h1>
+	<hr>
 
 	<input type="hidden" id="travel_id_modif" name="travel_id_modif" value="{{ travel.key().id() }}">
 
@@ -37,6 +38,7 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 			<div id="gmapArrival_modify" style="width:70%;height:350px;"></div>
 		</div>
 	</div>
+	<hr>
 
 	<!-- Schedule Section -->
 	<div class="container-fluid">
@@ -136,7 +138,9 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 			<input class="form-control" id="price_modify" type="number" maxlength="3" name="price" value="{{ travel.price }}">$
 		</div>
 	</div>
+	<hr>
 
+	
 	<!-- Preferences -->
 	<div class="container-fluid">
 
