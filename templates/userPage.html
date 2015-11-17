@@ -194,7 +194,7 @@
 	<div class="userDataSection" >
 		<label class="userPref"> 
 			Animals 
-			<select id="animals" name="prefAnimals">
+			<select id="animals" name="prefAnimals" {% if user != member } disabled {% endif %}>
 				<option value="ni" {% if member.animals == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -209,7 +209,7 @@
 
 		<label class="userPref"> 
 			Smoking 
-			<select id="smoking" name="prefSmoking">
+			<select id="smoking" name="prefSmoking" {% if user != member } disabled {% endif %}>
 				<option value="ni" {% if member.smoking == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -224,7 +224,7 @@
 
 		<label class="userPref"> 
 			Luggage 
-			<select id="luggage" name="prefLuggage">
+			<select id="luggage" name="prefLuggage" {% if user != member } disabled {% endif %}>
 				<option value="ni" {% if member.big_luggage == "ni" %} selected {% endif %}>
 					not important 
 				</option>
@@ -238,11 +238,13 @@
 		</label>
 
 
-		<div class="userPref">
-			<button class='userPref btn-success' onclick="savePreferences();">
-				Save Preferences 
-			</button>
-		</div>		
+		{% if user == member }
+			<div class="userPref">
+				<button class='userPref btn-success' onclick="savePreferences();">
+					Save Preferences 
+				</button>
+			</div>		
+		 {% endif %}
 
 	</div>
 </div>
