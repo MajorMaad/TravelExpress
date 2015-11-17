@@ -42,7 +42,7 @@ class Travel(db.Model):
 	price = db.IntegerProperty(required = True)
 
 	# Schedule
-	schedule_day = db.StringProperty(default="monday", required = True)	
+	schedule_day = db.StringProperty(default="Monday", required = True)	
 	schedule_hour = db.IntegerProperty(default=00, required = True)
 	schedule_minute = db.IntegerProperty(default=00, required = True)
 
@@ -117,6 +117,19 @@ class Travel(db.Model):
 	@classmethod
 	def by_traveler(cls, traveler):
 		return Travel.all().filter("bookers_id = ", str(traveler.key()))
+
+	@classmethod
+	def by_day(cls, day):
+		logging.info("target is : "+day+" --> "+type(day).__name__)
+		travels = Travel.all().filter("schedule_day = ", day)
+		return travels
+
+	@classmethod
+	def by_example(cls):
+		travels = Travel.all().fetch(20)
+		for t in travels:
+			logging.info(t.schedule_day+" --> "+type(t.schedule_day).__name__)
+
 
 
 
@@ -310,3 +323,4 @@ class Travel(db.Model):
 		if len(full_addr) >= 3:
 			return full_addr[-3:]
 		return full_addr
+

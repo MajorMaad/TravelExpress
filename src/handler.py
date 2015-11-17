@@ -12,6 +12,8 @@ import hmac
 import logging
 import json
 
+from google.appengine.api import memcache
+
 from src.user import *
 
 

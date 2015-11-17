@@ -15,9 +15,8 @@ from src.handler import *
 from src.travel import *
 from src.travelChecker import *
 from src.driver import *
-from google.appengine.api import memcache
 import datetime
-import json
+
 
 
 
@@ -201,8 +200,10 @@ class ResultSearchTravel(MainHandler):
 		# Look into memcache to retrieve latest data of this user
 		previous_request = memcache.get(key=str(self.user.key().id()))
 		if previous_request is not None:
+			logging.info("previous request is not None")
 			self.render('base.html', user=self.user, choice="resultSearch", travels = previous_request)
 		else:
+			logging.info("previous request is NONE")
 			self.redirect('/searchTravel')
 
 

@@ -18,30 +18,32 @@ class FastSearch(MainHandler):
 			access_db = False
 
 			if data["criteria"] == "to":
-				logging.info("==> "+data["criteria"])
-				response["travels"] = Travel.all().filter("arrival = ", data['value'])
+				logging.info("==> "+data["criteria"]+" = ["+data["value"]+"]")
+				travels = Travel.all().filter("arrival = ", data['value'].capitalize())
 				access_db = True
 
 			elif data["criteria"] == "from":
-				logging.info("==> "+data["criteria"])
-				response["travels"] = Travel.all().filter("departure = ", data['value'])
+				logging.info("==> "+data["criteria"]+" = ["+data["value"]+"]")
+				travels = Travel.all().filter("departure = ", data['value'].capitalize())
 				access_db = True
 
 			elif data["criteria"] == "day":
-				logging.info("==> "+data["criteria"])
-				response["travels"] = Travel.all().filter("schedule_day = ", data['value'])
+				logging.info("==> "+data["criteria"]+" = ["+data["value"]+"]"+' --> '+type(data["value"]).__name__)
+				travels = Travel.by_day(data['value'].capitalize())
 				access_db = True
 
 			elif data["criteria"] == "price":
-				logging.info("==> "+data["criteria"])
-				response["travels"] = Travel.all().filter("price <= ", data['value']).order("price")
+				logging.info("==> "+data["criteria"]+" = ["+data["value"]+"]")
+				travels = Travel.all().filter("price <= ", int(data['value'])).order("price")
 				access_db = True
+
+			if access_db:
+				if memcache.get(key=str(self.user.key().id())):
+					memcache.delete(key=str(self.user.key().id()))
+				memcache.add(key=str(self.user.key().id()), value=travels, time=5)
+				logging.info("Added to memcache "+str(travels.count()));
+				self.response.out.write(json.dumps({}))
 
 			else:
 				logging.info("NOT FOUND ==> "+data["criteria"])
-
-
-			if access_db:
-				Travel.memcache.delete(key=str(self.user.key().id()))
-				Travel.memcache.add(key=str(self.user.key().id()), value=response["travels"], time=5)
-				self.redirect("/resultSearch")
+				self.response.out.write(json.dumps({'error':True}))

@@ -92,7 +92,7 @@
 			</div>
 
 			<div class="col-md-1">
-				<button class='btn-success form-control' onclick="fastSearch();">Go !</button>
+				<button class='btn-warning form-control' onclick="fastSearch();">Go !</button>
 			</div>
 
 			
@@ -300,8 +300,15 @@
 											"value": command_args[2]})
 				})
 				.done(function(data){
-					console.log("done");
-					
+					if (data['error']){
+						console.log("done but error");
+					}else{
+						//handle success and redirect to the result fo the research
+						console.log("No error");
+						window.setTimeout(function(){
+							window.location.replace("resultSearch");
+						}, 100);
+					}
 			});
 		}
 

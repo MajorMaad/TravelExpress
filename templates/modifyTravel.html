@@ -43,26 +43,19 @@ google.maps.event.addDomListener(window, 'load', initializeGoogleMapsModifyer);
 		<div class="form-group col-md-4">
 			<label for="departure-day">Departure day </label>			
 			<select id="departure-day_modify" class="form-control" placeholder="Day" name="departure-day_modify">
-				<option value="monday" 	
-					{% if travel.schedule_day == "monday" %}selected {% endif %}		>Monday 	</option>
+				<option value="monday" {% if travel.schedule_day == "monday" %}selected{% endif %}>Monday</option>
 
-				<option value="tuesday" 
-					{% if travel.schedule_day == "tuesday" %}selected {% endif %}	>Tuesday 	</option>
+				<option value="tuesday" {% if travel.schedule_day == "tuesday" %}selected{% endif %}>Tuesday</option>
 
-				<option value="wednesday" 
-					{% if travel.schedule_day == "wednesday" %}selected {% endif %}	>Wednesday </option>
+				<option value="wednesday" {% if travel.schedule_day == "wednesday" %}selected{% endif %}>Wednesday</option>
 
-				<option value="thursday" 
-					{% if travel.schedule_day == "thursday" %}selected {% endif %}	>Thursday 	</option>
+				<option value="thursday" {% if travel.schedule_day == "thursday" %}selected{% endif %}>Thursday</option>
 
-				<option value="friday" 	
-					{% if travel.schedule_day == "friday" %}selected {% endif %}		>Friday 	</option>
+				<option value="friday" {% if travel.schedule_day == "friday" %}selected{% endif %}>Friday</option>
 
-				<option value="saturday" 
-					{% if travel.schedule_day == "saturday" %}selected {% endif %}	>Saturday 	</option>
+				<option value="saturday" {% if travel.schedule_day == "saturday" %}selected{% endif %}>Saturday</option>
 
-				<option value="sunday" 	
-					{% if travel.schedule_day == "sunday" %}selected {% endif %}		>Sunday 	</option>
+				<option value="sunday" {% if travel.schedule_day == "sunday" %}selected{% endif %}>Sunday</option>
 
 			</select>
 		</div>
